@@ -1,0 +1,24 @@
+import modules ;
+
+path-constant URDL_ROOT : . ;
+
+BOOST_ROOT = [ modules.peek : BOOST_ROOT ] ;
+if $(BOOST_ROOT)
+{
+  use-project /boost : $(BOOST_ROOT) ;
+}
+
+for local var in debug release
+{
+  for local lnk in static shared
+  {
+    install lib-$(var)-$(lnk)
+        : build
+        : <location>lib
+          <install-dependencies>on
+          <install-type>LIB
+          <variant>$(var)
+          <link>$(lnk)
+        ;
+  }
+}

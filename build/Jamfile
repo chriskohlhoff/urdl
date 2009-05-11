@@ -1,0 +1,58 @@
+import common ;
+import os ;
+
+if [ os.name ] = SOLARIS
+{
+  lib socket ;
+  lib nsl ;
+}
+else if [ os.name ] = NT
+{
+  lib ws2_32 ;
+  lib mswsock ;
+}
+else if [ os.name ] = HPUX
+{
+  lib ipv6 ;
+}
+
+project urdl
+    :
+      source-location ../src
+    :
+      requirements
+      <threading>multi
+    :
+      usage-requirements         
+      <link>shared:<define>URDL_DYN_LINK=1
+      <link>static:<define>URDL_STATIC_LINK=1
+      <include>$(URDL_ROOT)/include
+      <library>/boost/system//boost_system
+      <os>SOLARIS:<library>socket
+      <os>SOLARIS:<library>nsl
+      <os>NT:<define>_WIN32_WINNT=0x0501
+      <os>NT,<toolset>gcc:<library>ws2_32
+      <os>NT,<toolset>gcc:<library>mswsock
+      <os>NT,<toolset>gcc-cygwin:<define>__USE_W32_SOCKETS
+      <os>HPUX,<toolset>gcc:<define>_XOPEN_SOURCE_EXTENDED
+      <os>HPUX:<library>ipv6
+      <define>URDL_DISABLE_SSL=1
+    ;
+
+lib urdl
+    :
+      urdl.cpp
+    :
+      <link>shared:<define>BOOST_ALL_DYN_LINK=1
+      <link>static:<define>BOOST_ALL_STATIC_LINK=1
+      <debug-symbols>on
+      <tag>@tag
+    ;
+
+rule tag ( name : type ? : property-set )
+{
+  local result = [ common.format-name
+      <base> <runtime>
+      : $(name) : $(type) : $(property-set) ] ;
+  return "$(result)" ;
+}
