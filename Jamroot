@@ -8,6 +8,8 @@ if $(BOOST_ROOT)
   use-project /boost : $(BOOST_ROOT) ;
 }
 
+project : build-dir build/bin ;
+
 for local var in debug release
 {
   for local lnk in static shared
