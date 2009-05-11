@@ -1,4 +1,5 @@
 import modules ;
+import package ;
 
 path-constant URDL_ROOT : . ;
 
@@ -9,6 +10,17 @@ if $(BOOST_ROOT)
 }
 
 project : build-dir build/bin ;
+
+local patterns = *.hpp *.ipp ;
+
+local dirs = include/urdl include/urdl/* ;
+
+package.install install-headers
+    : <install-source-root>include
+    : : : [ glob $(dirs)/$(patterns) ]
+    ;
+
+local install-targets  = install-headers ;
 
 for local var in debug release
 {
@@ -22,5 +34,17 @@ for local var in debug release
           <variant>$(var)
           <link>$(lnk)
         ;
+
+    package.install install-$(var)-$(lnk)
+        : <variant>$(var)
+          <link>$(lnk)
+        : : build :
+        ;
+
+    install-targets += install-$(var)-$(lnk) ;
   }
 }
+
+alias install : $(install-targets) ;
+
+explicit install ;
