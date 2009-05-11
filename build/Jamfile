@@ -45,6 +45,17 @@ lib urdl
     :
       <link>shared:<define>BOOST_ALL_DYN_LINK=1
       <link>static:<define>BOOST_ALL_STATIC_LINK=1
+      <include>$(URDL_ROOT)/include
+      <library>/boost/system//boost_system
+      <os>SOLARIS:<library>socket
+      <os>SOLARIS:<library>nsl
+      <os>NT:<define>_WIN32_WINNT=0x0501
+      <os>NT,<toolset>gcc:<library>ws2_32
+      <os>NT,<toolset>gcc:<library>mswsock
+      <os>NT,<toolset>gcc-cygwin:<define>__USE_W32_SOCKETS
+      <os>HPUX,<toolset>gcc:<define>_XOPEN_SOURCE_EXTENDED
+      <os>HPUX:<library>ipv6
+      <define>URDL_DISABLE_SSL=1
       <debug-symbols>on
       <tag>@tag
     ;
