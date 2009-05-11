@@ -99,7 +99,8 @@ public:
       if (!socket_.is_open())
       {
         ec = boost::asio::error::operation_aborted;
-        break;
+        handler_(ec);
+        return;
       }
 
       // Try next endpoint.
@@ -109,6 +110,14 @@ public:
     }
     if (ec)
     {
+      handler_(ec);
+      return;
+    }
+
+    // Check whether the operation has been cancelled.
+    if (!socket_.is_open())
+    {
+      ec = boost::asio::error::operation_aborted;
       handler_(ec);
       return;
     }
