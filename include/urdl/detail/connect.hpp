@@ -40,8 +40,11 @@ inline boost::system::error_code connect(
     socket.close(ec);
     socket.connect(*iter++, ec);
   }
+  if (ec)
+    return ec;
 
-  return ec;
+  // Disable the Nagle algorithm on all sockets.
+  return socket.set_option(boost::asio::ip::tcp::no_delay(true), ec);
 }
 
 template <typename Handler>
@@ -104,6 +107,14 @@ public:
       endpoint_ = *iter_++;
       URDL_CORO_YIELD(socket_.async_connect(endpoint_, *this));
     }
+    if (ec)
+    {
+      handler_(ec);
+      return;
+    }
+
+    // Disable the Nagle algorithm on all sockets.
+    socket_.set_option(boost::asio::ip::tcp::no_delay(true), ec);
 
     handler_(ec);
 
