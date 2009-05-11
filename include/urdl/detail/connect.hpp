@@ -130,6 +130,28 @@ public:
     URDL_CORO_END;
   }
 
+  friend void* asio_handler_allocate(std::size_t size,
+      connect_coro<Handler>* this_handler)
+  {
+    using boost::asio::asio_handler_allocate;
+    return asio_handler_allocate(size, &this_handler->handler_);
+  }
+
+  friend void asio_handler_deallocate(void* pointer, std::size_t size,
+      connect_coro<Handler>* this_handler)
+  {
+    using boost::asio::asio_handler_deallocate;
+    asio_handler_deallocate(pointer, size, &this_handler->handler_);
+  }
+
+  template <typename Function>
+  friend void asio_handler_invoke(const Function& function,
+      connect_coro<Handler>* this_handler)
+  {
+    using boost::asio::asio_handler_invoke;
+    asio_handler_invoke(function, &this_handler->handler_);
+  }
+
 private:
   Handler handler_;
   boost::asio::ip::tcp::socket::lowest_layer_type& socket_;

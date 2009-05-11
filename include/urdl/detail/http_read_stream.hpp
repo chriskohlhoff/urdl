@@ -249,6 +249,28 @@ public:
       URDL_CORO_END;
     }
 
+    friend void* asio_handler_allocate(std::size_t size,
+        open_coro<Handler>* this_handler)
+    {
+      using boost::asio::asio_handler_allocate;
+      return asio_handler_allocate(size, &this_handler->handler_);
+    }
+
+    friend void asio_handler_deallocate(void* pointer, std::size_t size,
+        open_coro<Handler>* this_handler)
+    {
+      using boost::asio::asio_handler_deallocate;
+      asio_handler_deallocate(pointer, size, &this_handler->handler_);
+    }
+
+    template <typename Function>
+    friend void asio_handler_invoke(const Function& function,
+        open_coro<Handler>* this_handler)
+    {
+      using boost::asio::asio_handler_invoke;
+      asio_handler_invoke(function, &this_handler->handler_);
+    }
+
   private:
     Handler handler_;
     boost::asio::ip::tcp::resolver& resolver_;
@@ -350,6 +372,28 @@ public:
       if (ec == boost::asio::error::shut_down)
         ec = boost::asio::error::eof;
       handler_(ec, bytes_transferred);
+    }
+
+    friend void* asio_handler_allocate(std::size_t size,
+        read_handler<Handler>* this_handler)
+    {
+      using boost::asio::asio_handler_allocate;
+      return asio_handler_allocate(size, &this_handler->handler_);
+    }
+
+    friend void asio_handler_deallocate(void* pointer, std::size_t size,
+        read_handler<Handler>* this_handler)
+    {
+      using boost::asio::asio_handler_deallocate;
+      asio_handler_deallocate(pointer, size, &this_handler->handler_);
+    }
+
+    template <typename Function>
+    friend void asio_handler_invoke(const Function& function,
+        read_handler<Handler>* this_handler)
+    {
+      using boost::asio::asio_handler_invoke;
+      asio_handler_invoke(function, &this_handler->handler_);
     }
 
   private:
