@@ -63,12 +63,15 @@ inline bool headers_equal(const std::string& a, const std::string& b)
 }
 
 inline void check_header(const std::string& name, const std::string& value,
-    std::string& content_type, std::size_t& content_length)
+    std::string& content_type, std::size_t& content_length,
+    std::string& location)
 {
   if (headers_equal(name, "Content-Type"))
     content_type = value;
   else if (headers_equal(name, "Content-Length"))
     content_length = std::atoi(value.c_str());
+  else if (headers_equal(name, "Location"))
+    location = value;
 }
 
 template <typename Iterator>
@@ -185,7 +188,8 @@ bool parse_http_status_line(Iterator begin, Iterator end,
 
 template <typename Iterator>
 bool parse_http_headers(Iterator begin, Iterator end,
-    std::string& content_type, std::size_t& content_length)
+    std::string& content_type, std::size_t& content_length,
+    std::string& location)
 {
   enum
   {
@@ -223,7 +227,7 @@ bool parse_http_headers(Iterator begin, Iterator end,
     case header_line_start:
       if (c == '\r')
       {
-        check_header(name, value, content_type, content_length);
+        check_header(name, value, content_type, content_length, location);
         name.clear();
         value.clear();
         state = final_linefeed;
@@ -234,7 +238,7 @@ bool parse_http_headers(Iterator begin, Iterator end,
         state = fail;
       else
       {
-        check_header(name, value, content_type, content_length);
+        check_header(name, value, content_type, content_length, location);
         name.clear();
         value.clear();
         name.push_back(c);

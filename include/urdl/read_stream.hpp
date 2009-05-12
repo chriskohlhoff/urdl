@@ -15,6 +15,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/detail/bind_handler.hpp>
 #include <boost/throw_exception.hpp>
+#include "urdl/http.hpp"
 #include "urdl/url.hpp"
 #include "urdl/detail/file_read_stream.hpp"
 #include "urdl/detail/http_read_stream.hpp"
@@ -62,27 +63,45 @@ public:
 
   boost::system::error_code open(const url& u, boost::system::error_code& ec)
   {
-    if (u.protocol() == "file")
+    url tmp_url = u;
+    for (;;)
     {
-      protocol_ = file;
-      return file_.open(u, ec);
-    }
-    else if (u.protocol() == "http")
-    {
-      protocol_ = http;
-      return http_.open(u, ec);
-    }
+      if (tmp_url.protocol() == "file")
+      {
+        protocol_ = file;
+        return file_.open(tmp_url, ec);
+      }
+      else if (tmp_url.protocol() == "http")
+      {
+        protocol_ = http;
+        http_.open(tmp_url, ec);
+        if (ec == http::errc::moved_permanently || ec == http::errc::found)
+        {
+          tmp_url = http_.location();
+          http_.close(ec);
+          continue;
+        }
+        return ec;
+      }
 #if !defined(URDL_DISABLE_SSL)
-    else if (u.protocol() == "https")
-    {
-      protocol_ = https;
-      return https_.open(u, ec);
-    }
+      else if (tmp_url.protocol() == "https")
+      {
+        protocol_ = https;
+        https_.open(tmp_url, ec);
+        if (ec == http::errc::moved_permanently || ec == http::errc::found)
+        {
+          tmp_url = https_.location();
+          https_.close(ec);
+          continue;
+        }
+        return ec;
+      }
 #endif // !defined(URDL_DISABLE_SSL)
-    else
-    {
-      ec = boost::asio::error::operation_not_supported;
-      return ec;
+      else
+      {
+        ec = boost::asio::error::operation_not_supported;
+        return ec;
+      }
     }
   }
 

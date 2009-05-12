@@ -125,7 +125,7 @@ public:
 
     // Parse the headers to get Content-Type and Content-Length.
     if (!parse_http_headers(headers_.begin(), headers_.end(),
-          content_type_, content_length_))
+          content_type_, content_length_, location_))
     {
       ec = http::errc::malformed_response_headers;
       return ec;
@@ -146,7 +146,7 @@ public:
         Stream& socket, boost::asio::streambuf& request_buffer,
         boost::asio::streambuf& reply_buffer, const url& u,
         std::string& headers, std::string& content_type,
-        std::size_t& content_length)
+        std::size_t& content_length, std::string& location)
       : handler_(handler),
         resolver_(resolver),
         socket_(socket),
@@ -156,11 +156,13 @@ public:
         headers_(headers),
         status_code_(0),
         content_type_(content_type),
-        content_length_(content_length)
+        content_length_(content_length),
+        location_(location)
     {
     }
 
-    void operator()(boost::system::error_code ec, std::size_t bytes_transferred = 0)
+    void operator()(boost::system::error_code ec,
+        std::size_t bytes_transferred = 0)
     {
       URDL_CORO_BEGIN;
 
@@ -250,7 +252,7 @@ public:
 
       // Parse the headers to get Content-Type and Content-Length.
       if (!parse_http_headers(headers_.begin(), headers_.end(),
-            content_type_, content_length_))
+            content_type_, content_length_, location_))
       {
         ec = http::errc::malformed_response_headers;
         handler_(ec);
@@ -299,13 +301,14 @@ public:
     int status_code_;
     std::string& content_type_;
     std::size_t& content_length_;
+    std::string& location_;
   };
 
   template <typename Handler>
   void async_open(const url& u, Handler handler)
   {
     open_coro<Handler>(handler, resolver_, socket_, request_buffer_,
-        reply_buffer_, u, headers_, content_type_, content_length_)(
+        reply_buffer_, u, headers_, content_type_, content_length_, location_)(
           boost::system::error_code(), 0);
   }
 
@@ -313,7 +316,14 @@ public:
   {
     resolver_.cancel();
     if (!socket_.lowest_layer().close(ec))
+    {
+      request_buffer_.consume(request_buffer_.size());
+      reply_buffer_.consume(reply_buffer_.size());
       headers_.clear();
+      content_type_.clear();
+      content_length_ = 0;
+      location_.clear();
+    }
     return ec;
   }
 
@@ -330,6 +340,11 @@ public:
   std::size_t content_length() const
   {
     return content_length_;
+  }
+
+  std::string location() const
+  {
+    return location_;
   }
 
   std::string headers() const
@@ -442,6 +457,7 @@ private:
   std::string headers_;
   std::string content_type_;
   std::size_t content_length_;
+  std::string location_;
 };
 
 } // namespace detail
