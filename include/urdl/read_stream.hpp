@@ -17,6 +17,7 @@
 #include <boost/throw_exception.hpp>
 #include "urdl/http.hpp"
 #include "urdl/url.hpp"
+#include "urdl/detail/coroutine.hpp"
 #include "urdl/detail/file_read_stream.hpp"
 #include "urdl/detail/http_read_stream.hpp"
 
@@ -108,30 +109,7 @@ public:
   template <typename Handler>
   void async_open(const url& u, Handler handler)
   {
-    if (u.protocol() == "file")
-    {
-      protocol_ = file;
-      file_.async_open(u, handler);
-    }
-    else if (u.protocol() == "http")
-    {
-      protocol_ = http;
-      http_.async_open(u, handler);
-    }
-#if !defined(URDL_DISABLE_SSL)
-    else if (u.protocol() == "https")
-    {
-      protocol_ = https;
-      https_.async_open(u, handler);
-    }
-#endif // !defined(URDL_DISABLE_SSL)
-    else
-    {
-      protocol_ = unknown;
-      boost::system::error_code ec
-        = boost::asio::error::operation_not_supported;
-      io_service_.post(boost::asio::detail::bind_handler(handler, ec));
-    }
+    open_coro<Handler>(this, u, handler)(boost::system::error_code());
   }
 
   void close()
@@ -290,6 +268,100 @@ public:
   }
 
 private:
+  template <typename Handler>
+  class open_coro : detail::coroutine
+  {
+  public:
+    open_coro(read_stream* this_ptr, const url& u, Handler handler)
+      : this_(this_ptr),
+        url_(u),
+        handler_(handler)
+    {
+    }
+
+    void operator()(boost::system::error_code ec)
+    {
+      URDL_CORO_BEGIN;
+
+      for (;;)
+      {
+        if (url_.protocol() == "file")
+        {
+          this_->protocol_ = file;
+          URDL_CORO_YIELD(this_->file_.async_open(url_, *this));
+          handler_(ec);
+          return;
+        }
+        else if (url_.protocol() == "http")
+        {
+          this_->protocol_ = http;
+          URDL_CORO_YIELD(this_->http_.async_open(url_, *this));
+          if (ec == http::errc::moved_permanently || ec == http::errc::found)
+          {
+            url_ = this_->http_.location();
+            this_->http_.close(ec);
+            continue;
+          }
+          handler_(ec);
+          return;
+        }
+#if !defined(URDL_DISABLE_SSL)
+        else if (url_.protocol() == "https")
+        {
+          this_->protocol_ = https;
+          URDL_CORO_YIELD(this_->https_.async_open(url_, *this));
+          if (ec == http::errc::moved_permanently || ec == http::errc::found)
+          {
+            url_ = this_->https_.location();
+            this_->https_.close(ec);
+            continue;
+          }
+          handler_(ec);
+          return;
+        }
+#endif // !defined(URDL_DISABLE_SSL)
+        else
+        {
+          ec = boost::asio::error::operation_not_supported;
+          this_->io_service_.post(
+              boost::asio::detail::bind_handler(handler_, ec));
+          return;
+        }
+      }
+
+      URDL_CORO_END;
+    }
+
+    friend void* asio_handler_allocate(std::size_t size,
+        open_coro<Handler>* this_handler)
+    {
+      using boost::asio::asio_handler_allocate;
+      return asio_handler_allocate(size, &this_handler->handler_);
+    }
+
+    friend void asio_handler_deallocate(void* pointer, std::size_t size,
+        open_coro<Handler>* this_handler)
+    {
+      using boost::asio::asio_handler_deallocate;
+      asio_handler_deallocate(pointer, size, &this_handler->handler_);
+    }
+
+    template <typename Function>
+    friend void asio_handler_invoke(const Function& function,
+        open_coro<Handler>* this_handler)
+    {
+      using boost::asio::asio_handler_invoke;
+      asio_handler_invoke(function, &this_handler->handler_);
+    }
+
+  private:
+    read_stream* this_;
+    url url_;
+    Handler handler_;
+  };
+
+  template <typename Handler> friend class open_coro;
+
   boost::asio::io_service& io_service_;
   detail::file_read_stream file_;
   detail::http_read_stream<boost::asio::ip::tcp::socket> http_;
