@@ -57,7 +57,7 @@ private:
 } // namespace urdl
 
 #if defined(URDL_HEADER_ONLY)
-# include "urdl/impl/istreambuf.hpp"
+# include "urdl/impl/istreambuf.ipp"
 #endif
 
 #endif // URDL_ISTREAMBUF_HPP
