@@ -4,3 +4,6 @@
 
 #include "urdl/istreambuf.hpp"
 #include "urdl/impl/istreambuf.ipp"
+
+#include "urdl/http.hpp"
+#include "urdl/impl/http.ipp"

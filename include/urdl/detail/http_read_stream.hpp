@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <ostream>
 #include <iterator>
+#include "urdl/http.hpp"
 #include "urdl/url.hpp"
 #include "urdl/detail/connect.hpp"
 #include "urdl/detail/coroutine.hpp"
@@ -85,22 +86,29 @@ public:
     if (ec)
       return ec;
 
-    // Read the reply status line.
-    boost::asio::read_until(socket_, reply_buffer_, "\r\n", ec);
-    if (ec)
-      return ec;
-
-    // Extract the response code from the status line.
-    int version_major = 0;
-    int version_minor = 0;
     int status_code = 0;
-    if (!parse_http_status_line(
-          std::istreambuf_iterator<char>(&reply_buffer_),
-          std::istreambuf_iterator<char>(),
-          version_major, version_minor, status_code))
+    for (;;)
     {
-      ec = boost::asio::error::not_found; // TODO HTTP error code
-      return ec;
+      // Read the reply status line.
+      boost::asio::read_until(socket_, reply_buffer_, "\r\n", ec);
+      if (ec)
+        return ec;
+
+      // Extract the response code from the status line.
+      int version_major = 0;
+      int version_minor = 0;
+      if (!parse_http_status_line(
+            std::istreambuf_iterator<char>(&reply_buffer_),
+            std::istreambuf_iterator<char>(),
+            version_major, version_minor, status_code))
+      {
+        ec = http::errc::malformed_status_line;
+        return ec;
+      }
+
+      // A "continue" header means we need to keep waiting.
+      if (status_code != http::errc::continue_request)
+        break;
     }
 
     // Read list of headers and save them. If there's anything left in the reply
@@ -117,13 +125,13 @@ public:
     if (!parse_http_headers(headers_.begin(), headers_.end(),
           content_type_, content_length_))
     {
-      ec = boost::asio::error::not_found; // TODO HTTP error code
+      ec = http::errc::malformed_response_headers;
       return ec;
     }
 
     // Check the response code to see if we got the page correctly.
-    if (status_code != 200)
-      ec = boost::asio::error::not_found; // TODO HTTP error code.
+    if (status_code != http::errc::ok)
+      ec = make_error_code(static_cast<http::errc::errc_t>(status_code));
 
     return ec;
   }
@@ -194,28 +202,35 @@ public:
         return;
       }
 
-      // Read the reply status line.
-      URDL_CORO_YIELD(boost::asio::async_read_until(socket_,
-            reply_buffer_, "\r\n", *this));
-      if (ec)
+      for (;;)
       {
-        handler_(ec);
-        return;
-      }
-
-      // Check the response code to see if we got the page correctly.
-      {
-        int version_major = 0;
-        int version_minor = 0;
-        if (!parse_http_status_line(
-              std::istreambuf_iterator<char>(&reply_buffer_),
-              std::istreambuf_iterator<char>(),
-              version_major, version_minor, status_code_))
+        // Read the reply status line.
+        URDL_CORO_YIELD(boost::asio::async_read_until(socket_,
+              reply_buffer_, "\r\n", *this));
+        if (ec)
         {
-          ec = boost::asio::error::not_found; // TODO HTTP error code
           handler_(ec);
           return;
         }
+
+        // Check the response code to see if we got the page correctly.
+        {
+          int version_major = 0;
+          int version_minor = 0;
+          if (!parse_http_status_line(
+                std::istreambuf_iterator<char>(&reply_buffer_),
+                std::istreambuf_iterator<char>(),
+                version_major, version_minor, status_code_))
+          {
+            ec = http::errc::malformed_status_line;
+            handler_(ec);
+            return;
+          }
+        }
+
+        // A "continue" header means we need to keep waiting.
+        if (status_code_ != http::errc::continue_request)
+          break;
       }
 
       // Read list of headers and save them. If there's anything left in the
@@ -235,14 +250,14 @@ public:
       if (!parse_http_headers(headers_.begin(), headers_.end(),
             content_type_, content_length_))
       {
-        ec = boost::asio::error::not_found; // TODO HTTP error code
+        ec = http::errc::malformed_response_headers;
         handler_(ec);
         return;
       }
 
       // Check the response code to see if we got the page correctly.
-      if (status_code_ != 200)
-        ec = boost::asio::error::not_found; // TODO HTTP error code
+      if (status_code_ != http::errc::ok)
+        ec = make_error_code(static_cast<http::errc::errc_t>(status_code_));
 
       handler_(ec);
 
