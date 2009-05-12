@@ -8,6 +8,292 @@
 [section:reference Reference]
 
 
+[section:is_error_code_enum_lt__urdl__http__errc__errc_t__gt_ boost::system::is_error_code_enum< urdl::http::errc::errc_t >]
+
+
+
+  template<>
+  struct boost::system::is_error_code_enum< urdl::http::errc::errc_t >
+
+
+[heading Data Members]
+[table
+  [[Name][Description]]
+
+  [
+    [[link urdl.reference.is_error_code_enum_lt__urdl__http__errc__errc_t__gt_.value [*value]]]
+    []
+  ]
+
+]
+
+
+[section:value boost::system::is_error_code_enum< urdl::http::errc::errc_t >::value]
+
+[indexterm2 value..boost::system::is_error_code_enum< urdl::http::errc::errc_t >] 
+
+  static const bool value = true;
+
+
+
+[endsect]
+
+
+
+[endsect]
+
+
+[section:http__errc__errc_t http::errc::errc_t]
+
+[indexterm1 http::errc::errc_t] 
+
+  enum errc_t
+
+[heading Values]
+[variablelist
+
+  [
+    [malformed_status_line]
+    []
+  ]
+
+  [
+    [malformed_response_headers]
+    []
+  ]
+
+  [
+    [continue_request]
+    []
+  ]
+
+  [
+    [switching_protocols]
+    []
+  ]
+
+  [
+    [ok]
+    []
+  ]
+
+  [
+    [created]
+    []
+  ]
+
+  [
+    [accepted]
+    []
+  ]
+
+  [
+    [non_authoritative_information]
+    []
+  ]
+
+  [
+    [no_content]
+    []
+  ]
+
+  [
+    [reset_content]
+    []
+  ]
+
+  [
+    [partial_content]
+    []
+  ]
+
+  [
+    [multiple_choices]
+    []
+  ]
+
+  [
+    [moved_permanently]
+    []
+  ]
+
+  [
+    [found]
+    []
+  ]
+
+  [
+    [see_other]
+    []
+  ]
+
+  [
+    [not_modified]
+    []
+  ]
+
+  [
+    [use_proxy]
+    []
+  ]
+
+  [
+    [temporary_redirect]
+    []
+  ]
+
+  [
+    [bad_request]
+    []
+  ]
+
+  [
+    [unauthorized]
+    []
+  ]
+
+  [
+    [payment_required]
+    []
+  ]
+
+  [
+    [forbidden]
+    []
+  ]
+
+  [
+    [not_found]
+    []
+  ]
+
+  [
+    [method_not_allowed]
+    []
+  ]
+
+  [
+    [not_acceptable]
+    []
+  ]
+
+  [
+    [proxy_authentication_required]
+    []
+  ]
+
+  [
+    [request_timeout]
+    []
+  ]
+
+  [
+    [conflict]
+    []
+  ]
+
+  [
+    [gone]
+    []
+  ]
+
+  [
+    [length_required]
+    []
+  ]
+
+  [
+    [precondition_failed]
+    []
+  ]
+
+  [
+    [request_entity_too_large]
+    []
+  ]
+
+  [
+    [request_uri_too_large]
+    []
+  ]
+
+  [
+    [unsupported_media_type]
+    []
+  ]
+
+  [
+    [requested_range_not_satisfiable]
+    []
+  ]
+
+  [
+    [expectation_failed]
+    []
+  ]
+
+  [
+    [internal_server_error]
+    []
+  ]
+
+  [
+    [not_implemented]
+    []
+  ]
+
+  [
+    [bad_gateway]
+    []
+  ]
+
+  [
+    [service_unavailable]
+    []
+  ]
+
+  [
+    [gateway_timeout]
+    []
+  ]
+
+  [
+    [version_not_supported]
+    []
+  ]
+
+]
+
+
+
+[endsect]
+
+
+
+[section:http__errc__make_error_code http::errc::make_error_code]
+
+[indexterm1 http::errc::make_error_code] 
+
+  boost::system::error_code make_error_code(
+      errc_t e);
+
+
+
+[endsect]
+
+
+
+[section:http__error_category http::error_category]
+
+[indexterm1 http::error_category] 
+
+  const boost::system::error_category & error_category();
+
+
+
+[endsect]
+
+
 [section:istream istream]
 
 
@@ -299,6 +585,11 @@
     []
   ]
   
+  [
+    [[link urdl.reference.istreambuf._istreambuf [*~istreambuf]]]
+    []
+  ]
+  
 ]
 
 [heading Protected Member Functions]
@@ -468,6 +759,18 @@
 [indexterm2 underflow..istreambuf] 
 
   int_type underflow();
+
+
+
+[endsect]
+
+
+
+[section:_istreambuf istreambuf::~istreambuf]
+
+[indexterm2 ~istreambuf..istreambuf] 
+
+  ~istreambuf();
 
 
 
