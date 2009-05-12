@@ -55,9 +55,17 @@
 # endif
 
 # if defined(_DEBUG)
-#  define URDL_LIB_SUFFIX "-gd"
+#  if defined(_DLL)
+#   define URDL_LIB_SUFFIX "-gd"
+#  else
+#   define URDL_LIB_SUFFIX "-sgd"
+#  endif
 # else
-#  define URDL_LIB_SUFFIX
+#  if defined(_DLL)
+#   define URDL_LIB_SUFFIX
+#  else
+#   define URDL_LIB_SUFFIX "-s"
+#  endif
 # endif
 
 # pragma comment(lib, URDL_LIB_PREFIX "urdl" URDL_LIB_SUFFIX ".lib")
