@@ -29,7 +29,6 @@ for local var in debug release
     install lib-$(var)-$(lnk)
         : build
         : <location>lib
-          <install-dependencies>on
           <install-type>LIB
           <variant>$(var)
           <link>$(lnk)
