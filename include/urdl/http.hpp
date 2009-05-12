@@ -12,11 +12,14 @@
 #define URDL_HTTP_HPP
 
 #include <boost/system/error_code.hpp>
+#include "urdl/detail/config.hpp"
+
+#include "urdl/detail/abi_prefix.hpp"
 
 namespace urdl {
 namespace http {
 
-const boost::system::error_category& error_category();
+URDL_DECL const boost::system::error_category& error_category();
 
 namespace errc {
 
@@ -90,6 +93,8 @@ struct is_error_code_enum<urdl::http::errc::errc_t>
 
 } // namespace system
 } // namespace boost
+
+#include "urdl/detail/abi_suffix.hpp"
 
 #if defined(URDL_HEADER_ONLY)
 # include "urdl/impl/http.ipp"

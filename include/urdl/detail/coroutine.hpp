@@ -11,6 +11,8 @@
 #ifndef URDL_DETAIL_COROUTINE_HPP
 #define URDL_DETAIL_COROUTINE_HPP
 
+#include "urdl/detail/abi_prefix.hpp"
+
 namespace urdl {
 namespace detail {
 
@@ -41,5 +43,7 @@ protected:
 
 } // namespace detail
 } // namespace urdl
+
+#include "urdl/detail/abi_suffix.hpp"
 
 #endif // URDL_DETAIL_COROUTINE_HPP

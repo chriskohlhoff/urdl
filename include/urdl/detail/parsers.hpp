@@ -16,6 +16,8 @@
 #include <cstdlib>
 #include <string>
 
+#include "urdl/detail/abi_prefix.hpp"
+
 namespace urdl {
 namespace detail {
 
@@ -55,6 +57,8 @@ inline bool tolower_compare(char a, char b)
 
 inline bool headers_equal(const std::string& a, const std::string& b)
 {
+  if (a.length() != b.length())
+    return false;
   return std::equal(a.begin(), a.end(), b.begin(), tolower_compare);
 }
 
@@ -283,5 +287,7 @@ bool parse_http_headers(Iterator begin, Iterator end,
 
 } // namespace detail
 } // namespace urdl
+
+#include "urdl/detail/abi_suffix.hpp"
 
 #endif // URDL_DETAIL_PARSERS_HPP

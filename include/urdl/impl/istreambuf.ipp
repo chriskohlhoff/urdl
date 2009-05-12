@@ -23,6 +23,8 @@
 # define URDL_INLINE
 #endif
 
+#include "urdl/detail/abi_prefix.hpp"
+
 namespace urdl {
 
 struct istreambuf::body
@@ -199,6 +201,8 @@ void istreambuf::init_buffers()
 }
 
 } // namespace urdl
+
+#include "urdl/detail/abi_suffix.hpp"
 
 #undef URDL_INLINE
 

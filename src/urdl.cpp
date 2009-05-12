@@ -2,6 +2,8 @@
 # error Don't compile Urdl library source with URDL_HEADER_ONLY defined
 #endif
 
+#define URDL_SOURCE
+
 #include "urdl/istreambuf.hpp"
 #include "urdl/impl/istreambuf.ipp"
 

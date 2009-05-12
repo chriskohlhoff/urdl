@@ -13,11 +13,15 @@
 
 #include <streambuf>
 #include <boost/system/error_code.hpp>
+#include "urdl/detail/config.hpp"
 #include "urdl/url.hpp"
+
+#include "urdl/detail/abi_prefix.hpp"
 
 namespace urdl {
 
-class istreambuf : public std::streambuf
+class URDL_DECL istreambuf
+  : public std::streambuf
 {
 public:
   istreambuf();
@@ -55,6 +59,8 @@ private:
 };
 
 } // namespace urdl
+
+#include "urdl/detail/abi_suffix.hpp"
 
 #if defined(URDL_HEADER_ONLY)
 # include "urdl/impl/istreambuf.ipp"

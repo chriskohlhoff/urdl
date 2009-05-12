@@ -23,6 +23,8 @@
 # include <boost/asio/ssl.hpp>
 #endif // !defined(URDL_DISABLE_SSL)
 
+#include "urdl/detail/abi_prefix.hpp"
+
 namespace urdl {
 
 class read_stream
@@ -282,5 +284,7 @@ private:
 };
 
 } // namespace urdl
+
+#include "urdl/detail/abi_suffix.hpp"
 
 #endif // URDL_READ_STREAM_HPP

@@ -17,6 +17,8 @@
 #include <stdexcept>
 #include <boost/throw_exception.hpp>
 
+#include "urdl/detail/abi_prefix.hpp"
+
 namespace urdl {
 
 class url
@@ -122,5 +124,7 @@ private:
 };
 
 } // namespace urdl
+
+#include "urdl/detail/abi_suffix.hpp"
 
 #endif // URDL_URL_HPP

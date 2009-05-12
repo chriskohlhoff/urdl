@@ -15,6 +15,8 @@
 #include <sstream>
 #include "urdl/detail/coroutine.hpp"
 
+#include "urdl/detail/abi_prefix.hpp"
+
 namespace urdl {
 namespace detail {
 
@@ -173,5 +175,7 @@ void async_connect(boost::asio::ip::tcp::socket::lowest_layer_type& socket,
 
 } // namespace detail
 } // namespace urdl
+
+#include "urdl/detail/abi_suffix.hpp"
 
 #endif // URDL_DETAIL_CONNECT_HPP

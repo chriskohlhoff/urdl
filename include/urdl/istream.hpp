@@ -16,6 +16,8 @@
 #include <boost/system/error_code.hpp>
 #include "urdl/istreambuf.hpp"
 
+#include "urdl/detail/abi_prefix.hpp"
+
 namespace urdl {
 
 class istream
@@ -92,5 +94,7 @@ public:
 };
 
 } // namespace urdl
+
+#include "urdl/detail/abi_suffix.hpp"
 
 #endif // URDL_ISTREAM_HPP

@@ -19,6 +19,8 @@
 # define URDL_INLINE
 #endif
 
+#include "urdl/detail/abi_prefix.hpp"
+
 namespace urdl {
 namespace http {
 namespace detail {
@@ -147,6 +149,8 @@ static const boost::system::error_category& category_instance
 } // namespace detail
 } // namespace http
 } // namespace urdl
+
+#include "urdl/detail/abi_suffix.hpp"
 
 #undef URDL_INLINE
 

@@ -18,6 +18,8 @@
 # include <boost/asio/ssl.hpp>
 #endif // !defined(URDL_DISABLE_SSL)
 
+#include "urdl/detail/abi_prefix.hpp"
+
 namespace urdl {
 namespace detail {
 
@@ -56,5 +58,7 @@ void async_handshake(
 
 } // namespace detail
 } // namespace urdl
+
+#include "urdl/detail/abi_suffix.hpp"
 
 #endif // URDL_DETAIL_HANDSHAKE_HPP

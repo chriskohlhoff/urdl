@@ -28,9 +28,12 @@ project urdl
       <link>static:<define>URDL_STATIC_LINK=1
       <include>$(URDL_ROOT)/include
       <library>/boost/system//boost_system
+      <library>/boost/date_time//boost_date_time
+      <define>BOOST_ALL_NO_LIB=1
       <os>SOLARIS:<library>socket
       <os>SOLARIS:<library>nsl
       <os>NT:<define>_WIN32_WINNT=0x0501
+      <os>NT,<toolset>msvc:<define>_SCL_SECURE_NO_WARNINGS=1
       <os>NT,<toolset>gcc:<library>ws2_32
       <os>NT,<toolset>gcc:<library>mswsock
       <os>NT,<toolset>gcc-cygwin:<define>__USE_W32_SOCKETS
@@ -47,9 +50,12 @@ lib urdl
       <link>static:<define>BOOST_ALL_STATIC_LINK=1
       <include>$(URDL_ROOT)/include
       <library>/boost/system//boost_system
+      <library>/boost/date_time//boost_date_time
+      <define>BOOST_ALL_NO_LIB=1
       <os>SOLARIS:<library>socket
       <os>SOLARIS:<library>nsl
       <os>NT:<define>_WIN32_WINNT=0x0501
+      <os>NT,<toolset>msvc:<define>_SCL_SECURE_NO_WARNINGS=1
       <os>NT,<toolset>gcc:<library>ws2_32
       <os>NT,<toolset>gcc:<library>mswsock
       <os>NT,<toolset>gcc-cygwin:<define>__USE_W32_SOCKETS
