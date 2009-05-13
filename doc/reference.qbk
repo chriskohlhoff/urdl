@@ -8,6 +8,1112 @@
 [section:reference Reference]
 
 
+
+[section:core Core Classes]
+
+  
+[section:istream istream]
+
+
+
+  class istream :
+    public std::basic_istream< char >
+
+
+['[*Member Functions]]
+[table
+  [[Name][Description]]
+
+  [
+    [[link urdl.reference.core.istream.close [*close]]]
+    [Closes the stream. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istream.content_length [*content_length]]]
+    [Gets the length of the content obtained from the URL. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istream.content_type [*content_type]]]
+    [Gets the MIME type of the content obtained from the URL. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istream.error [*error]]]
+    [Gets the last error associated with the stream. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istream.headers [*headers]]]
+    [Gets the protocol-specific headers obtained from the URL. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istream.is_open [*is_open]]]
+    [Determines whether the stream is open. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istream.istream [*istream]]]
+    [Constructs an object of type istream. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istream.open [*open]]]
+    [Opens the specified URL. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istream.rdbuf [*rdbuf]]]
+    [Gets the underlying stream buffer. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istream.read_timeout [*read_timeout]]]
+    [Gets the read timeout of the stream. 
+
+     Sets the read timeout of the stream. ]
+  ]
+  
+]
+
+
+[section:close istream::close]
+
+[indexterm2 close..istream] 
+Closes the stream. 
+
+
+  void close();
+
+
+
+['[*Remarks]]
+      
+Calls `rdbuf()->close()` and, if that function returns a null pointer, calls `setstate(failbit)` (which may throw `ios_base::failure`). 
+
+
+
+[endsect]
+
+
+
+[section:content_length istream::content_length]
+
+[indexterm2 content_length..istream] 
+Gets the length of the content obtained from the URL. 
+
+
+  std::size_t content_length() const;
+
+
+
+['[*Return Value]]
+      
+The length, in bytes, of the content. If the content associated with the URL does not specify a length, `std::numeric_limits<std::size_t>::max()`.
+
+['[*Remarks]]
+      
+Returns `rdbuf()->content_length()`. 
+
+
+
+[endsect]
+
+
+
+[section:content_type istream::content_type]
+
+[indexterm2 content_type..istream] 
+Gets the MIME type of the content obtained from the URL. 
+
+
+  std::string content_type() const;
+
+
+
+['[*Return Value]]
+      
+A string specifying the MIME type. Examples of possible return values include `text/plain`, `text/html` and `image/png`.
+
+['[*Remarks]]
+      
+Returns `rdbuf()->content_type()`.
+
+Not all URL protocols support a content type. For these protocols, this function returns an empty string. 
+
+
+[endsect]
+
+
+
+[section:error istream::error]
+
+[indexterm2 error..istream] 
+Gets the last error associated with the stream. 
+
+
+  const boost::system::error_code & error() const;
+
+
+
+['[*Return Value]]
+      
+An `error_code` corresponding to the last error from the stream.
+
+['[*Remarks]]
+      
+Returns a reference to an `error_code` object representing the last failure reported by an `istreambuf` function. The set of possible `error_code` values and categories depends on the protocol of the URL used to open the stream. 
+
+
+
+[endsect]
+
+
+
+[section:headers istream::headers]
+
+[indexterm2 headers..istream] 
+Gets the protocol-specific headers obtained from the URL. 
+
+
+  std::string headers() const;
+
+
+
+['[*Return Value]]
+      
+A string containing the headers returned with the content from the URL. The format and interpretation of these headers is specific to the protocol associated with the URL.
+
+['[*Remarks]]
+      
+Returns `rdbuf()->headers()`. 
+
+
+
+[endsect]
+
+
+
+[section:is_open istream::is_open]
+
+[indexterm2 is_open..istream] 
+Determines whether the stream is open. 
+
+
+  bool is_open() const;
+
+
+
+['[*Return Value]]
+      
+`true` if the stream is open, `false` otherwise.
+
+['[*Remarks]]
+      
+Returns `rdbuf()->is_open()`. 
+
+
+
+[endsect]
+
+
+[section:istream istream::istream]
+
+[indexterm2 istream..istream] 
+Constructs an object of type `istream`. 
+
+
+  ``[link urdl.reference.core.istream.istream.overload1 istream]``();
+
+  ``[link urdl.reference.core.istream.istream.overload2 istream]``(
+      const url & u);
+
+
+[section:overload1 istream::istream (1 of 2 overloads)]
+
+
+Constructs an object of type `istream`. 
+
+
+  istream();
+
+
+
+['[*Remarks]]
+      
+Initializes the base class with `std::basic_istream<char>(sb)`, where sb is an object of type `istreambuf` stored within the class. 
+
+
+
+[endsect]
+
+
+
+[section:overload2 istream::istream (2 of 2 overloads)]
+
+
+Constructs an object of type `istream`. 
+
+
+  istream(
+      const url & u);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[u][The URL to open.]]
+
+]
+
+['[*Remarks]]
+      
+Initializes the base class with `std::basic_istream<char>(sb)`, where `sb` is an object of type `istreambuf` stored within the class. It also opens `sb` by performing `sb.open(u)` and, if that fails (returns a null pointer), calls `setstate(failbit)`. 
+
+
+
+[endsect]
+
+
+[endsect]
+
+
+[section:open istream::open]
+
+[indexterm2 open..istream] 
+Opens the specified URL. 
+
+
+  void open(
+      const url & u);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[u][The URL to open.]]
+
+]
+
+['[*Remarks]]
+      
+Calls `rdbuf()->open(u)`. If that function does not return a null pointer, calls `clear()`. Otherwise calls `setstate(failbit)` (which may throw `ios_base::failure`). 
+
+
+
+[endsect]
+
+
+
+[section:rdbuf istream::rdbuf]
+
+[indexterm2 rdbuf..istream] 
+Gets the underlying stream buffer. 
+
+
+  istreambuf * rdbuf() const;
+
+
+
+['[*Return Value]]
+      
+A pointer to the stream buffer contained within the class. 
+
+
+
+[endsect]
+
+
+[section:read_timeout istream::read_timeout]
+
+[indexterm2 read_timeout..istream] 
+Gets the read timeout of the stream. 
+
+
+  std::size_t ``[link urdl.reference.core.istream.read_timeout.overload1 read_timeout]``() const;
+
+
+Sets the read timeout of the stream. 
+
+
+  void ``[link urdl.reference.core.istream.read_timeout.overload2 read_timeout]``(
+      std::size_t milliseconds);
+
+
+[section:overload1 istream::read_timeout (1 of 2 overloads)]
+
+
+Gets the read timeout of the stream. 
+
+
+  std::size_t read_timeout() const;
+
+
+
+['[*Return Value]]
+      
+The timeout, in milliseconds, used for individual read operations on the underlying transport.
+
+['[*Remarks]]
+      
+Returns `rdbuf()->read_timeout()`. 
+
+
+
+[endsect]
+
+
+
+[section:overload2 istream::read_timeout (2 of 2 overloads)]
+
+
+Sets the read timeout of the stream. 
+
+
+  void read_timeout(
+      std::size_t milliseconds);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[milliseconds][The timeout, in milliseconds, to be used for individual read operations on the underlying transport.]]
+
+]
+
+['[*Remarks]]
+      
+Performs `rdbuf()->read_timeout(milliseconds)`. 
+
+
+
+[endsect]
+
+
+[endsect]
+
+
+[endsect]
+
+[section:istreambuf istreambuf]
+
+
+
+  class istreambuf :
+    public std::streambuf
+
+
+['[*Member Functions]]
+[table
+  [[Name][Description]]
+
+  [
+    [[link urdl.reference.core.istreambuf.close [*close]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf.content_length [*content_length]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf.content_type [*content_type]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf.headers [*headers]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf.is_open [*is_open]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf.istreambuf [*istreambuf]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf.open [*open]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf.puberror [*puberror]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf.read_timeout [*read_timeout]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf._istreambuf [*~istreambuf]]]
+    []
+  ]
+  
+]
+
+['[*Protected Member Functions]]
+[table
+  [[Name][Description]]
+
+  [
+    [[link urdl.reference.core.istreambuf.error [*error]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf.underflow [*underflow]]]
+    []
+  ]
+  
+]
+
+
+[section:close istreambuf::close]
+
+[indexterm2 close..istreambuf] 
+
+  istreambuf * close();
+
+
+
+[endsect]
+
+
+
+[section:content_length istreambuf::content_length]
+
+[indexterm2 content_length..istreambuf] 
+
+  std::size_t content_length() const;
+
+
+
+[endsect]
+
+
+
+[section:content_type istreambuf::content_type]
+
+[indexterm2 content_type..istreambuf] 
+
+  std::string content_type() const;
+
+
+
+[endsect]
+
+
+
+[section:error istreambuf::error]
+
+[indexterm2 error..istreambuf] 
+
+  const boost::system::error_code & error() const;
+
+
+
+[endsect]
+
+
+
+[section:headers istreambuf::headers]
+
+[indexterm2 headers..istreambuf] 
+
+  std::string headers() const;
+
+
+
+[endsect]
+
+
+
+[section:is_open istreambuf::is_open]
+
+[indexterm2 is_open..istreambuf] 
+
+  bool is_open() const;
+
+
+
+[endsect]
+
+
+
+[section:istreambuf istreambuf::istreambuf]
+
+[indexterm2 istreambuf..istreambuf] 
+
+  istreambuf();
+
+
+
+[endsect]
+
+
+
+[section:open istreambuf::open]
+
+[indexterm2 open..istreambuf] 
+
+  istreambuf * open(
+      const url & u);
+
+
+
+[endsect]
+
+
+
+[section:puberror istreambuf::puberror]
+
+[indexterm2 puberror..istreambuf] 
+
+  const boost::system::error_code & puberror() const;
+
+
+
+[endsect]
+
+
+[section:read_timeout istreambuf::read_timeout]
+
+[indexterm2 read_timeout..istreambuf] 
+
+  std::size_t ``[link urdl.reference.core.istreambuf.read_timeout.overload1 read_timeout]``() const;
+
+  void ``[link urdl.reference.core.istreambuf.read_timeout.overload2 read_timeout]``(
+      std::size_t milliseconds);
+
+
+[section:overload1 istreambuf::read_timeout (1 of 2 overloads)]
+
+
+
+  std::size_t read_timeout() const;
+
+
+
+[endsect]
+
+
+
+[section:overload2 istreambuf::read_timeout (2 of 2 overloads)]
+
+
+
+  void read_timeout(
+      std::size_t milliseconds);
+
+
+
+[endsect]
+
+
+[endsect]
+
+
+[section:underflow istreambuf::underflow]
+
+[indexterm2 underflow..istreambuf] 
+
+  int_type underflow();
+
+
+
+[endsect]
+
+
+
+[section:_istreambuf istreambuf::~istreambuf]
+
+[indexterm2 ~istreambuf..istreambuf] 
+
+  ~istreambuf();
+
+
+
+[endsect]
+
+
+
+[endsect]
+
+[section:read_stream read_stream]
+
+
+
+  class read_stream
+
+
+['[*Member Functions]]
+[table
+  [[Name][Description]]
+
+  [
+    [[link urdl.reference.core.read_stream.async_open [*async_open]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.read_stream.async_read_some [*async_read_some]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.read_stream.close [*close]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.read_stream.content_length [*content_length]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.read_stream.content_type [*content_type]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.read_stream.get_io_service [*get_io_service]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.read_stream.headers [*headers]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.read_stream.is_open [*is_open]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.read_stream.open [*open]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.read_stream.read_some [*read_some]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.read_stream.read_stream [*read_stream]]]
+    []
+  ]
+  
+]
+
+
+[section:async_open read_stream::async_open]
+
+[indexterm2 async_open..read_stream] 
+
+  template<
+      typename Handler>
+  void async_open(
+      const url & u,
+      Handler handler);
+
+
+
+[endsect]
+
+
+
+[section:async_read_some read_stream::async_read_some]
+
+[indexterm2 async_read_some..read_stream] 
+
+  template<
+      typename MutableBufferSequence,
+      typename Handler>
+  void async_read_some(
+      const MutableBufferSequence & buffers,
+      Handler handler);
+
+
+
+[endsect]
+
+
+[section:close read_stream::close]
+
+[indexterm2 close..read_stream] 
+
+  void ``[link urdl.reference.core.read_stream.close.overload1 close]``();
+
+  boost::system::error_code ``[link urdl.reference.core.read_stream.close.overload2 close]``(
+      boost::system::error_code & ec);
+
+
+[section:overload1 read_stream::close (1 of 2 overloads)]
+
+
+
+  void close();
+
+
+
+[endsect]
+
+
+
+[section:overload2 read_stream::close (2 of 2 overloads)]
+
+
+
+  boost::system::error_code close(
+      boost::system::error_code & ec);
+
+
+
+[endsect]
+
+
+[endsect]
+
+
+[section:content_length read_stream::content_length]
+
+[indexterm2 content_length..read_stream] 
+
+  std::size_t content_length() const;
+
+
+
+[endsect]
+
+
+
+[section:content_type read_stream::content_type]
+
+[indexterm2 content_type..read_stream] 
+
+  std::string content_type() const;
+
+
+
+[endsect]
+
+
+
+[section:get_io_service read_stream::get_io_service]
+
+[indexterm2 get_io_service..read_stream] 
+
+  boost::asio::io_service & get_io_service();
+
+
+
+[endsect]
+
+
+
+[section:headers read_stream::headers]
+
+[indexterm2 headers..read_stream] 
+
+  std::string headers() const;
+
+
+
+[endsect]
+
+
+
+[section:is_open read_stream::is_open]
+
+[indexterm2 is_open..read_stream] 
+
+  bool is_open() const;
+
+
+
+[endsect]
+
+
+[section:open read_stream::open]
+
+[indexterm2 open..read_stream] 
+
+  void ``[link urdl.reference.core.read_stream.open.overload1 open]``(
+      const url & u);
+
+  boost::system::error_code ``[link urdl.reference.core.read_stream.open.overload2 open]``(
+      const url & u,
+      boost::system::error_code & ec);
+
+
+[section:overload1 read_stream::open (1 of 2 overloads)]
+
+
+
+  void open(
+      const url & u);
+
+
+
+[endsect]
+
+
+
+[section:overload2 read_stream::open (2 of 2 overloads)]
+
+
+
+  boost::system::error_code open(
+      const url & u,
+      boost::system::error_code & ec);
+
+
+
+[endsect]
+
+
+[endsect]
+
+[section:read_some read_stream::read_some]
+
+[indexterm2 read_some..read_stream] 
+
+  template<
+      typename MutableBufferSequence>
+  std::size_t ``[link urdl.reference.core.read_stream.read_some.overload1 read_some]``(
+      const MutableBufferSequence & buffers);
+
+  template<
+      typename MutableBufferSequence>
+  std::size_t ``[link urdl.reference.core.read_stream.read_some.overload2 read_some]``(
+      const MutableBufferSequence & buffers,
+      boost::system::error_code & ec);
+
+
+[section:overload1 read_stream::read_some (1 of 2 overloads)]
+
+
+
+  template<
+      typename MutableBufferSequence>
+  std::size_t read_some(
+      const MutableBufferSequence & buffers);
+
+
+
+[endsect]
+
+
+
+[section:overload2 read_stream::read_some (2 of 2 overloads)]
+
+
+
+  template<
+      typename MutableBufferSequence>
+  std::size_t read_some(
+      const MutableBufferSequence & buffers,
+      boost::system::error_code & ec);
+
+
+
+[endsect]
+
+
+[endsect]
+
+
+[section:read_stream read_stream::read_stream]
+
+[indexterm2 read_stream..read_stream] 
+
+  read_stream(
+      boost::asio::io_service & io_service);
+
+
+
+[endsect]
+
+
+
+[endsect]
+
+[section:url url]
+
+
+
+  class url
+
+
+['[*Member Functions]]
+[table
+  [[Name][Description]]
+
+  [
+    [[link urdl.reference.core.url.file [*file]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.url.host [*host]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.url.port [*port]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.url.protocol [*protocol]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.url.url [*url]]]
+    []
+  ]
+  
+]
+
+
+[section:file url::file]
+
+[indexterm2 file..url] 
+
+  std::string file() const;
+
+
+
+[endsect]
+
+
+
+[section:host url::host]
+
+[indexterm2 host..url] 
+
+  std::string host() const;
+
+
+
+[endsect]
+
+
+
+[section:port url::port]
+
+[indexterm2 port..url] 
+
+  unsigned short port() const;
+
+
+
+[endsect]
+
+
+
+[section:protocol url::protocol]
+
+[indexterm2 protocol..url] 
+
+  std::string protocol() const;
+
+
+
+[endsect]
+
+
+[section:url url::url]
+
+[indexterm2 url..url] 
+
+  ``[link urdl.reference.core.url.url.overload1 url]``(
+      const char * url_string);
+
+  ``[link urdl.reference.core.url.url.overload2 url]``(
+      const std::string & url_string);
+
+  ``[link urdl.reference.core.url.url.overload3 url]``(
+      const std::string & protocol,
+      const std::string & host,
+      unsigned short port,
+      const std::string & file);
+
+
+[section:overload1 url::url (1 of 3 overloads)]
+
+
+
+  url(
+      const char * url_string);
+
+
+
+[endsect]
+
+
+
+[section:overload2 url::url (2 of 3 overloads)]
+
+
+
+  url(
+      const std::string & url_string);
+
+
+
+[endsect]
+
+
+
+[section:overload3 url::url (3 of 3 overloads)]
+
+
+
+  url(
+      const std::string & protocol,
+      const std::string & host,
+      unsigned short port,
+      const std::string & file);
+
+
+
+[endsect]
+
+
+[endsect]
+
+
+[endsect]
+
+
+[endsect]
+
+[section:err Error Handling]
+
+  
 [section:is_error_code_enum_lt__urdl__http__errc__errc_t__gt_ boost::system::is_error_code_enum< urdl::http::errc::errc_t >]
 
 
@@ -16,12 +1122,12 @@
   struct boost::system::is_error_code_enum< urdl::http::errc::errc_t >
 
 
-[heading Data Members]
+['[*Data Members]]
 [table
   [[Name][Description]]
 
   [
-    [[link urdl.reference.is_error_code_enum_lt__urdl__http__errc__errc_t__gt_.value [*value]]]
+    [[link urdl.reference.err.is_error_code_enum_lt__urdl__http__errc__errc_t__gt_.value [*value]]]
     []
   ]
 
@@ -49,7 +1155,7 @@
 
   enum errc_t
 
-[heading Values]
+['[*Values]]
 [variablelist
 
   [
@@ -294,940 +1400,8 @@
 [endsect]
 
 
-[section:istream istream]
 
+[endsect]
 
-
-  class istream
-
-
-[heading Member Functions]
-[table
-  [[Name][Description]]
-
-  [
-    [[link urdl.reference.istream.close [*close]]]
-    []
-  ]
   
-  [
-    [[link urdl.reference.istream.content_length [*content_length]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istream.content_type [*content_type]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istream.error [*error]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istream.headers [*headers]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istream.is_open [*is_open]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istream.istream [*istream]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istream.open [*open]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istream.rdbuf [*rdbuf]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istream.read_timeout [*read_timeout]]]
-    []
-  ]
-  
-]
-
-
-[section:close istream::close]
-
-[indexterm2 close..istream] 
-
-  void close();
-
-
-
-[endsect]
-
-
-
-[section:content_length istream::content_length]
-
-[indexterm2 content_length..istream] 
-
-  std::size_t content_length() const;
-
-
-
-[endsect]
-
-
-
-[section:content_type istream::content_type]
-
-[indexterm2 content_type..istream] 
-
-  std::string content_type() const;
-
-
-
-[endsect]
-
-
-
-[section:error istream::error]
-
-[indexterm2 error..istream] 
-
-  const boost::system::error_code & error() const;
-
-
-
-[endsect]
-
-
-
-[section:headers istream::headers]
-
-[indexterm2 headers..istream] 
-
-  std::string headers() const;
-
-
-
-[endsect]
-
-
-
-[section:is_open istream::is_open]
-
-[indexterm2 is_open..istream] 
-
-  bool is_open() const;
-
-
-
-[endsect]
-
-
-[section:istream istream::istream]
-
-[indexterm2 istream..istream] 
-
-  ``[link urdl.reference.istream.istream.overload1 istream]``();
-
-  ``[link urdl.reference.istream.istream.overload2 istream]``(
-      const url & u);
-
-
-[section:overload1 istream::istream (1 of 2 overloads)]
-
-
-
-  istream();
-
-
-
-[endsect]
-
-
-
-[section:overload2 istream::istream (2 of 2 overloads)]
-
-
-
-  istream(
-      const url & u);
-
-
-
-[endsect]
-
-
-[endsect]
-
-
-[section:open istream::open]
-
-[indexterm2 open..istream] 
-
-  void open(
-      const url & u);
-
-
-
-[endsect]
-
-
-
-[section:rdbuf istream::rdbuf]
-
-[indexterm2 rdbuf..istream] 
-
-  istreambuf * rdbuf() const;
-
-
-
-[endsect]
-
-
-[section:read_timeout istream::read_timeout]
-
-[indexterm2 read_timeout..istream] 
-
-  std::size_t ``[link urdl.reference.istream.read_timeout.overload1 read_timeout]``() const;
-
-  void ``[link urdl.reference.istream.read_timeout.overload2 read_timeout]``(
-      std::size_t milliseconds);
-
-
-[section:overload1 istream::read_timeout (1 of 2 overloads)]
-
-
-
-  std::size_t read_timeout() const;
-
-
-
-[endsect]
-
-
-
-[section:overload2 istream::read_timeout (2 of 2 overloads)]
-
-
-
-  void read_timeout(
-      std::size_t milliseconds);
-
-
-
-[endsect]
-
-
-[endsect]
-
-
-[endsect]
-
-[section:istreambuf istreambuf]
-
-
-
-  class istreambuf
-
-
-[heading Member Functions]
-[table
-  [[Name][Description]]
-
-  [
-    [[link urdl.reference.istreambuf.close [*close]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istreambuf.content_length [*content_length]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istreambuf.content_type [*content_type]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istreambuf.headers [*headers]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istreambuf.is_open [*is_open]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istreambuf.istreambuf [*istreambuf]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istreambuf.open [*open]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istreambuf.puberror [*puberror]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istreambuf.read_timeout [*read_timeout]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istreambuf._istreambuf [*~istreambuf]]]
-    []
-  ]
-  
-]
-
-[heading Protected Member Functions]
-[table
-  [[Name][Description]]
-
-  [
-    [[link urdl.reference.istreambuf.error [*error]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.istreambuf.underflow [*underflow]]]
-    []
-  ]
-  
-]
-
-
-[section:close istreambuf::close]
-
-[indexterm2 close..istreambuf] 
-
-  istreambuf * close();
-
-
-
-[endsect]
-
-
-
-[section:content_length istreambuf::content_length]
-
-[indexterm2 content_length..istreambuf] 
-
-  std::size_t content_length() const;
-
-
-
-[endsect]
-
-
-
-[section:content_type istreambuf::content_type]
-
-[indexterm2 content_type..istreambuf] 
-
-  std::string content_type() const;
-
-
-
-[endsect]
-
-
-
-[section:error istreambuf::error]
-
-[indexterm2 error..istreambuf] 
-
-  const boost::system::error_code & error() const;
-
-
-
-[endsect]
-
-
-
-[section:headers istreambuf::headers]
-
-[indexterm2 headers..istreambuf] 
-
-  std::string headers() const;
-
-
-
-[endsect]
-
-
-
-[section:is_open istreambuf::is_open]
-
-[indexterm2 is_open..istreambuf] 
-
-  bool is_open() const;
-
-
-
-[endsect]
-
-
-
-[section:istreambuf istreambuf::istreambuf]
-
-[indexterm2 istreambuf..istreambuf] 
-
-  istreambuf();
-
-
-
-[endsect]
-
-
-
-[section:open istreambuf::open]
-
-[indexterm2 open..istreambuf] 
-
-  istreambuf * open(
-      const url & u);
-
-
-
-[endsect]
-
-
-
-[section:puberror istreambuf::puberror]
-
-[indexterm2 puberror..istreambuf] 
-
-  const boost::system::error_code & puberror() const;
-
-
-
-[endsect]
-
-
-[section:read_timeout istreambuf::read_timeout]
-
-[indexterm2 read_timeout..istreambuf] 
-
-  std::size_t ``[link urdl.reference.istreambuf.read_timeout.overload1 read_timeout]``() const;
-
-  void ``[link urdl.reference.istreambuf.read_timeout.overload2 read_timeout]``(
-      std::size_t milliseconds);
-
-
-[section:overload1 istreambuf::read_timeout (1 of 2 overloads)]
-
-
-
-  std::size_t read_timeout() const;
-
-
-
-[endsect]
-
-
-
-[section:overload2 istreambuf::read_timeout (2 of 2 overloads)]
-
-
-
-  void read_timeout(
-      std::size_t milliseconds);
-
-
-
-[endsect]
-
-
-[endsect]
-
-
-[section:underflow istreambuf::underflow]
-
-[indexterm2 underflow..istreambuf] 
-
-  int_type underflow();
-
-
-
-[endsect]
-
-
-
-[section:_istreambuf istreambuf::~istreambuf]
-
-[indexterm2 ~istreambuf..istreambuf] 
-
-  ~istreambuf();
-
-
-
-[endsect]
-
-
-
-[endsect]
-
-[section:read_stream read_stream]
-
-
-
-  class read_stream
-
-
-[heading Member Functions]
-[table
-  [[Name][Description]]
-
-  [
-    [[link urdl.reference.read_stream.async_open [*async_open]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.read_stream.async_read_some [*async_read_some]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.read_stream.close [*close]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.read_stream.content_length [*content_length]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.read_stream.content_type [*content_type]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.read_stream.get_io_service [*get_io_service]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.read_stream.headers [*headers]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.read_stream.is_open [*is_open]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.read_stream.open [*open]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.read_stream.read_some [*read_some]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.read_stream.read_stream [*read_stream]]]
-    []
-  ]
-  
-]
-
-
-[section:async_open read_stream::async_open]
-
-[indexterm2 async_open..read_stream] 
-
-  template<
-      typename Handler>
-  void async_open(
-      const url & u,
-      Handler handler);
-
-
-
-[endsect]
-
-
-
-[section:async_read_some read_stream::async_read_some]
-
-[indexterm2 async_read_some..read_stream] 
-
-  template<
-      typename MutableBufferSequence,
-      typename Handler>
-  void async_read_some(
-      const MutableBufferSequence & buffers,
-      Handler handler);
-
-
-
-[endsect]
-
-
-[section:close read_stream::close]
-
-[indexterm2 close..read_stream] 
-
-  void ``[link urdl.reference.read_stream.close.overload1 close]``();
-
-  boost::system::error_code ``[link urdl.reference.read_stream.close.overload2 close]``(
-      boost::system::error_code & ec);
-
-
-[section:overload1 read_stream::close (1 of 2 overloads)]
-
-
-
-  void close();
-
-
-
-[endsect]
-
-
-
-[section:overload2 read_stream::close (2 of 2 overloads)]
-
-
-
-  boost::system::error_code close(
-      boost::system::error_code & ec);
-
-
-
-[endsect]
-
-
-[endsect]
-
-
-[section:content_length read_stream::content_length]
-
-[indexterm2 content_length..read_stream] 
-
-  std::size_t content_length() const;
-
-
-
-[endsect]
-
-
-
-[section:content_type read_stream::content_type]
-
-[indexterm2 content_type..read_stream] 
-
-  std::string content_type() const;
-
-
-
-[endsect]
-
-
-
-[section:get_io_service read_stream::get_io_service]
-
-[indexterm2 get_io_service..read_stream] 
-
-  boost::asio::io_service & get_io_service();
-
-
-
-[endsect]
-
-
-
-[section:headers read_stream::headers]
-
-[indexterm2 headers..read_stream] 
-
-  std::string headers() const;
-
-
-
-[endsect]
-
-
-
-[section:is_open read_stream::is_open]
-
-[indexterm2 is_open..read_stream] 
-
-  bool is_open() const;
-
-
-
-[endsect]
-
-
-[section:open read_stream::open]
-
-[indexterm2 open..read_stream] 
-
-  void ``[link urdl.reference.read_stream.open.overload1 open]``(
-      const url & u);
-
-  boost::system::error_code ``[link urdl.reference.read_stream.open.overload2 open]``(
-      const url & u,
-      boost::system::error_code & ec);
-
-
-[section:overload1 read_stream::open (1 of 2 overloads)]
-
-
-
-  void open(
-      const url & u);
-
-
-
-[endsect]
-
-
-
-[section:overload2 read_stream::open (2 of 2 overloads)]
-
-
-
-  boost::system::error_code open(
-      const url & u,
-      boost::system::error_code & ec);
-
-
-
-[endsect]
-
-
-[endsect]
-
-[section:read_some read_stream::read_some]
-
-[indexterm2 read_some..read_stream] 
-
-  template<
-      typename MutableBufferSequence>
-  std::size_t ``[link urdl.reference.read_stream.read_some.overload1 read_some]``(
-      const MutableBufferSequence & buffers);
-
-  template<
-      typename MutableBufferSequence>
-  std::size_t ``[link urdl.reference.read_stream.read_some.overload2 read_some]``(
-      const MutableBufferSequence & buffers,
-      boost::system::error_code & ec);
-
-
-[section:overload1 read_stream::read_some (1 of 2 overloads)]
-
-
-
-  template<
-      typename MutableBufferSequence>
-  std::size_t read_some(
-      const MutableBufferSequence & buffers);
-
-
-
-[endsect]
-
-
-
-[section:overload2 read_stream::read_some (2 of 2 overloads)]
-
-
-
-  template<
-      typename MutableBufferSequence>
-  std::size_t read_some(
-      const MutableBufferSequence & buffers,
-      boost::system::error_code & ec);
-
-
-
-[endsect]
-
-
-[endsect]
-
-
-[section:read_stream read_stream::read_stream]
-
-[indexterm2 read_stream..read_stream] 
-
-  read_stream(
-      boost::asio::io_service & io_service);
-
-
-
-[endsect]
-
-
-
-[endsect]
-
-[section:url url]
-
-
-
-  class url
-
-
-[heading Member Functions]
-[table
-  [[Name][Description]]
-
-  [
-    [[link urdl.reference.url.file [*file]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.url.host [*host]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.url.port [*port]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.url.protocol [*protocol]]]
-    []
-  ]
-  
-  [
-    [[link urdl.reference.url.url [*url]]]
-    []
-  ]
-  
-]
-
-
-[section:file url::file]
-
-[indexterm2 file..url] 
-
-  std::string file() const;
-
-
-
-[endsect]
-
-
-
-[section:host url::host]
-
-[indexterm2 host..url] 
-
-  std::string host() const;
-
-
-
-[endsect]
-
-
-
-[section:port url::port]
-
-[indexterm2 port..url] 
-
-  unsigned short port() const;
-
-
-
-[endsect]
-
-
-
-[section:protocol url::protocol]
-
-[indexterm2 protocol..url] 
-
-  std::string protocol() const;
-
-
-
-[endsect]
-
-
-[section:url url::url]
-
-[indexterm2 url..url] 
-
-  ``[link urdl.reference.url.url.overload1 url]``(
-      const char * url_string);
-
-  ``[link urdl.reference.url.url.overload2 url]``(
-      const std::string & url_string);
-
-  ``[link urdl.reference.url.url.overload3 url]``(
-      const std::string & protocol,
-      const std::string & host,
-      unsigned short port,
-      const std::string & file);
-
-
-[section:overload1 url::url (1 of 3 overloads)]
-
-
-
-  url(
-      const char * url_string);
-
-
-
-[endsect]
-
-
-
-[section:overload2 url::url (2 of 3 overloads)]
-
-
-
-  url(
-      const std::string & url_string);
-
-
-
-[endsect]
-
-
-
-[section:overload3 url::url (3 of 3 overloads)]
-
-
-
-  url(
-      const std::string & protocol,
-      const std::string & host,
-      unsigned short port,
-      const std::string & file);
-
-
-
-[endsect]
-
-
-[endsect]
-
-
-[endsect]
-
 [endsect]

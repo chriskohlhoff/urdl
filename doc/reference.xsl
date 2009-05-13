@@ -21,7 +21,8 @@
 <!--
   Loop over all top-level documentation elements (i.e. classes, functions,
   variables and typedefs at namespace scope). The elements are sorted by name.
-  Anything in a "detail" namespace or with "_handler" in the name is skipped.
+  Anything in a "detail" namespace or with "_handler" or "_coro" in the name is
+  skipped.
 -->
 <xsl:template match="/doxygen">
 <xsl:text>[/
@@ -35,29 +36,69 @@
 
 </xsl:text>
 
+[section:core Core Classes]
+
   <xsl:for-each select="
       compounddef[@kind = 'class' or @kind = 'struct'] |
       compounddef[@kind = 'namespace']/sectiondef[1]/memberdef">
     <xsl:sort select="concat((. | ancestor::*)/compoundname, '::', name, ':x')"/>
     <xsl:sort select="name"/>
+    <xsl:variable name="fullname" select="concat((. | ancestor::*)/compoundname, '::', name, ':x')"/>
     <xsl:choose>
       <xsl:when test="@kind='class' or @kind='struct'">
         <xsl:if test="
-            contains(compoundname, 'urdl::') and
-            not(contains(compoundname, '::detail')) and
-            not(contains(compoundname, '_handler'))">
+            contains($fullname, 'urdl::') and
+            not(contains($fullname, '::detail')) and
+            not(contains($fullname, '_handler')) and
+            not(contains($fullname, '_coro')) and
+            not(contains($fullname, 'err'))">
           <xsl:call-template name="class"/>
         </xsl:if>
       </xsl:when>
       <xsl:otherwise>
         <xsl:if test="
-            not(contains(ancestor::*/compoundname, '::detail')) and
-            not(contains(ancestor::*/compoundname, '_helper'))">
+            not(contains($fullname, '::detail')) and
+            not(contains($fullname, '_helper')) and
+            not(contains($fullname, 'err'))">
           <xsl:call-template name="namespace-memberdef"/>
         </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
+
+[endsect]
+
+[section:err Error Handling]
+
+  <xsl:for-each select="
+      compounddef[@kind = 'class' or @kind = 'struct'] |
+      compounddef[@kind = 'namespace']/sectiondef[1]/memberdef">
+    <xsl:sort select="concat((. | ancestor::*)/compoundname, '::', name, ':x')"/>
+    <xsl:sort select="name"/>
+    <xsl:variable name="fullname" select="concat((. | ancestor::*)/compoundname, '::', name, ':x')"/>
+    <xsl:choose>
+      <xsl:when test="@kind='class' or @kind='struct'">
+        <xsl:if test="
+            contains($fullname, 'urdl::') and
+            not(contains($fullname, '::detail')) and
+            not(contains($fullname, '_handler')) and
+            not(contains($fullname, '_coro')) and
+            contains(compoundname, 'err')">
+          <xsl:call-template name="class"/>
+        </xsl:if>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:if test="
+            not(contains($fullname, '::detail')) and
+            not(contains($fullname, '_helper')) and
+            contains($fullname, 'err')">
+          <xsl:call-template name="namespace-memberdef"/>
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:for-each>
+
+[endsect]
 
   <xsl:value-of select="$newline"/>
   <xsl:text>[endsect]</xsl:text>
@@ -188,6 +229,21 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="make-top-level-id">
+  <xsl:param name="name"/>
+  <xsl:choose>
+    <xsl:when test="contains($name, 'err')">
+      <xsl:text>err.</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>core.</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:call-template name="make-id">
+    <xsl:with-param name="name" select="$name"/>
+  </xsl:call-template>
+</xsl:template>
+
 
 <!--========== Markup ==========-->
 
@@ -213,7 +269,7 @@
     <xsl:value-of select="."/>
   </xsl:variable>
   <xsl:if test="string-length($title) > 0">
-[heading <xsl:value-of select="."/>]
+['[*<xsl:value-of select="."/>]]
   </xsl:if>
 </xsl:template>
 
@@ -300,10 +356,10 @@
 <xsl:template match="parameterlist" mode="markup">
   <xsl:choose>
     <xsl:when test="@kind='param'">
-[heading Parameters]
+['[*Parameters]]
     </xsl:when>
     <xsl:when test="@kind='exception'">
-[heading Exceptions]
+['[*Exceptions]]
     </xsl:when>
   </xsl:choose>
 
@@ -321,13 +377,13 @@
 <xsl:template match="simplesect" mode="markup">
   <xsl:choose>
     <xsl:when test="@kind='return'">
-[heading Return Value]
+['[*Return Value]]
       <xsl:apply-templates mode="markup"/>
     </xsl:when>
     <xsl:when test="@kind='see'">
     </xsl:when>
     <xsl:when test="@kind='note'">
-[heading Remarks]
+['[*Remarks]]
       <xsl:apply-templates mode="markup"/>
     </xsl:when>
     <xsl:when test="@kind='par'">
@@ -481,14 +537,19 @@
       <xsl:with-param name="name" select="compoundname"/>
     </xsl:call-template>
   </xsl:variable>
-  <xsl:variable name="class-id">
+  <xsl:variable name="class-section-id">
     <xsl:call-template name="make-id">
       <xsl:with-param name="name" select="$class-name"/>
     </xsl:call-template>
   </xsl:variable>
-[section:<xsl:value-of select="$class-id"/><xsl:text> </xsl:text><xsl:value-of select="$class-name"/>]
+  <xsl:variable name="class-id">
+    <xsl:call-template name="make-top-level-id">
+      <xsl:with-param name="name" select="$class-name"/>
+    </xsl:call-template>
+  </xsl:variable>
+[section:<xsl:value-of select="$class-section-id"/><xsl:text> </xsl:text><xsl:value-of select="$class-name"/>]
 
-<xsl:value-of select="briefdescription"/><xsl:text>
+<xsl:apply-templates select="briefdescription" mode="markup"/><xsl:text>
 
 </xsl:text>
 
@@ -525,7 +586,7 @@
     count(
       sectiondef[@kind='public-type'] |
       innerclass[@prot='public' and not(contains(., '_handler'))]) &gt; 0">
-[heading Types]
+['[*Types]]
 [table
   [[Name][Description]]
 <xsl:for-each select="
@@ -567,7 +628,7 @@
 </xsl:if>
 
 <xsl:if test="count(sectiondef[@kind='public-func' or @kind='public-static-func']) > 0">
-[heading Member Functions]
+['[*Member Functions]]
 [table
   [[Name][Description]]
 <xsl:for-each select="sectiondef[@kind='public-func' or @kind='public-static-func']/memberdef" mode="class-table">
@@ -615,7 +676,7 @@
 </xsl:if>
 
 <xsl:if test="count(sectiondef[@kind='protected-func' or @kind='protected-static-func']) > 0">
-[heading Protected Member Functions]
+['[*Protected Member Functions]]
 [table
   [[Name][Description]]
 <xsl:for-each select="sectiondef[@kind='protected-func' or @kind='protected-static-func']/memberdef" mode="class-table">
@@ -663,7 +724,7 @@
 </xsl:if>
 
 <xsl:if test="count(sectiondef[@kind='public-attrib' or @kind='public-static-attrib']) > 0">
-[heading Data Members]
+['[*Data Members]]
 [table
   [[Name][Description]]
 <xsl:for-each select="sectiondef[@kind='public-attrib' or @kind='public-static-attrib']/memberdef" mode="class-table">
@@ -678,7 +739,7 @@
 </xsl:if>
 
 <xsl:if test="count(sectiondef[@kind='protected-attrib' or @kind='protected-static-attrib']) > 0">
-[heading Protected Data Members]
+['[*Protected Data Members]]
 [table
   [[Name][Description]]
 <xsl:for-each select="sectiondef[@kind='protected-attrib' or @kind='protected-static-attrib']/memberdef" mode="class-table">
@@ -693,7 +754,7 @@
 </xsl:if>
 
 <xsl:if test="count(sectiondef[@kind='friend']/memberdef[not(type = 'friend class') and not(contains(name, '_helper'))]) &gt; 0">
-[heading Friends]
+['[*Friends]]
 [table
   [[Name][Description]]
 <xsl:for-each select="sectiondef[@kind='friend']/memberdef[not(type = 'friend class') and not(contains(name, '_helper'))]" mode="class-table">
@@ -741,7 +802,7 @@
 </xsl:if>
 
 <xsl:if test="count(sectiondef[@kind='related']/memberdef) &gt; 0">
-[heading Related Functions]
+['[*Related Functions]]
 [table
   [[Name][Description]]
 <xsl:for-each select="sectiondef[@kind='related']/memberdef" mode="class-table">
@@ -839,13 +900,13 @@
 <xsl:value-of select="$class-name"/>
 <xsl:text>] </xsl:text>
 
-<xsl:value-of select="briefdescription"/><xsl:text>
+<xsl:apply-templates select="briefdescription" mode="markup"/><xsl:text>
 </xsl:text>
 
 <xsl:for-each select="../memberdef[name = $name]">
 <xsl:if test="position() &gt; 1 and not(briefdescription = preceding-sibling::*/briefdescription)">
   <xsl:value-of select="$newline"/>
-  <xsl:value-of select="briefdescription"/>
+  <xsl:apply-templates select="briefdescription" mode="markup"/>
   <xsl:value-of select="$newline"/>
 </xsl:if>
 <xsl:text>
@@ -882,7 +943,7 @@
   <xsl:text>] </xsl:text>
 </xsl:if>
 
-<xsl:value-of select="briefdescription"/><xsl:text>
+<xsl:apply-templates select="briefdescription" mode="markup"/><xsl:text>
 </xsl:text>
 
   <xsl:choose>
@@ -962,7 +1023,7 @@
 <xsl:template name="enum">
   enum <xsl:value-of select="name"/><xsl:text>
 </xsl:text><xsl:if test="count(enumvalue) &gt; 0">
-[heading Values]
+['[*Values]]
 [variablelist
 <xsl:for-each select="enumvalue">
   [

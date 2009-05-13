@@ -28,11 +28,11 @@ public:
 
   ~istreambuf();
 
+  bool is_open() const;
+
   istreambuf* open(const url& u);
 
   istreambuf* close();
-
-  bool is_open() const;
 
   const boost::system::error_code& puberror() const;
 
