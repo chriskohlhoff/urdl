@@ -20,35 +20,125 @@
 
 namespace urdl {
 
+/// The class @c istreambuf associates the input sequence with the content from
+/// a specified URL.
+/**
+ * @par Requirements
+ * @e Header: @c <urdl/istreambuf.hpp> @n
+ * @e Namespace: @c urdl
+ */
 class URDL_DECL istreambuf
   : public std::streambuf
 {
 public:
+  /// Constructs an object of class @c istreambuf.
   istreambuf();
 
+  /// Destroys an object of class @c istreambuf.
   ~istreambuf();
 
+  /// Determines whether the stream buffer is open.
+  /**
+   * @returns @c true if the stream buffer is open, @c false otherwise.
+   *
+   * @par Remarks
+   * Returns @c true if a previous call to @c open succeeded (returned a
+   * non-null value) and there has been no intervening call to @c close.
+   */
   bool is_open() const;
 
+  /// Opens the specified URL.
+  /**
+   * @param u The URL to open.
+   *
+   * @returns @c this on success, a null pointer otherwise.
+   *
+   * @par Remarks
+   * If <tt>is_open() != false</tt>, returns a null pointer. Otherwise,
+   * initializes the @c istreambuf as required.
+   */
   istreambuf* open(const url& u);
 
+  /// Closes the stream buffer.
+  /**
+   * @returns @c this on success, a null pointer otherwise.
+   *
+   * @par Remarks
+   * If <tt>is_open() == false</tt>, returns a null pointer. Otherwise, closes
+   * the underlying transport's resources as required. If any of those
+   * operations fail, @c close fails by returning a null pointer.
+   */
   istreambuf* close();
 
+  /// Gets the last error associated with the stream buffer.
+  /**
+   * @returns An @c error_code corresponding to the last error from the stream
+   * buffer.
+   *
+   * @par Remarks
+   * Returns @c error().
+   */
   const boost::system::error_code& puberror() const;
 
+  /// Gets the read timeout of the stream buffer.
+  /**
+   * @returns The timeout, in milliseconds, used for individual read operations
+   * on the underlying transport.
+   */
   std::size_t read_timeout() const;
 
+  /// Sets the read timeout of the stream buffer.
+  /**
+   * @param milliseconds The timeout, in milliseconds, to be used for individual
+   * read operations on the underlying transport.
+   */
   void read_timeout(std::size_t milliseconds);
 
+  /// Gets the MIME type of the content obtained from the URL.
+  /**
+   * @returns A string specifying the MIME type. Examples of possible return
+   * values include @c text/plain, @c text/html and @c image/png.
+   *
+   * @par Remarks
+   * Not all URL protocols support a content type. For these protocols, this
+   * function returns an empty string.
+   */
   std::string content_type() const;
 
+  /// Gets the length of the content obtained from the URL.
+  /**
+   * @returns The length, in bytes, of the content. If the content associated
+   * with the URL does not specify a length,
+   * @c std::numeric_limits<std::size_t>::max().
+   */
   std::size_t content_length() const;
 
+  /// Gets the protocol-specific headers obtained from the URL.
+  /**
+   * @returns A string containing the headers returned with the content from the
+   * URL. The format and interpretation of these headers is specific to the
+   * protocol associated with the URL.
+   */
   std::string headers() const;
 
 protected:
+  /// Overrides @c std::streambuf behaviour.
+  /**
+   * par Remarks
+   * Behaves according to the specification of @c std::streambuf::underflow().
+   */
   int_type underflow();
 
+  /// Gets the last error associated with the stream.
+  /**
+   * @returns An @c error_code corresponding to the last error from the stream.
+   *
+   * @par Remarks
+   * Returns a reference to an @c error_code object representing the last
+   * failure reported by an @c istreambuf function. The set of possible
+   * @c error_code values and categories depends on the protocol of the URL
+   * used to open the stream buffer.
+   */
   virtual const boost::system::error_code& error() const;
 
 private:

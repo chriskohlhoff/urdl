@@ -20,15 +20,41 @@
 
 namespace urdl {
 
+/// The class @c istream supports reading content from a specified URL.
+/**
+ * @par Remarks
+ * The class stores an object of class @c istreambuf.
+ *
+ * Currently supported URL protocols are @c http, @c https and @c file.
+ *
+ * @par Example
+ * To read the entire content of a resource located by a URL into a string:
+ * @code
+ * urdl::istream is("http://www.boost.org/LICENSE_1_0.txt");
+ * if (is)
+ * {
+ *   std::string content;
+ *   if (std::getline(is, content, std::char_traits<char>::eof()))
+ *   {
+ *     ...
+ *   }
+ * }
+ * @endcode
+ *
+ * @par Requirements
+ * @e Header: @c <urdl/istream.hpp> @n
+ * @e Namespace: @c urdl
+ */
 class istream
   : private boost::base_from_member<istreambuf>,
     public std::basic_istream<char>
 {
 public:
-  /// Constructs an object of type @c istream.
+  /// Constructs an object of class @c istream.
   /**
-   * @note Initializes the base class with @c std::basic_istream<char>(sb),
-   * where sb is an object of type @c istreambuf stored within the class.
+   * @par Remarks
+   * Initializes the base class with @c std::basic_istream<char>(sb),
+   * where sb is an object of class @c istreambuf stored within the class.
    */
   istream()
     : std::basic_istream<char>(
@@ -36,12 +62,13 @@ public:
   {
   }
 
-  /// Constructs an object of type @c istream.
+  /// Constructs an object of class @c istream.
   /**
    * @param u The URL to open.
    *
-   * @note Initializes the base class with @c std::basic_istream<char>(sb),
-   * where @c sb is an object of type @c istreambuf stored within the class. It
+   * @par Remarks
+   * Initializes the base class with @c std::basic_istream<char>(sb),
+   * where @c sb is an object of class @c istreambuf stored within the class. It
    * also opens @c sb by performing @c sb.open(u) and, if that fails (returns a
    * null pointer), calls @c setstate(failbit).
    */
@@ -57,7 +84,8 @@ public:
   /**
    * @returns @c true if the stream is open, @c false otherwise.
    *
-   * @note Returns @c rdbuf()->is_open().
+   * @par Remarks
+   * Returns @c rdbuf()->is_open().
    */
   bool is_open() const
   {
@@ -68,7 +96,8 @@ public:
   /**
    * @param u The URL to open.
    *
-   * @note Calls @c rdbuf()->open(u). If that function does not return a null
+   * @par Remarks
+   * Calls @c rdbuf()->open(u). If that function does not return a null
    * pointer, calls @c clear(). Otherwise calls @c setstate(failbit) (which may
    * throw @c ios_base::failure).
    */
@@ -82,7 +111,8 @@ public:
 
   /// Closes the stream.
   /**
-   * @note Calls @c rdbuf()->close() and, if that function returns a null
+   * @par Remarks
+   * Calls @c rdbuf()->close() and, if that function returns a null
    * pointer, calls @c setstate(failbit) (which may throw @c ios_base::failure).
    */
   void close()
@@ -105,10 +135,24 @@ public:
   /**
    * @returns An @c error_code corresponding to the last error from the stream.
    *
-   * @note Returns a reference to an @c error_code object representing the last
+   * @par Remarks
+   * Returns a reference to an @c error_code object representing the last
    * failure reported by an @c istreambuf function. The set of possible
    * @c error_code values and categories depends on the protocol of the URL
    * used to open the stream.
+   *
+   * @par Example
+   * To take action given a specific error:
+   * @code
+   * urdl::istream is("http://somesite/page");
+   * if (!is)
+   * {
+   *   if (is.error() == urdl::http::errc::forbidden)
+   *   {
+   *     std::cout << "Computer says no" << std::endl;
+   *   }
+   * }
+   * @endcode
    */
   const boost::system::error_code& error() const
   {
@@ -120,7 +164,8 @@ public:
    * @returns The timeout, in milliseconds, used for individual read operations
    * on the underlying transport.
    *
-   * @note Returns @c rdbuf()->read_timeout().
+   * @par Remarks
+   * Returns @c rdbuf()->read_timeout().
    */
   std::size_t read_timeout() const
   {
@@ -132,7 +177,8 @@ public:
    * @param milliseconds The timeout, in milliseconds, to be used for individual
    * read operations on the underlying transport.
    *
-   * @note Performs @c rdbuf()->read_timeout(milliseconds).
+   * @par Remarks
+   * Performs @c rdbuf()->read_timeout(milliseconds).
    */
   void read_timeout(std::size_t milliseconds)
   {
@@ -144,7 +190,8 @@ public:
    * @returns A string specifying the MIME type. Examples of possible return
    * values include @c text/plain, @c text/html and @c image/png.
    *
-   * @note Returns @c rdbuf()->content_type().
+   * @par Remarks
+   * Returns @c rdbuf()->content_type().
    *
    * Not all URL protocols support a content type. For these protocols, this
    * function returns an empty string.
@@ -160,7 +207,8 @@ public:
    * with the URL does not specify a length,
    * @c std::numeric_limits<std::size_t>::max().
    *
-   * @note Returns @c rdbuf()->content_length().
+   * @par Remarks
+   * Returns @c rdbuf()->content_length().
    */
   std::size_t content_length() const
   {
@@ -173,7 +221,8 @@ public:
    * URL. The format and interpretation of these headers is specific to the
    * protocol associated with the URL.
    *
-   * @note Returns @c rdbuf()->headers().
+   * @par Remarks
+   * Returns @c rdbuf()->headers().
    */
   std::string headers() const
   {

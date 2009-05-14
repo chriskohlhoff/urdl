@@ -57,12 +57,22 @@ istreambuf::istreambuf()
 URDL_INLINE
 istreambuf::~istreambuf()
 {
-  delete body_;
+  try
+  {
+    delete body_;
+  }
+  catch (std::exception&)
+  {
+    // Swallow the exception.
+  }
 }
 
 URDL_INLINE
 istreambuf* istreambuf::open(const url& u)
 {
+  if (is_open())
+    return 0;
+
   init_buffers();
   body_->read_stream_.close(body_->error_);
   body_->read_stream_.open(u, body_->error_);
@@ -72,6 +82,9 @@ istreambuf* istreambuf::open(const url& u)
 URDL_INLINE
 istreambuf* istreambuf::close()
 {
+  if (!is_open())
+    return 0;
+
   body_->read_stream_.close(body_->error_);
   if (!body_->error_)
     init_buffers();

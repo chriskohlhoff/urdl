@@ -83,6 +83,7 @@
             not(contains($fullname, '::detail')) and
             not(contains($fullname, '_handler')) and
             not(contains($fullname, '_coro')) and
+            not(contains($fullname, 'is_error_code_enum')) and
             contains(compoundname, 'err')">
           <xsl:call-template name="class"/>
         </xsl:if>
@@ -91,6 +92,7 @@
         <xsl:if test="
             not(contains($fullname, '::detail')) and
             not(contains($fullname, '_helper')) and
+            not(contains($fullname, 'is_error_code_enum')) and
             contains($fullname, 'err')">
           <xsl:call-template name="namespace-memberdef"/>
         </xsl:if>
@@ -1113,12 +1115,12 @@
 <xsl:choose>
   <xsl:when test="count(/doxygen/compounddef[@kind='group' and compoundname=$name]) &gt; 0">
     <xsl:for-each select="/doxygen/compounddef[@kind='group' and compoundname=$name]">
-      <xsl:value-of select="briefdescription"/><xsl:text>
+      <xsl:apply-templates select="briefdescription" mode="markup"/><xsl:text>
       </xsl:text>
     </xsl:for-each>
   </xsl:when>
   <xsl:otherwise>
-    <xsl:value-of select="briefdescription"/><xsl:text>
+    <xsl:apply-templates select="briefdescription" mode="markup"/><xsl:text>
     </xsl:text>
   </xsl:otherwise>
 </xsl:choose>
@@ -1150,7 +1152,7 @@
   <xsl:text>] </xsl:text>
 </xsl:if>
 
-<xsl:value-of select="briefdescription"/><xsl:text>
+<xsl:apply-templates select="briefdescription" mode="markup"/><xsl:text>
 </xsl:text>
 
   <xsl:choose>

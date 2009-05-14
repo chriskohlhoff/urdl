@@ -29,9 +29,84 @@
 
 namespace urdl {
 
+/// The class @c read_stream supports reading content from a specified URL
+/// using synchronous or asynchronous operations.
+/**
+ * @par Remarks
+ * Currently supported URL protocols are @c http, @c https and @c file.
+ *
+ * The class @c read_stream meets the type requirements for @c SyncReadStream
+ * and @c AsyncReadStream, as defined in the Boost.Asio documentation. This
+ * allows objects of class @c read_stream to be used with the functions
+ * @c boost::asio::read, @c boost::asio::async_read, @c boost::asio::read_until
+ * and @c boost::asio::async_read_until.
+ *
+ * @par Example
+ * To synchronously open the URL, read the content and write it to standard
+ * output:
+ * @code
+ * try
+ * {
+ *   boost::asio::io_service io_service;
+ *   urdl::read_stream read_stream(io_service);
+ *   read_stream.open("http://www.boost.org/LICENSE_1_0.txt");
+ *   for (;;)
+ *   {
+ *     char data[1024];
+ *     boost::system::error_code ec;
+ *     std::size_t length = stream.read_some(boost::asio::buffer(data), ec);
+ *     if (ec == boost::asio::error::eof)
+ *       break;
+ *     if (ec)
+ *       throw boost::system::system_error(ec);
+ *     os.write(data, length);
+ *   }
+ * }
+ * catch (std::exception& e)
+ * {
+ *   std::cerr << "Exception: " << e.what() << std::endl;
+ * }
+ * @endcode
+ *
+ * To asynchronously open the URL, read the content and write it to standard
+ * output:
+ * @code
+ * boost::asio::io_service io_service;
+ * urdl::read_stream read_stream(io_service)
+ * char data[1024];
+ * ...
+ * read_stream.async_open("http://www.boost.org/LICENSE_1_0.txt", open_handler);
+ * ...
+ * void open_handler(const boost::system::error_code& ec)
+ * {
+ *   if (!ec)
+ *   {
+ *     read_stream.async_read(boost::asio::buffer(data), read_handler);
+ *   }
+ * }
+ * ...
+ * void read_handler(const boost::system::error_code& ec, std::size_t length)
+ * {
+ *   if (!ec)
+ *   {
+ *     std::cout.write(data, length);
+ *     read_stream.async_read(boost::asio::buffer(data), read_handler);
+ *   }
+ * }
+ * @endcode
+ *
+ * @par Requirements
+ * @e Header: @c <urdl/read_stream.hpp> @n
+ * @e Namespace: @c urdl
+ */
 class read_stream
 {
 public:
+  /// Constructs an object of class @c read_stream.
+  /**
+   * @param io_service The @c io_service object that the stream will use to
+   * dispatch handlers for any asynchronous operations performed on the stream.
+   */
   explicit read_stream(boost::asio::io_service& io_service)
     : io_service_(io_service),
       file_(io_service),
@@ -47,11 +122,57 @@ public:
 #endif // !defined(URDL_DISABLE_SSL)
   }
 
+  /// Gets the @c io_service associated with the stream.
+  /**
+   * @returns A reference to the @c io_service object that the stream will use
+   * to dispatch handlers. Ownership is not transferred to the caller.
+   */
   boost::asio::io_service& get_io_service()
   {
     return io_service_;
   }
 
+  /// Determines whether the stream is open.
+  /**
+   * @returns @c true if the stream is open, @c false otherwise.
+   */
+  bool is_open() const
+  {
+    switch (protocol_)
+    {
+    case file:
+      return file_.is_open();
+    case http:
+      return http_.is_open();
+#if !defined(URDL_DISABLE_SSL)
+    case https:
+      return https_.is_open();
+#endif // !defined(URDL_DISABLE_SSL)
+    default:
+      return false;
+    }
+  }
+
+  /// Opens the specified URL.
+  /**
+   * @param u The URL to open.
+   *
+   * @throws boost::system::system_error Thrown on failure.
+   *
+   * @par Example
+   * @code
+   * urdl::read_stream read_stream(io_service);
+   *
+   * try
+   * {
+   *   read_stream.open("http://www.boost.org");
+   * }
+   * catch (boost::system::error_code& e)
+   * {
+   *   std::cerr << e.what() << std::endl;
+   * }
+   * @endcode
+   */
   void open(const url& u)
   {
     boost::system::error_code ec;
@@ -62,6 +183,26 @@ public:
     }
   }
 
+  /// Opens the specified URL.
+  /**
+   * @param u The URL to open.
+   *
+   * @param ec Set to indicate what error occurred, if any.
+   *
+   * @returns @c ec.
+   *
+   * @par Example
+   * @code
+   * urdl::read_stream read_stream(io_service);
+   *
+   * boost::system::error_code ec;
+   * read_stream.open("http://www.boost.org", ec);
+   * if (ec)
+   * {
+   *   std::cerr << ec.message() << std::endl;
+   * }
+   * @endcode
+   */
   boost::system::error_code open(const url& u, boost::system::error_code& ec)
   {
     url tmp_url = u;
@@ -106,12 +247,51 @@ public:
     }
   }
 
+  /// Asynchronously opens the specified URL.
+  /**
+   * @param u The URL to open.
+   *
+   * @param handler The handler to be called when the open operation completes.
+   * Copies will be made of the handler as required. The function signature of
+   * the handler must be:
+   * @code
+   * void handler(
+   *   const boost::system::error_code& ec // Result of operation.
+   * );
+   * @endcode
+   * Regardless of whether the asynchronous operation completes immediately or
+   * not, the handler will not be invoked from within this function. Invocation
+   * of the handler will be performed in a manner equivalent to using
+   * @c boost::asio::io_service::post().
+   *
+   * @par Example
+   * @code
+   * void open_handler(const boost::system::error_code& ec)
+   * {
+   *   if (!ec)
+   *   {
+   *     // Open succeeded.
+   *   }
+   * }
+   * ...
+   * urdl::read_stream read_stream(io_service);
+   * read_stream.async_open("http://www.boost.org/", open_handler);
+   * @endcode
+   */
   template <typename Handler>
   void async_open(const url& u, Handler handler)
   {
     open_coro<Handler>(this, u, handler)(boost::system::error_code());
   }
 
+  /// Closes the stream.
+  /**
+   * @throws asio::system_error Thrown on failure.
+   *
+   * @par Remarks
+   * Any asynchronous open or read operations will be cancelled, and will
+   * complete with the @c boost::asio::error::operation_aborted error.
+   */
   void close()
   {
     boost::system::error_code ec;
@@ -122,6 +302,16 @@ public:
     }
   }
 
+  /// Closes the stream.
+  /**
+   * @param ec Set to indicate what error occurred, if any.
+   *
+   * @returns @c ec.
+   *
+   * @par Remarks
+   * Any asynchronous open or read operations will be cancelled, and will
+   * complete with the @c boost::asio::error::operation_aborted error.
+   */
   boost::system::error_code close(boost::system::error_code& ec)
   {
     switch (protocol_)
@@ -142,23 +332,15 @@ public:
     return ec;
   }
 
-  bool is_open() const
-  {
-    switch (protocol_)
-    {
-    case file:
-      return file_.is_open();
-    case http:
-      return http_.is_open();
-#if !defined(URDL_DISABLE_SSL)
-    case https:
-      return https_.is_open();
-#endif // !defined(URDL_DISABLE_SSL)
-    default:
-      return false;
-    }
-  }
-
+  /// Gets the MIME type of the content obtained from the URL.
+  /**
+   * @returns A string specifying the MIME type. Examples of possible return
+   * values include @c text/plain, @c text/html and @c image/png.
+   *
+   * @par Remarks
+   * Not all URL protocols support a content type. For these protocols, this
+   * function returns an empty string.
+   */
   std::string content_type() const
   {
     switch (protocol_)
@@ -176,6 +358,12 @@ public:
     }
   }
 
+  /// Gets the length of the content obtained from the URL.
+  /**
+   * @returns The length, in bytes, of the content. If the content associated
+   * with the URL does not specify a length,
+   * @c std::numeric_limits<std::size_t>::max().
+   */
   std::size_t content_length() const
   {
     switch (protocol_)
@@ -193,6 +381,12 @@ public:
     }
   }
 
+  /// Gets the protocol-specific headers obtained from the URL.
+  /**
+   * @returns A string containing the headers returned with the content from the
+   * URL. The format and interpretation of these headers is specific to the
+   * protocol associated with the URL.
+   */
   std::string headers() const
   {
     switch (protocol_)
@@ -210,6 +404,37 @@ public:
     }
   }
 
+  /// Reads some data from the stream.
+  /**
+   * @param buffers One or more buffers into which the data will be read. The
+   * type must meet the requirements for @c MutableBufferSequence, as defined in
+   * the Boost.Asio documentation.
+   *
+   * @returns The number of bytes read.
+   *
+   * @throws boost::system::system_error Thrown on failure. An error code of
+   * @c boost::asio::error::eof indicates that the end of the URL content has
+   * been reached.
+   *
+   * @par Remarks
+   * The function call will block until one or more bytes of data has been read
+   * successfully, or until an error occurs.
+   *
+   * The @c read_some operation may not read all of the requested number of
+   * bytes. Consider using the @c boost::asio::read function if you need to
+   * ensure that the requested amount of data is read before the blocking
+   * operation completes.
+   *
+   * @par Example
+   * To read into a single data buffer use the @c boost::asio::buffer function
+   * as follows:
+   * @code
+   * read_stream.read_some(boost::asio::buffer(data, size));
+   * @endcode
+   * See the documentation for the @c boost::asio::buffer function for
+   * information on reading into multiple buffers in one go, and how to use it
+   * with arrays, @c boost::array or @c std::vector.
+   */
   template <typename MutableBufferSequence>
   std::size_t read_some(const MutableBufferSequence& buffers)
   {
@@ -223,6 +448,38 @@ public:
     return bytes_transferred;
   }
 
+  /// Reads some data from the stream.
+  /**
+   * @param buffers One or more buffers into which the data will be read. The
+   * type must meet the requirements for @c MutableBufferSequence, as defined in
+   * the Boost.Asio documentation.
+   *
+   * @param ec Set to indicate what error occurred, if any. An error code of
+   * @c boost::asio::error::eof indicates that the end of the URL content has
+   * been reached.
+   *
+   * @returns The number of bytes read.
+   *
+   * @par Remarks
+   * This function is used to read data from the stream. The function call will
+   * block until one or more bytes of data has been read successfully, or until
+   * an error occurs.
+   *
+   * The @c read_some operation may not read all of the requested number of
+   * bytes. Consider using the @c boost::asio::read function if you need to
+   * ensure that the requested amount of data is read before the blocking
+   * operation completes.
+   *
+   * @par Example
+   * To read into a single data buffer use the @c boost::asio::buffer function
+   * as follows:
+   * @code
+   * read_stream.read_some(boost::asio::buffer(data, size));
+   * @endcode
+   * See the documentation for the @c boost::asio::buffer function for
+   * information on reading into multiple buffers in one go, and how to use it
+   * with arrays, @c boost::array or @c std::vector.
+   */
   template <typename MutableBufferSequence>
   std::size_t read_some(const MutableBufferSequence& buffers,
       boost::system::error_code& ec)
@@ -243,6 +500,48 @@ public:
     }
   }
 
+  /// Asynchronously reads some data from the stream.
+  /**
+   * @param buffers One or more buffers into which the data will be read. The
+   * type must meet the requirements for @c MutableBufferSequence, as defined in
+   * the Boost.Asio documentation. Although the buffers object may be copied as
+   * necessary, ownership of the underlying memory blocks is retained by the
+   * caller, which must guarantee that they remain valid until the handler is
+   * called.
+   *
+   * @param handler The handler to be called when the read operation completes.
+   * Copies will be made of the handler as required. The function signature of
+   * the handler must be:
+   * @code
+   * void handler(
+   *   const boost::system::error_code& ec, // Result of operation.
+   *   std::size_t bytes_transferred        // Number of bytes read.
+   * );
+   * @endcode
+   * Regardless of whether the asynchronous operation completes immediately or
+   * not, the handler will not be invoked from within this function. Invocation
+   * of the handler will be performed in a manner equivalent to using
+   * @c boost::asio::io_service::post().
+   *
+   * @par Remarks
+   * The asynchronous operation will continue until one or more bytes of data
+   * has been read successfully, or until an error occurs.
+   *
+   * The @c async_read_some operation may not read all of the requested number
+   * of bytes. Consider using the @c boost::asio::async_read function if you
+   * need to ensure that the requested amount of data is read before the
+   * asynchronous operation completes.
+   *
+   * @par Example
+   * To read into a single data buffer use the @c boost::asio::buffer function
+   * as follows:
+   * @code
+   * read_stream.async_read_some(boost::asio::buffer(data, size), handler);
+   * @endcode
+   * See the documentation for the @c boost::asio::buffer function for
+   * information on reading into multiple buffers in one go, and how to use it
+   * with arrays, @c boost::array or @c std::vector.
+   */
   template <typename MutableBufferSequence, typename Handler>
   void async_read_some(const MutableBufferSequence& buffers, Handler handler)
   {

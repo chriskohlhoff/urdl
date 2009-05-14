@@ -15,6 +15,8 @@
 [section:istream istream]
 
 
+The class `istream` supports reading content from a specified URL. 
+
 
   class istream :
     public std::basic_istream< char >
@@ -56,7 +58,7 @@
   
   [
     [[link urdl.reference.core.istream.istream [*istream]]]
-    [Constructs an object of type istream. ]
+    [Constructs an object of class istream. ]
   ]
   
   [
@@ -79,6 +81,38 @@
 ]
 
 
+['[*Remarks]]
+  
+The class stores an object of class `istreambuf`.
+
+Currently supported URL protocols are `http`, `https` and `file`.
+
+
+['[*Example]]
+  
+To read the entire content of a resource located by a URL into a string: 
+
+   urdl::istream is("http://www.boost.org/LICENSE_1_0.txt");
+   if (is)
+   {
+     std::string content;
+     if (std::getline(is, content, std::char_traits<char>::eof()))
+     {
+       ...
+     }
+   }
+
+
+
+
+['[*Requirements]]
+  
+[*Header:] `<urdl/istream.hpp>`
+
+[*Namespace:] `urdl`
+
+
+
 [section:close istream::close]
 
 [indexterm2 close..istream] 
@@ -90,7 +124,7 @@ Closes the stream.
 
 
 ['[*Remarks]]
-      
+  
 Calls `rdbuf()->close()` and, if that function returns a null pointer, calls `setstate(failbit)` (which may throw `ios_base::failure`). 
 
 
@@ -114,7 +148,7 @@ Gets the length of the content obtained from the URL.
 The length, in bytes, of the content. If the content associated with the URL does not specify a length, `std::numeric_limits<std::size_t>::max()`.
 
 ['[*Remarks]]
-      
+  
 Returns `rdbuf()->content_length()`. 
 
 
@@ -138,7 +172,7 @@ Gets the MIME type of the content obtained from the URL.
 A string specifying the MIME type. Examples of possible return values include `text/plain`, `text/html` and `image/png`.
 
 ['[*Remarks]]
-      
+  
 Returns `rdbuf()->content_type()`.
 
 Not all URL protocols support a content type. For these protocols, this function returns an empty string. 
@@ -163,8 +197,24 @@ Gets the last error associated with the stream.
 An `error_code` corresponding to the last error from the stream.
 
 ['[*Remarks]]
-      
-Returns a reference to an `error_code` object representing the last failure reported by an `istreambuf` function. The set of possible `error_code` values and categories depends on the protocol of the URL used to open the stream. 
+  
+Returns a reference to an `error_code` object representing the last failure reported by an `istreambuf` function. The set of possible `error_code` values and categories depends on the protocol of the URL used to open the stream.
+
+['[*Example]]
+  
+To take action given a specific error: 
+
+   urdl::istream is("http://somesite/page");
+   if (!is)
+   {
+     if (is.error() == urdl::http::errc::forbidden)
+     {
+       std::cout << "Computer says no" << std::endl;
+     }
+   }
+
+
+
 
 
 
@@ -187,7 +237,7 @@ Gets the protocol-specific headers obtained from the URL.
 A string containing the headers returned with the content from the URL. The format and interpretation of these headers is specific to the protocol associated with the URL.
 
 ['[*Remarks]]
-      
+  
 Returns `rdbuf()->headers()`. 
 
 
@@ -211,7 +261,7 @@ Determines whether the stream is open.
 `true` if the stream is open, `false` otherwise.
 
 ['[*Remarks]]
-      
+  
 Returns `rdbuf()->is_open()`. 
 
 
@@ -222,7 +272,7 @@ Returns `rdbuf()->is_open()`.
 [section:istream istream::istream]
 
 [indexterm2 istream..istream] 
-Constructs an object of type `istream`. 
+Constructs an object of class `istream`. 
 
 
   ``[link urdl.reference.core.istream.istream.overload1 istream]``();
@@ -234,7 +284,7 @@ Constructs an object of type `istream`.
 [section:overload1 istream::istream (1 of 2 overloads)]
 
 
-Constructs an object of type `istream`. 
+Constructs an object of class `istream`. 
 
 
   istream();
@@ -242,8 +292,8 @@ Constructs an object of type `istream`.
 
 
 ['[*Remarks]]
-      
-Initializes the base class with `std::basic_istream<char>(sb)`, where sb is an object of type `istreambuf` stored within the class. 
+  
+Initializes the base class with `std::basic_istream<char>(sb)`, where sb is an object of class `istreambuf` stored within the class. 
 
 
 
@@ -254,7 +304,7 @@ Initializes the base class with `std::basic_istream<char>(sb)`, where sb is an o
 [section:overload2 istream::istream (2 of 2 overloads)]
 
 
-Constructs an object of type `istream`. 
+Constructs an object of class `istream`. 
 
 
   istream(
@@ -272,8 +322,8 @@ Constructs an object of type `istream`.
 ]
 
 ['[*Remarks]]
-      
-Initializes the base class with `std::basic_istream<char>(sb)`, where `sb` is an object of type `istreambuf` stored within the class. It also opens `sb` by performing `sb.open(u)` and, if that fails (returns a null pointer), calls `setstate(failbit)`. 
+  
+Initializes the base class with `std::basic_istream<char>(sb)`, where `sb` is an object of class `istreambuf` stored within the class. It also opens `sb` by performing `sb.open(u)` and, if that fails (returns a null pointer), calls `setstate(failbit)`. 
 
 
 
@@ -304,7 +354,7 @@ Opens the specified URL.
 ]
 
 ['[*Remarks]]
-      
+  
 Calls `rdbuf()->open(u)`. If that function does not return a null pointer, calls `clear()`. Otherwise calls `setstate(failbit)` (which may throw `ios_base::failure`). 
 
 
@@ -363,7 +413,7 @@ Gets the read timeout of the stream.
 The timeout, in milliseconds, used for individual read operations on the underlying transport.
 
 ['[*Remarks]]
-      
+  
 Returns `rdbuf()->read_timeout()`. 
 
 
@@ -393,7 +443,7 @@ Sets the read timeout of the stream.
 ]
 
 ['[*Remarks]]
-      
+  
 Performs `rdbuf()->read_timeout(milliseconds)`. 
 
 
@@ -409,6 +459,8 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:istreambuf istreambuf]
 
 
+The class `istreambuf` associates the input sequence with the content from a specified URL. 
+
 
   class istreambuf :
     public std::streambuf
@@ -420,52 +472,54 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 
   [
     [[link urdl.reference.core.istreambuf.close [*close]]]
-    []
+    [Closes the stream buffer. ]
   ]
   
   [
     [[link urdl.reference.core.istreambuf.content_length [*content_length]]]
-    []
+    [Gets the length of the content obtained from the URL. ]
   ]
   
   [
     [[link urdl.reference.core.istreambuf.content_type [*content_type]]]
-    []
+    [Gets the MIME type of the content obtained from the URL. ]
   ]
   
   [
     [[link urdl.reference.core.istreambuf.headers [*headers]]]
-    []
+    [Gets the protocol-specific headers obtained from the URL. ]
   ]
   
   [
     [[link urdl.reference.core.istreambuf.is_open [*is_open]]]
-    []
+    [Determines whether the stream buffer is open. ]
   ]
   
   [
     [[link urdl.reference.core.istreambuf.istreambuf [*istreambuf]]]
-    []
+    [Constructs an object of class istreambuf. ]
   ]
   
   [
     [[link urdl.reference.core.istreambuf.open [*open]]]
-    []
+    [Opens the specified URL. ]
   ]
   
   [
     [[link urdl.reference.core.istreambuf.puberror [*puberror]]]
-    []
+    [Gets the last error associated with the stream buffer. ]
   ]
   
   [
     [[link urdl.reference.core.istreambuf.read_timeout [*read_timeout]]]
-    []
+    [Gets the read timeout of the stream buffer. 
+
+     Sets the read timeout of the stream buffer. ]
   ]
   
   [
     [[link urdl.reference.core.istreambuf._istreambuf [*~istreambuf]]]
-    []
+    [Destroys an object of class istreambuf. ]
   ]
   
 ]
@@ -476,22 +530,42 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 
   [
     [[link urdl.reference.core.istreambuf.error [*error]]]
-    []
+    [Gets the last error associated with the stream. ]
   ]
   
   [
     [[link urdl.reference.core.istreambuf.underflow [*underflow]]]
-    []
+    [Overrides std::streambuf behaviour. ]
   ]
   
 ]
 
 
+['[*Requirements]]
+  
+[*Header:] `<urdl/istreambuf.hpp>`
+
+[*Namespace:] `urdl`
+
+
+
 [section:close istreambuf::close]
 
 [indexterm2 close..istreambuf] 
+Closes the stream buffer. 
+
 
   istreambuf * close();
+
+
+
+['[*Return Value]]
+      
+`this` on success, a null pointer otherwise.
+
+['[*Remarks]]
+  
+If `is_open() == false`, returns a null pointer. Otherwise, closes the underlying transport's resources as required. If any of those operations fail, `close` fails by returning a null pointer. 
 
 
 
@@ -502,8 +576,16 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:content_length istreambuf::content_length]
 
 [indexterm2 content_length..istreambuf] 
+Gets the length of the content obtained from the URL. 
+
 
   std::size_t content_length() const;
+
+
+
+['[*Return Value]]
+      
+The length, in bytes, of the content. If the content associated with the URL does not specify a length, `std::numeric_limits<std::size_t>::max()`. 
 
 
 
@@ -514,8 +596,20 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:content_type istreambuf::content_type]
 
 [indexterm2 content_type..istreambuf] 
+Gets the MIME type of the content obtained from the URL. 
+
 
   std::string content_type() const;
+
+
+
+['[*Return Value]]
+      
+A string specifying the MIME type. Examples of possible return values include `text/plain`, `text/html` and `image/png`.
+
+['[*Remarks]]
+  
+Not all URL protocols support a content type. For these protocols, this function returns an empty string. 
 
 
 
@@ -526,8 +620,20 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:error istreambuf::error]
 
 [indexterm2 error..istreambuf] 
+Gets the last error associated with the stream. 
+
 
   const boost::system::error_code & error() const;
+
+
+
+['[*Return Value]]
+      
+An `error_code` corresponding to the last error from the stream.
+
+['[*Remarks]]
+  
+Returns a reference to an `error_code` object representing the last failure reported by an `istreambuf` function. The set of possible `error_code` values and categories depends on the protocol of the URL used to open the stream buffer. 
 
 
 
@@ -538,8 +644,16 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:headers istreambuf::headers]
 
 [indexterm2 headers..istreambuf] 
+Gets the protocol-specific headers obtained from the URL. 
+
 
   std::string headers() const;
+
+
+
+['[*Return Value]]
+      
+A string containing the headers returned with the content from the URL. The format and interpretation of these headers is specific to the protocol associated with the URL. 
 
 
 
@@ -550,8 +664,20 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:is_open istreambuf::is_open]
 
 [indexterm2 is_open..istreambuf] 
+Determines whether the stream buffer is open. 
+
 
   bool is_open() const;
+
+
+
+['[*Return Value]]
+      
+`true` if the stream buffer is open, `false` otherwise.
+
+['[*Remarks]]
+  
+Returns `true` if a previous call to `open` succeeded (returned a non-null value) and there has been no intervening call to `close`. 
 
 
 
@@ -562,6 +688,8 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:istreambuf istreambuf::istreambuf]
 
 [indexterm2 istreambuf..istreambuf] 
+Constructs an object of class `istreambuf`. 
+
 
   istreambuf();
 
@@ -574,9 +702,30 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:open istreambuf::open]
 
 [indexterm2 open..istreambuf] 
+Opens the specified URL. 
+
 
   istreambuf * open(
       const url & u);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[u][The URL to open.]]
+
+]
+
+['[*Return Value]]
+      
+`this` on success, a null pointer otherwise.
+
+['[*Remarks]]
+  
+If `is_open() != false`, returns a null pointer. Otherwise, initializes the `istreambuf` as required. 
 
 
 
@@ -587,8 +736,20 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:puberror istreambuf::puberror]
 
 [indexterm2 puberror..istreambuf] 
+Gets the last error associated with the stream buffer. 
+
 
   const boost::system::error_code & puberror() const;
+
+
+
+['[*Return Value]]
+      
+An `error_code` corresponding to the last error from the stream buffer.
+
+['[*Remarks]]
+  
+Returns `error()`. 
 
 
 
@@ -598,8 +759,14 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:read_timeout istreambuf::read_timeout]
 
 [indexterm2 read_timeout..istreambuf] 
+Gets the read timeout of the stream buffer. 
+
 
   std::size_t ``[link urdl.reference.core.istreambuf.read_timeout.overload1 read_timeout]``() const;
+
+
+Sets the read timeout of the stream buffer. 
+
 
   void ``[link urdl.reference.core.istreambuf.read_timeout.overload2 read_timeout]``(
       std::size_t milliseconds);
@@ -608,8 +775,16 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:overload1 istreambuf::read_timeout (1 of 2 overloads)]
 
 
+Gets the read timeout of the stream buffer. 
+
 
   std::size_t read_timeout() const;
+
+
+
+['[*Return Value]]
+      
+The timeout, in milliseconds, used for individual read operations on the underlying transport. 
 
 
 
@@ -620,9 +795,22 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:overload2 istreambuf::read_timeout (2 of 2 overloads)]
 
 
+Sets the read timeout of the stream buffer. 
+
 
   void read_timeout(
       std::size_t milliseconds);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[milliseconds][The timeout, in milliseconds, to be used for individual read operations on the underlying transport. ]]
+
+]
 
 
 
@@ -635,9 +823,13 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:underflow istreambuf::underflow]
 
 [indexterm2 underflow..istreambuf] 
+Overrides `std::streambuf` behaviour. 
+
 
   int_type underflow();
 
+
+par Remarks Behaves according to the specification of `std::streambuf::underflow()`. 
 
 
 [endsect]
@@ -647,6 +839,8 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:_istreambuf istreambuf::~istreambuf]
 
 [indexterm2 ~istreambuf..istreambuf] 
+Destroys an object of class `istreambuf`. 
+
 
   ~istreambuf();
 
@@ -661,6 +855,8 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:read_stream read_stream]
 
 
+The class `read_stream` supports reading content from a specified URL using synchronous or asynchronous operations. 
+
 
   class read_stream
 
@@ -671,71 +867,183 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 
   [
     [[link urdl.reference.core.read_stream.async_open [*async_open]]]
-    []
+    [Asynchronously opens the specified URL. ]
   ]
   
   [
     [[link urdl.reference.core.read_stream.async_read_some [*async_read_some]]]
-    []
+    [Asynchronously reads some data from the stream. ]
   ]
   
   [
     [[link urdl.reference.core.read_stream.close [*close]]]
-    []
+    [Closes the stream. ]
   ]
   
   [
     [[link urdl.reference.core.read_stream.content_length [*content_length]]]
-    []
+    [Gets the length of the content obtained from the URL. ]
   ]
   
   [
     [[link urdl.reference.core.read_stream.content_type [*content_type]]]
-    []
+    [Gets the MIME type of the content obtained from the URL. ]
   ]
   
   [
     [[link urdl.reference.core.read_stream.get_io_service [*get_io_service]]]
-    []
+    [Gets the io_service associated with the stream. ]
   ]
   
   [
     [[link urdl.reference.core.read_stream.headers [*headers]]]
-    []
+    [Gets the protocol-specific headers obtained from the URL. ]
   ]
   
   [
     [[link urdl.reference.core.read_stream.is_open [*is_open]]]
-    []
+    [Determines whether the stream is open. ]
   ]
   
   [
     [[link urdl.reference.core.read_stream.open [*open]]]
-    []
+    [Opens the specified URL. ]
   ]
   
   [
     [[link urdl.reference.core.read_stream.read_some [*read_some]]]
-    []
+    [Reads some data from the stream. ]
   ]
   
   [
     [[link urdl.reference.core.read_stream.read_stream [*read_stream]]]
-    []
+    [Constructs an object of class read_stream. ]
   ]
   
 ]
 
 
+['[*Remarks]]
+  
+Currently supported URL protocols are `http`, `https` and `file`.
+
+The class `read_stream` meets the type requirements for `SyncReadStream` and `AsyncReadStream`, as defined in the Boost.Asio documentation. This allows objects of class `read_stream` to be used with the functions `boost::asio::read`, `boost::asio::async_read`, `boost::asio::read_until` and `boost::asio::async_read_until`.
+
+
+['[*Example]]
+  
+To synchronously open the URL, read the content and write it to standard output: 
+
+   try
+   {
+     boost::asio::io_service io_service;
+     urdl::read_stream read_stream(io_service);
+     read_stream.open("http://www.boost.org/LICENSE_1_0.txt");
+     for (;;)
+     {
+       char data[1024];
+       boost::system::error_code ec;
+       std::size_t length = stream.read_some(boost::asio::buffer(data), ec);
+       if (ec == boost::asio::error::eof)
+         break;
+       if (ec)
+         throw boost::system::system_error(ec);
+       os.write(data, length);
+     }
+   }
+   catch (std::exception& e)
+   {
+     std::cerr << "Exception: " << e.what() << std::endl;
+   }
+
+
+
+
+To asynchronously open the URL, read the content and write it to standard output: 
+
+   boost::asio::io_service io_service;
+   urdl::read_stream read_stream(io_service)
+   char data[1024];
+   ...
+   read_stream.async_open("http://www.boost.org/LICENSE_1_0.txt", open_handler);
+   ...
+   void open_handler(const boost::system::error_code& ec)
+   {
+     if (!ec)
+     {
+       read_stream.async_read(boost::asio::buffer(data), read_handler);
+     }
+   }
+   ...
+   void read_handler(const boost::system::error_code& ec, std::size_t length)
+   {
+     if (!ec)
+     {
+       std::cout.write(data, length);
+       read_stream.async_read(boost::asio::buffer(data), read_handler);
+     }
+   }
+
+
+
+
+
+['[*Requirements]]
+  
+[*Header:] `<urdl/read_stream.hpp>`
+
+[*Namespace:] `urdl`
+
+
+
 [section:async_open read_stream::async_open]
 
 [indexterm2 async_open..read_stream] 
+Asynchronously opens the specified URL. 
+
 
   template<
       typename Handler>
   void async_open(
       const url & u,
       Handler handler);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[u][The URL to open.]]
+
+[[handler][The handler to be called when the open operation completes. Copies will be made of the handler as required. The function signature of the handler must be: 
+``
+   void handler(
+     const boost::system::error_code& ec // Result of operation.
+   );
+``
+Regardless of whether the asynchronous operation completes immediately or not, the handler will not be invoked from within this function. Invocation of the handler will be performed in a manner equivalent to using `boost::asio::io_service::post()`.]]
+
+]
+
+['[*Example]]
+  
+
+
+   void open_handler(const boost::system::error_code& ec)
+   {
+     if (!ec)
+     {
+       // Open succeeded.
+     }
+   }
+   ...
+   urdl::read_stream read_stream(io_service);
+   read_stream.async_open("http://www.boost.org/", open_handler);
+
+
+
 
 
 
@@ -746,6 +1054,8 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:async_read_some read_stream::async_read_some]
 
 [indexterm2 async_read_some..read_stream] 
+Asynchronously reads some data from the stream. 
+
 
   template<
       typename MutableBufferSequence,
@@ -756,12 +1066,50 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 
 
 
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[buffers][One or more buffers into which the data will be read. The type must meet the requirements for `MutableBufferSequence`, as defined in the Boost.Asio documentation. Although the buffers object may be copied as necessary, ownership of the underlying memory blocks is retained by the caller, which must guarantee that they remain valid until the handler is called.]]
+
+[[handler][The handler to be called when the read operation completes. Copies will be made of the handler as required. The function signature of the handler must be: 
+``
+   void handler(
+     const boost::system::error_code& ec, // Result of operation.
+     std::size_t bytes_transferred        // Number of bytes read.
+   );
+``
+Regardless of whether the asynchronous operation completes immediately or not, the handler will not be invoked from within this function. Invocation of the handler will be performed in a manner equivalent to using `boost::asio::io_service::post()`.]]
+
+]
+
+['[*Remarks]]
+  
+The asynchronous operation will continue until one or more bytes of data has been read successfully, or until an error occurs.
+
+The `async_read_some` operation may not read all of the requested number of bytes. Consider using the `boost::asio::async_read` function if you need to ensure that the requested amount of data is read before the asynchronous operation completes.
+
+
+['[*Example]]
+  
+To read into a single data buffer use the `boost::asio::buffer` function as follows: 
+
+   read_stream.async_read_some(boost::asio::buffer(data, size), handler);
+
+
+See the documentation for the `boost::asio::buffer` function for information on reading into multiple buffers in one go, and how to use it with arrays, `boost::array` or `std::vector`. 
+
+
+
 [endsect]
 
 
 [section:close read_stream::close]
 
 [indexterm2 close..read_stream] 
+Closes the stream. 
+
 
   void ``[link urdl.reference.core.read_stream.close.overload1 close]``();
 
@@ -772,8 +1120,25 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:overload1 read_stream::close (1 of 2 overloads)]
 
 
+Closes the stream. 
+
 
   void close();
+
+
+
+['[*Exceptions]]
+    
+
+[variablelist
+  
+[[asio::system_error][Thrown on failure.]]
+
+]
+
+['[*Remarks]]
+  
+Any asynchronous open or read operations will be cancelled, and will complete with the `boost::asio::error::operation_aborted` error. 
 
 
 
@@ -784,9 +1149,30 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:overload2 read_stream::close (2 of 2 overloads)]
 
 
+Closes the stream. 
+
 
   boost::system::error_code close(
       boost::system::error_code & ec);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[ec][Set to indicate what error occurred, if any.]]
+
+]
+
+['[*Return Value]]
+      
+`ec`.
+
+['[*Remarks]]
+  
+Any asynchronous open or read operations will be cancelled, and will complete with the `boost::asio::error::operation_aborted` error. 
 
 
 
@@ -799,8 +1185,16 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:content_length read_stream::content_length]
 
 [indexterm2 content_length..read_stream] 
+Gets the length of the content obtained from the URL. 
+
 
   std::size_t content_length() const;
+
+
+
+['[*Return Value]]
+      
+The length, in bytes, of the content. If the content associated with the URL does not specify a length, `std::numeric_limits<std::size_t>::max()`. 
 
 
 
@@ -811,8 +1205,20 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:content_type read_stream::content_type]
 
 [indexterm2 content_type..read_stream] 
+Gets the MIME type of the content obtained from the URL. 
+
 
   std::string content_type() const;
+
+
+
+['[*Return Value]]
+      
+A string specifying the MIME type. Examples of possible return values include `text/plain`, `text/html` and `image/png`.
+
+['[*Remarks]]
+  
+Not all URL protocols support a content type. For these protocols, this function returns an empty string. 
 
 
 
@@ -823,8 +1229,16 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:get_io_service read_stream::get_io_service]
 
 [indexterm2 get_io_service..read_stream] 
+Gets the `io_service` associated with the stream. 
+
 
   boost::asio::io_service & get_io_service();
+
+
+
+['[*Return Value]]
+      
+A reference to the `io_service` object that the stream will use to dispatch handlers. Ownership is not transferred to the caller. 
 
 
 
@@ -835,8 +1249,16 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:headers read_stream::headers]
 
 [indexterm2 headers..read_stream] 
+Gets the protocol-specific headers obtained from the URL. 
+
 
   std::string headers() const;
+
+
+
+['[*Return Value]]
+      
+A string containing the headers returned with the content from the URL. The format and interpretation of these headers is specific to the protocol associated with the URL. 
 
 
 
@@ -847,8 +1269,16 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:is_open read_stream::is_open]
 
 [indexterm2 is_open..read_stream] 
+Determines whether the stream is open. 
+
 
   bool is_open() const;
+
+
+
+['[*Return Value]]
+      
+`true` if the stream is open, `false` otherwise. 
 
 
 
@@ -858,6 +1288,8 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:open read_stream::open]
 
 [indexterm2 open..read_stream] 
+Opens the specified URL. 
+
 
   void ``[link urdl.reference.core.read_stream.open.overload1 open]``(
       const url & u);
@@ -870,9 +1302,49 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:overload1 read_stream::open (1 of 2 overloads)]
 
 
+Opens the specified URL. 
+
 
   void open(
       const url & u);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[u][The URL to open.]]
+
+]
+
+['[*Exceptions]]
+    
+
+[variablelist
+  
+[[boost::system::system_error][Thrown on failure.]]
+
+]
+
+['[*Example]]
+  
+
+
+   urdl::read_stream read_stream(io_service);
+
+   try
+   {
+     read_stream.open("http://www.boost.org");
+   }
+   catch (boost::system::error_code& e)
+   {
+     std::cerr << e.what() << std::endl;
+   }
+
+
+
 
 
 
@@ -883,10 +1355,45 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:overload2 read_stream::open (2 of 2 overloads)]
 
 
+Opens the specified URL. 
+
 
   boost::system::error_code open(
       const url & u,
       boost::system::error_code & ec);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[u][The URL to open.]]
+
+[[ec][Set to indicate what error occurred, if any.]]
+
+]
+
+['[*Return Value]]
+      
+`ec`.
+
+['[*Example]]
+  
+
+
+   urdl::read_stream read_stream(io_service);
+
+   boost::system::error_code ec;
+   read_stream.open("http://www.boost.org", ec);
+   if (ec)
+   {
+     std::cerr << ec.message() << std::endl;
+   }
+
+
+
 
 
 
@@ -898,6 +1405,8 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:read_some read_stream::read_some]
 
 [indexterm2 read_some..read_stream] 
+Reads some data from the stream. 
+
 
   template<
       typename MutableBufferSequence>
@@ -914,11 +1423,53 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:overload1 read_stream::read_some (1 of 2 overloads)]
 
 
+Reads some data from the stream. 
+
 
   template<
       typename MutableBufferSequence>
   std::size_t read_some(
       const MutableBufferSequence & buffers);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[buffers][One or more buffers into which the data will be read. The type must meet the requirements for `MutableBufferSequence`, as defined in the Boost.Asio documentation.]]
+
+]
+
+['[*Return Value]]
+      
+The number of bytes read.
+
+['[*Exceptions]]
+    
+
+[variablelist
+  
+[[boost::system::system_error][Thrown on failure. An error code of `boost::asio::error::eof` indicates that the end of the URL content has been reached.]]
+
+]
+
+['[*Remarks]]
+  
+The function call will block until one or more bytes of data has been read successfully, or until an error occurs.
+
+The `read_some` operation may not read all of the requested number of bytes. Consider using the `boost::asio::read` function if you need to ensure that the requested amount of data is read before the blocking operation completes.
+
+
+['[*Example]]
+  
+To read into a single data buffer use the `boost::asio::buffer` function as follows: 
+
+   read_stream.read_some(boost::asio::buffer(data, size));
+
+
+See the documentation for the `boost::asio::buffer` function for information on reading into multiple buffers in one go, and how to use it with arrays, `boost::array` or `std::vector`. 
 
 
 
@@ -929,12 +1480,47 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:overload2 read_stream::read_some (2 of 2 overloads)]
 
 
+Reads some data from the stream. 
+
 
   template<
       typename MutableBufferSequence>
   std::size_t read_some(
       const MutableBufferSequence & buffers,
       boost::system::error_code & ec);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[buffers][One or more buffers into which the data will be read. The type must meet the requirements for `MutableBufferSequence`, as defined in the Boost.Asio documentation.]]
+
+[[ec][Set to indicate what error occurred, if any. An error code of `boost::asio::error::eof` indicates that the end of the URL content has been reached.]]
+
+]
+
+['[*Return Value]]
+      
+The number of bytes read.
+
+['[*Remarks]]
+  
+This function is used to read data from the stream. The function call will block until one or more bytes of data has been read successfully, or until an error occurs.
+
+The `read_some` operation may not read all of the requested number of bytes. Consider using the `boost::asio::read` function if you need to ensure that the requested amount of data is read before the blocking operation completes.
+
+
+['[*Example]]
+  
+To read into a single data buffer use the `boost::asio::buffer` function as follows: 
+
+   read_stream.read_some(boost::asio::buffer(data, size));
+
+
+See the documentation for the `boost::asio::buffer` function for information on reading into multiple buffers in one go, and how to use it with arrays, `boost::array` or `std::vector`. 
 
 
 
@@ -947,9 +1533,22 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:read_stream read_stream::read_stream]
 
 [indexterm2 read_stream..read_stream] 
+Constructs an object of class `read_stream`. 
+
 
   read_stream(
       boost::asio::io_service & io_service);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[io_service][The `io_service` object that the stream will use to dispatch handlers for any asynchronous operations performed on the stream. ]]
+
+]
 
 
 
@@ -1114,44 +1713,12 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:err Error Handling]
 
   
-[section:is_error_code_enum_lt__urdl__http__errc__errc_t__gt_ boost::system::is_error_code_enum< urdl::http::errc::errc_t >]
-
-
-
-  template<>
-  struct boost::system::is_error_code_enum< urdl::http::errc::errc_t >
-
-
-['[*Data Members]]
-[table
-  [[Name][Description]]
-
-  [
-    [[link urdl.reference.err.is_error_code_enum_lt__urdl__http__errc__errc_t__gt_.value [*value]]]
-    []
-  ]
-
-]
-
-
-[section:value boost::system::is_error_code_enum< urdl::http::errc::errc_t >::value]
-
-[indexterm2 value..boost::system::is_error_code_enum< urdl::http::errc::errc_t >] 
-
-  static const bool value = true;
-
-
-
-[endsect]
-
-
-
-[endsect]
-
 
 [section:http__errc__errc_t http::errc::errc_t]
 
 [indexterm1 http::errc::errc_t] 
+HTTP error codes. 
+
 
   enum errc_t
 
@@ -1160,215 +1727,225 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 
   [
     [malformed_status_line]
-    []
+    [The response's status line was malformed. ]
   ]
 
   [
     [malformed_response_headers]
-    []
+    [The response's headers were malformed. ]
   ]
 
   [
     [continue_request]
-    []
+    [The server-generated status code "100 Continue". ]
   ]
 
   [
     [switching_protocols]
-    []
+    [The server-generated status code "101 Switching Protocols". ]
   ]
 
   [
     [ok]
-    []
+    [The server-generated status code "200 OK". ]
   ]
 
   [
     [created]
-    []
+    [The server-generated status code "201 Created". ]
   ]
 
   [
     [accepted]
-    []
+    [The server-generated status code "202 Accepted". ]
   ]
 
   [
     [non_authoritative_information]
-    []
+    [The server-generated status code "203 Non-Authoritative Information". ]
   ]
 
   [
     [no_content]
-    []
+    [The server-generated status code "204 No Content". ]
   ]
 
   [
     [reset_content]
-    []
+    [The server-generated status code "205 Reset Content". ]
   ]
 
   [
     [partial_content]
-    []
+    [The server-generated status code "206 Partial Content". ]
   ]
 
   [
     [multiple_choices]
-    []
+    [The server-generated status code "300 Multiple Choices". ]
   ]
 
   [
     [moved_permanently]
-    []
+    [The server-generated status code "301 Moved Permanently". ]
   ]
 
   [
     [found]
-    []
+    [The server-generated status code "302 Found". ]
   ]
 
   [
     [see_other]
-    []
+    [The server-generated status code "303 See Other". ]
   ]
 
   [
     [not_modified]
-    []
+    [The server-generated status code "304 Not Modified". ]
   ]
 
   [
     [use_proxy]
-    []
+    [The server-generated status code "305 Use Proxy". ]
   ]
 
   [
     [temporary_redirect]
-    []
+    [The server-generated status code "307 Temporary Redirect". ]
   ]
 
   [
     [bad_request]
-    []
+    [The server-generated status code "400 Bad Request". ]
   ]
 
   [
     [unauthorized]
-    []
+    [The server-generated status code "401 Unauthorized". ]
   ]
 
   [
     [payment_required]
-    []
+    [The server-generated status code "402 Payment Required". ]
   ]
 
   [
     [forbidden]
-    []
+    [The server-generated status code "403 Forbidden". ]
   ]
 
   [
     [not_found]
-    []
+    [The server-generated status code "404 Not Found". ]
   ]
 
   [
     [method_not_allowed]
-    []
+    [The server-generated status code "405 Method Not Allowed". ]
   ]
 
   [
     [not_acceptable]
-    []
+    [The server-generated status code "406 Not Acceptable". ]
   ]
 
   [
     [proxy_authentication_required]
-    []
+    [The server-generated status code "407 Proxy Authentication Required". ]
   ]
 
   [
     [request_timeout]
-    []
+    [The server-generated status code "408 Request Time-out". ]
   ]
 
   [
     [conflict]
-    []
+    [The server-generated status code "409 Conflict". ]
   ]
 
   [
     [gone]
-    []
+    [The server-generated status code "410 Gone". ]
   ]
 
   [
     [length_required]
-    []
+    [The server-generated status code "411 Length Required". ]
   ]
 
   [
     [precondition_failed]
-    []
+    [The server-generated status code "412 Precondition Failed". ]
   ]
 
   [
     [request_entity_too_large]
-    []
+    [The server-generated status code "413 Request Entity Too Large". ]
   ]
 
   [
     [request_uri_too_large]
-    []
+    [The server-generated status code "414 Request URI Too Large". ]
   ]
 
   [
     [unsupported_media_type]
-    []
+    [The server-generated status code "415 Unsupported Media Type". ]
   ]
 
   [
     [requested_range_not_satisfiable]
-    []
+    [The server-generated status code "416 Requested Range Not Satisfiable". ]
   ]
 
   [
     [expectation_failed]
-    []
+    [The server-generated status code "417 Expectation Failed". ]
   ]
 
   [
     [internal_server_error]
-    []
+    [The server-generated status code "500 Internal Server Error". ]
   ]
 
   [
     [not_implemented]
-    []
+    [The server-generated status code "501 Not Implemented". ]
   ]
 
   [
     [bad_gateway]
-    []
+    [The server-generated status code "502 Bad Gateway". ]
   ]
 
   [
     [service_unavailable]
-    []
+    [The server-generated status code "503 Service Unavailable". ]
   ]
 
   [
     [gateway_timeout]
-    []
+    [The server-generated status code "504 Gateway Timeout". ]
   ]
 
   [
     [version_not_supported]
-    []
+    [The server-generated status code "505 HTTP Version Not Supported". ]
   ]
 
 ]
+
+
+The enumerators of type `errc_t` are implicitly convertible to objects of type `boost::system::error_code`.
+
+
+['[*Requirements]]
+  
+[*Header:] `<urdl/http.hpp>`
+
+[*Namespace:] `urdl::http`
 
 
 
@@ -1379,9 +1956,19 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:http__errc__make_error_code http::errc::make_error_code]
 
 [indexterm1 http::errc::make_error_code] 
+Converts a value of type `errc_t` to a corresponding object of type `boost::system::error_code`. 
+
 
   boost::system::error_code make_error_code(
       errc_t e);
+
+
+
+['[*Requirements]]
+  
+[*Header:] `<urdl/http.hpp>`
+
+[*Namespace:] `urdl::http`
 
 
 
@@ -1392,8 +1979,22 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [section:http__error_category http::error_category]
 
 [indexterm1 http::error_category] 
+Gets the error category for HTTP errors. 
+
 
   const boost::system::error_category & error_category();
+
+
+
+['[*Return Value]]
+      
+The `boost::system::error_category` used for HTTP errors.
+
+['[*Requirements]]
+  
+[*Header:] `<urdl/http.hpp>`
+
+[*Namespace:] `urdl::http`
 
 
 
