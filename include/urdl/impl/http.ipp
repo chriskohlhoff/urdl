@@ -30,6 +30,7 @@ class error_category_impl
 {
   virtual const char* name() const;
   virtual std::string message(int e) const;
+  virtual boost::system::error_condition default_error_condition(int e) const;
 };
 
 URDL_INLINE
@@ -129,6 +130,22 @@ std::string error_category_impl::message(int e) const
     return "HTTP version not supported";
   default:
     return "Unknown HTTP error";
+  }
+}
+
+URDL_INLINE
+boost::system::error_condition error_category_impl::default_error_condition(
+    int e) const
+{
+  switch (e)
+  {
+  case http::errc::unauthorized:
+  case http::errc::forbidden:
+    return boost::system::errc::permission_denied;
+  case http::errc::not_found:
+    return boost::system::errc::no_such_file_or_directory;
+  default:
+    return boost::system::error_condition(e, *this);
   }
 }
 
