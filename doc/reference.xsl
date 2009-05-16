@@ -914,11 +914,18 @@
 <xsl:text>
 </xsl:text><xsl:apply-templates select="templateparamlist" mode="class-detail"/>
 <xsl:text>  </xsl:text><xsl:if test="@static='yes'">static </xsl:if><xsl:if
+ test="@explicit='yes'">explicit </xsl:if><xsl:if
  test="string-length(type) > 0"><xsl:value-of select="type"/><xsl:text> </xsl:text>
 </xsl:if>``[link urdl.reference.<xsl:value-of select="$class-id"/>.<xsl:value-of
  select="$id"/>.overload<xsl:value-of select="position()"/><xsl:text> </xsl:text><xsl:value-of
  select="name"/>]``(<xsl:apply-templates select="param"
  mode="class-detail"/>)<xsl:if test="@const='yes'"> const</xsl:if>;
+<xsl:text>  ``  [''''&amp;raquo;'''</xsl:text>
+<xsl:text> [link urdl.reference.</xsl:text>
+<xsl:value-of select="$class-id"/>.<xsl:value-of
+ select="$id"/>.overload<xsl:value-of select="position()"/>
+<xsl:text> more...]]``
+</xsl:text>
 </xsl:for-each>
 </xsl:if>
 
@@ -1042,6 +1049,7 @@
 <xsl:text>
 </xsl:text><xsl:apply-templates select="templateparamlist" mode="class-detail"/>
 <xsl:text>  </xsl:text><xsl:if test="@static='yes'">static </xsl:if><xsl:if
+ test="@explicit='yes'">explicit </xsl:if><xsl:if
  test="string-length(type) > 0"><xsl:value-of select="type"/><xsl:text> </xsl:text></xsl:if>
 <xsl:value-of select="name"/>(<xsl:apply-templates select="param"
  mode="class-detail"/>)<xsl:if test="@const='yes'"> const</xsl:if>;
@@ -1083,6 +1091,11 @@
   </xsl:variable>
   <xsl:variable name="unqualified-name">
     <xsl:call-template name="strip-ns">
+      <xsl:with-param name="name" select="$name"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:variable name="member-id">
+    <xsl:call-template name="make-top-level-id">
       <xsl:with-param name="name" select="$name"/>
     </xsl:call-template>
   </xsl:variable>
@@ -1130,8 +1143,14 @@
 </xsl:text><xsl:apply-templates select="templateparamlist" mode="class-detail"/>
 <xsl:text>  </xsl:text><xsl:if test="string-length(type) > 0"><xsl:value-of
  select="type"/><xsl:text> </xsl:text></xsl:if>``[link urdl.reference.<xsl:value-of
- select="$id"/>.overload<xsl:value-of select="position()"/><xsl:text> </xsl:text>
-<xsl:value-of select="name"/>]``(<xsl:apply-templates select="param" mode="class-detail"/>);
+ select="$member-id"/>.overload<xsl:value-of select="position()"/><xsl:text> </xsl:text>
+<xsl:value-of select="name"/><xsl:text>]``(</xsl:text>
+<xsl:apply-templates select="param" mode="class-detail"/>);
+<xsl:text>  ``  [''''&amp;raquo;'''</xsl:text>
+<xsl:text> [link urdl.reference.</xsl:text>
+<xsl:value-of select="$member-id"/>.overload<xsl:value-of select="position()"/>
+<xsl:text> more...]]``
+</xsl:text>
 </xsl:for-each>
 
 <xsl:for-each select="/doxygen/compounddef[@kind='group' and compoundname=$name]">

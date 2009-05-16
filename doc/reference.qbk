@@ -276,9 +276,11 @@ Constructs an object of class `istream`.
 
 
   ``[link urdl.reference.core.istream.istream.overload1 istream]``();
+  ``  [''''&raquo;''' [link urdl.reference.core.istream.istream.overload1 more...]]``
 
-  ``[link urdl.reference.core.istream.istream.overload2 istream]``(
+  explicit ``[link urdl.reference.core.istream.istream.overload2 istream]``(
       const url & u);
+  ``  [''''&raquo;''' [link urdl.reference.core.istream.istream.overload2 more...]]``
 
 
 [section:overload1 istream::istream (1 of 2 overloads)]
@@ -307,7 +309,7 @@ Initializes the base class with `std::basic_istream<char>(sb)`, where sb is an o
 Constructs an object of class `istream`. 
 
 
-  istream(
+  explicit istream(
       const url & u);
 
 
@@ -389,6 +391,7 @@ Gets the read timeout of the stream.
 
 
   std::size_t ``[link urdl.reference.core.istream.read_timeout.overload1 read_timeout]``() const;
+  ``  [''''&raquo;''' [link urdl.reference.core.istream.read_timeout.overload1 more...]]``
 
 
 Sets the read timeout of the stream. 
@@ -396,6 +399,7 @@ Sets the read timeout of the stream.
 
   void ``[link urdl.reference.core.istream.read_timeout.overload2 read_timeout]``(
       std::size_t milliseconds);
+  ``  [''''&raquo;''' [link urdl.reference.core.istream.read_timeout.overload2 more...]]``
 
 
 [section:overload1 istream::read_timeout (1 of 2 overloads)]
@@ -763,6 +767,7 @@ Gets the read timeout of the stream buffer.
 
 
   std::size_t ``[link urdl.reference.core.istreambuf.read_timeout.overload1 read_timeout]``() const;
+  ``  [''''&raquo;''' [link urdl.reference.core.istreambuf.read_timeout.overload1 more...]]``
 
 
 Sets the read timeout of the stream buffer. 
@@ -770,6 +775,7 @@ Sets the read timeout of the stream buffer.
 
   void ``[link urdl.reference.core.istreambuf.read_timeout.overload2 read_timeout]``(
       std::size_t milliseconds);
+  ``  [''''&raquo;''' [link urdl.reference.core.istreambuf.read_timeout.overload2 more...]]``
 
 
 [section:overload1 istreambuf::read_timeout (1 of 2 overloads)]
@@ -1112,9 +1118,11 @@ Closes the stream.
 
 
   void ``[link urdl.reference.core.read_stream.close.overload1 close]``();
+  ``  [''''&raquo;''' [link urdl.reference.core.read_stream.close.overload1 more...]]``
 
   boost::system::error_code ``[link urdl.reference.core.read_stream.close.overload2 close]``(
       boost::system::error_code & ec);
+  ``  [''''&raquo;''' [link urdl.reference.core.read_stream.close.overload2 more...]]``
 
 
 [section:overload1 read_stream::close (1 of 2 overloads)]
@@ -1293,10 +1301,12 @@ Opens the specified URL.
 
   void ``[link urdl.reference.core.read_stream.open.overload1 open]``(
       const url & u);
+  ``  [''''&raquo;''' [link urdl.reference.core.read_stream.open.overload1 more...]]``
 
   boost::system::error_code ``[link urdl.reference.core.read_stream.open.overload2 open]``(
       const url & u,
       boost::system::error_code & ec);
+  ``  [''''&raquo;''' [link urdl.reference.core.read_stream.open.overload2 more...]]``
 
 
 [section:overload1 read_stream::open (1 of 2 overloads)]
@@ -1412,12 +1422,14 @@ Reads some data from the stream.
       typename MutableBufferSequence>
   std::size_t ``[link urdl.reference.core.read_stream.read_some.overload1 read_some]``(
       const MutableBufferSequence & buffers);
+  ``  [''''&raquo;''' [link urdl.reference.core.read_stream.read_some.overload1 more...]]``
 
   template<
       typename MutableBufferSequence>
   std::size_t ``[link urdl.reference.core.read_stream.read_some.overload2 read_some]``(
       const MutableBufferSequence & buffers,
       boost::system::error_code & ec);
+  ``  [''''&raquo;''' [link urdl.reference.core.read_stream.read_some.overload2 more...]]``
 
 
 [section:overload1 read_stream::read_some (1 of 2 overloads)]
@@ -1536,7 +1548,7 @@ See the documentation for the `boost::asio::buffer` function for information on 
 Constructs an object of class `read_stream`. 
 
 
-  read_stream(
+  explicit read_stream(
       boost::asio::io_service & io_service);
 
 
@@ -1650,15 +1662,18 @@ Constructs an object of class `read_stream`.
 
   ``[link urdl.reference.core.url.url.overload1 url]``(
       const char * url_string);
+  ``  [''''&raquo;''' [link urdl.reference.core.url.url.overload1 more...]]``
 
   ``[link urdl.reference.core.url.url.overload2 url]``(
       const std::string & url_string);
+  ``  [''''&raquo;''' [link urdl.reference.core.url.url.overload2 more...]]``
 
   ``[link urdl.reference.core.url.url.overload3 url]``(
       const std::string & protocol,
       const std::string & host,
       unsigned short port,
       const std::string & file);
+  ``  [''''&raquo;''' [link urdl.reference.core.url.url.overload3 more...]]``
 
 
 [section:overload1 url::url (1 of 3 overloads)]
