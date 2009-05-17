@@ -277,6 +277,60 @@ bool url::unescape_path(const std::string& in, std::string& out)
   return true;
 }
 
+URDL_INLINE
+bool operator==(const url& a, const url& b)
+{
+  return a.protocol_ == b.protocol_
+    && a.user_info_ == b.user_info_
+    && a.host_ == b.host_
+    && a.port_ == b.port_
+    && a.path_ == b.path_
+    && a.query_ == b.query_
+    && a.fragment_ == b.fragment_;
+}
+
+URDL_INLINE
+bool operator!=(const url& a, const url& b)
+{
+  return !(a == b);
+}
+
+URDL_INLINE
+bool operator<(const url& a, const url& b)
+{
+  if (a.protocol_ < b.protocol_)
+    return true;
+  if (b.protocol_ < a.protocol_)
+    return false;
+
+  if (a.user_info_ < b.user_info_)
+    return true;
+  if (b.user_info_ < a.user_info_)
+    return false;
+
+  if (a.host_ < b.host_)
+    return true;
+  if (b.host_ < a.host_)
+    return false;
+
+  if (a.port_ < b.port_)
+    return true;
+  if (b.port_ < a.port_)
+    return false;
+
+  if (a.path_ < b.path_)
+    return true;
+  if (b.path_ < a.path_)
+    return false;
+
+  if (a.query_ < b.query_)
+    return true;
+  if (b.query_ < a.query_)
+    return false;
+
+  return a.fragment_ < b.fragment_;
+}
+
 } // namespace urdl
 
 #include "urdl/detail/abi_suffix.hpp"
