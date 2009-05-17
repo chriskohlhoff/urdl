@@ -88,9 +88,9 @@ public:
 
   static url from_string(const std::string& s, boost::system::error_code& ec);
 
-  friend bool operator==(const url& a, const url& b);
-  friend bool operator!=(const url& a, const url& b);
-  friend bool operator<(const url& a, const url& b);
+  friend URDL_DECL bool operator==(const url& a, const url& b);
+  friend URDL_DECL bool operator!=(const url& a, const url& b);
+  friend URDL_DECL bool operator<(const url& a, const url& b);
 
 private:
   static bool unescape_path(const std::string& in, std::string& out);
