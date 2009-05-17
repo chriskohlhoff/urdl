@@ -9,3 +9,6 @@
 
 #include "urdl/http.hpp"
 #include "urdl/impl/http.ipp"
+
+#include "urdl/url.hpp"
+#include "urdl/impl/url.ipp"
