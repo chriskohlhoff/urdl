@@ -77,7 +77,7 @@ public:
     // server will close the socket after transmitting the response. This will
     // allow us to treat all data up until the EOF as the content.
     std::ostream request_stream(&request_buffer_);
-    request_stream << "GET " << u.file() << " HTTP/1.0\r\n";
+    request_stream << "GET " << u.path() << " HTTP/1.0\r\n";
     request_stream << "Host: " << u.host() << ":" << u.port() << "\r\n";
     request_stream << "Accept: */*\r\n";
     request_stream << "Connection: close\r\n\r\n";
@@ -190,7 +190,7 @@ public:
       // allow us to treat all data up until the EOF as the content.
       {
         std::ostream request_stream(&request_buffer_);
-        request_stream << "GET " << url_.file() << " HTTP/1.0\r\n";
+        request_stream << "GET " << url_.path() << " HTTP/1.0\r\n";
         request_stream << "Host: " << url_.host() << ":";
         request_stream << url_.port() << "\r\n";
         request_stream << "Accept: */*\r\n";

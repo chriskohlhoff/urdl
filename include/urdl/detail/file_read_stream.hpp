@@ -33,7 +33,7 @@ public:
   boost::system::error_code open(const url& u, boost::system::error_code& ec)
   {
     file_.clear();
-    file_.open(u.file().c_str(), std::ios_base::in | std::ios_base::binary);
+    file_.open(u.path().c_str(), std::ios_base::in | std::ios_base::binary);
     if (!file_)
     {
       ec = make_error_code(boost::system::errc::no_such_file_or_directory);
