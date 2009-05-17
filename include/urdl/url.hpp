@@ -89,7 +89,7 @@ public:
   static url from_string(const std::string& s, boost::system::error_code& ec);
 
 private:
-  static bool unescape(const std::string& in, std::string& out);
+  static bool unescape_path(const std::string& in, std::string& out);
 
   std::string protocol_;
   std::string user_info_;

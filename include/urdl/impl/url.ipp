@@ -45,7 +45,7 @@ URDL_INLINE
 std::string url::path() const
 {
   std::string tmp_path;
-  unescape(path_, tmp_path);
+  unescape_path(path_, tmp_path);
   return tmp_path;
 }
 
@@ -172,7 +172,7 @@ url url::from_string(const char* s, boost::system::error_code& ec)
     length = std::strcspn(s, "?#");
     new_url.path_.assign(s, s + length);
     std::string tmp_path;
-    if (!unescape(new_url.path_, tmp_path))
+    if (!unescape_path(new_url.path_, tmp_path))
     {
       ec = make_error_code(boost::system::errc::invalid_argument);
       return url();
@@ -224,14 +224,15 @@ url url::from_string(const std::string& s)
 }
 
 URDL_INLINE
-bool url::unescape(const std::string& in, std::string& out)
+bool url::unescape_path(const std::string& in, std::string& out)
 {
   out.clear();
   out.reserve(in.size());
   for (std::size_t i = 0; i < in.size(); ++i)
   {
-    if (in[i] == '%')
+    switch (in[i])
     {
+    case '%':
       if (i + 3 <= in.size())
       {
         unsigned int value = 0;
@@ -260,9 +261,18 @@ bool url::unescape(const std::string& in, std::string& out)
       }
       else
         return false;
-    }
-    else
+      break;
+    case '-': case '_': case '.': case '!': case '~': case '*':
+    case '\'': case '(': case ')': case ':': case '@': case '&':
+    case '=': case '+': case '$': case ',': case '/': case ';':
       out += in[i];
+      break;
+    default:
+      if (!std::isalnum(in[i]))
+        return false;
+      out += in[i];
+      break;
+    }
   }
   return true;
 }
