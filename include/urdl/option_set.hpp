@@ -65,7 +65,7 @@ private:
   template <typename Option>
   struct option_wrapper : option_wrapper_base
   {
-    option(const Option& o) : value(o) {}
+    option_wrapper(const Option& o) : value(o) {}
     const std::type_info& type_info() const
     { return typeid(option_wrapper<Option>); }
     option_wrapper_base* clone() const

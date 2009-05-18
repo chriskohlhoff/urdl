@@ -24,8 +24,8 @@ namespace urdl {
 URDL_INLINE
 option_set::option_set(const option_set& other)
 {
-  std::auto_ptr<option_base>* prev_link = &head_;
-  option_base* node = other.head_.get();
+  std::auto_ptr<option_wrapper_base>* prev_link = &head_;
+  option_wrapper_base* node = other.head_.get();
   while (node)
   {
     prev_link->reset(node->clone());
@@ -45,19 +45,19 @@ option_set& option_set::operator=(const option_set& other)
 URDL_INLINE
 void option_set::set_options(const option_set& other)
 {
-  option_base* node = other.head_.get();
+  option_wrapper_base* node = other.head_.get();
   while (node)
   {
-    set_option_base(node->clone());
+    set_option_wrapper_base(node->clone());
     node = node->next.get();
   }
 }
 
 URDL_INLINE
-void option_set::set_option_base(option_set::option_base* o)
+void option_set::set_option_wrapper_base(option_set::option_wrapper_base* o)
 {
-  std::auto_ptr<option_base>* prev_link = &head_;
-  option_base* node = head_.get();
+  std::auto_ptr<option_wrapper_base>* prev_link = &head_;
+  option_wrapper_base* node = head_.get();
   while (node)
   {
     if (o->type_info() == node->type_info())
@@ -73,10 +73,10 @@ void option_set::set_option_base(option_set::option_base* o)
 }
 
 URDL_INLINE
-option_set::option_base* option_set::get_option_base(
+option_set::option_wrapper_base* option_set::get_option_wrapper_base(
     const std::type_info& ti) const
 {
-  option_base* node = head_.get();
+  option_wrapper_base* node = head_.get();
   while (node)
   {
     if (ti == node->type_info())
@@ -87,10 +87,10 @@ option_set::option_base* option_set::get_option_base(
 }
 
 URDL_INLINE
-void option_set::clear_option_base(const std::type_info& ti)
+void option_set::clear_option_wrapper_base(const std::type_info& ti)
 {
-  std::auto_ptr<option_base>* prev_link = &head_;
-  option_base* node = head_.get();
+  std::auto_ptr<option_wrapper_base>* prev_link = &head_;
+  option_wrapper_base* node = head_.get();
   while (node)
   {
     if (ti == node->type_info())
