@@ -80,6 +80,35 @@ public:
       setstate(std::ios_base::failbit);
   }
 
+  /// Constructs an object of class @c istream.
+  /**
+   * @param u The URL to open.
+   *
+   * @param options The options to be set on the stream.
+   *
+   * @par Remarks
+   * Initializes the base class with @c std::basic_istream<char>(sb), where
+   * @c sb is an object of class @c istreambuf stored within the class. It also
+   * performs @c rdbuf()->set_options(options), then opens @c sb by performing
+   * @c sb.open(u) and, if that fails (returns a null pointer), calls
+   * @c setstate(failbit).
+   *
+   * @par Example
+   * @code
+   * urdl::option_set options;
+   * options.set_option(urdl::http::max_redirects(1));
+   * urdl::istream is("http://www.boost.org", options);
+   * @endcode
+   */
+  explicit istream(const url& u, const option_set& options)
+    : std::basic_istream<char>(
+        &this->boost::base_from_member<istreambuf>::member)
+  {
+    rdbuf()->set_options(options);
+    if (rdbuf()->open(u) == 0)
+      setstate(std::ios_base::failbit);
+  }
+
   /// Sets an option to control the behaviour of the stream.
   /**
    * @param option The option to be set on the stream.
@@ -110,7 +139,7 @@ public:
    *
    * @par Example
    * @code
-   * urdl::istream is(io_service);
+   * urdl::istream is;
    * urdl::option_set options;
    * options.set_option(urdl::http::max_redirects(1));
    * options.set_option(urdl::ssl::verify_peer(false));
@@ -133,7 +162,7 @@ public:
    *
    * @par Example
    * @code
-   * urdl::istream is(io_service);
+   * urdl::istream is;
    * urdl::http::max_redirects option
    *   = is.get_option<urdl::http::max_redirects>();
    * std::size_t value = option.value();

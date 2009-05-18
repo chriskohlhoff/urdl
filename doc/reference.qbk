@@ -266,7 +266,7 @@ Returns `rdbuf()->get_option<Option>()`. Options are uniquely identified by type
   
 
 
-   urdl::istream is(io_service);
+   urdl::istream is;
    urdl::http::max_redirects option
      = is.get_option<urdl::http::max_redirects>();
    std::size_t value = option.value();
@@ -378,8 +378,13 @@ Constructs an object of class `istream`.
       const url & u);
   ``  [''''&raquo;''' [link urdl.reference.core.istream.istream.overload2 more...]]``
 
+  explicit ``[link urdl.reference.core.istream.istream.overload3 istream]``(
+      const url & u,
+      const option_set & options);
+  ``  [''''&raquo;''' [link urdl.reference.core.istream.istream.overload3 more...]]``
 
-[section:overload1 istream::istream (1 of 2 overloads)]
+
+[section:overload1 istream::istream (1 of 3 overloads)]
 
 
 Constructs an object of class `istream`. 
@@ -399,7 +404,7 @@ Initializes the base class with `std::basic_istream<char>(sb)`, where sb is an o
 
 
 
-[section:overload2 istream::istream (2 of 2 overloads)]
+[section:overload2 istream::istream (2 of 3 overloads)]
 
 
 Constructs an object of class `istream`. 
@@ -422,6 +427,50 @@ Constructs an object of class `istream`.
 ['[*Remarks]]
   
 Initializes the base class with `std::basic_istream<char>(sb)`, where `sb` is an object of class `istreambuf` stored within the class. It also opens `sb` by performing `sb.open(u)` and, if that fails (returns a null pointer), calls `setstate(failbit)`. 
+
+
+
+[endsect]
+
+
+
+[section:overload3 istream::istream (3 of 3 overloads)]
+
+
+Constructs an object of class `istream`. 
+
+
+  explicit istream(
+      const url & u,
+      const option_set & options);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[u][The URL to open.]]
+
+[[options][The options to be set on the stream.]]
+
+]
+
+['[*Remarks]]
+  
+Initializes the base class with `std::basic_istream<char>(sb)`, where `sb` is an object of class `istreambuf` stored within the class. It also performs `rdbuf()->set_options(options)`, then opens `sb` by performing `sb.open(u)` and, if that fails (returns a null pointer), calls `setstate(failbit)`.
+
+['[*Example]]
+  
+
+
+   urdl::option_set options;
+   options.set_option(urdl::http::max_redirects(1));
+   urdl::istream is("http://www.boost.org", options);
+
+
+
 
 
 
@@ -624,7 +673,7 @@ Performs `rdbuf()->set_options(options)`.
   
 
 
-   urdl::istream is(io_service);
+   urdl::istream is;
    urdl::option_set options;
    options.set_option(urdl::http::max_redirects(1));
    options.set_option(urdl::ssl::verify_peer(false));
