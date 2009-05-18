@@ -67,7 +67,13 @@ std::string url::to_string(int parts) const
   }
 
   if ((parts & host_part) != 0)
+  {
+    if (ipv6_host_)
+      s += "[";
     s += host_;
+    if (ipv6_host_)
+      s += "]";
+  }
 
   if ((parts & port_part) != 0 && !port_.empty())
   {
@@ -125,7 +131,7 @@ url url::from_string(const char* s, boost::system::error_code& ec)
   }
 
   // UserInfo.
-  length = std::strcspn(s, "@:/?#");
+  length = std::strcspn(s, "@:[/?#");
   if (s[length] == '@')
   {
     new_url.user_info_.assign(s, s + length);
@@ -142,9 +148,29 @@ url url::from_string(const char* s, boost::system::error_code& ec)
   }
 
   // Host.
-  length = std::strcspn(s, ":/?#");
-  new_url.host_.assign(s, s + length);
-  s += length;
+  if (*s == '[')
+  {
+    length = std::strcspn(++s, "]");
+    if (s[length] != ']')
+    {
+      ec = make_error_code(boost::system::errc::invalid_argument);
+      return url();
+    }
+    new_url.host_.assign(s, s + length);
+    new_url.ipv6_host_ = true;
+    s += length + 1;
+    if (std::strcspn(s, ":/?#") != 0)
+    {
+      ec = make_error_code(boost::system::errc::invalid_argument);
+      return url();
+    }
+  }
+  else
+  {
+    length = std::strcspn(s, ":/?#");
+    new_url.host_.assign(s, s + length);
+    s += length;
+  }
 
   // Port.
   if (*s == ':')

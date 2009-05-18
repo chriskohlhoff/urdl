@@ -23,15 +23,18 @@ class URDL_DECL url
 {
 public:
   url()
+    : ipv6_host_(false)
   {
   }
 
   url(const char* s)
+    : ipv6_host_(false)
   {
     *this = from_string(s);
   }
 
   url(const std::string& s)
+    : ipv6_host_(false)
   {
     *this = from_string(s);
   }
@@ -102,6 +105,7 @@ private:
   std::string path_;
   std::string query_;
   std::string fragment_;
+  bool ipv6_host_;
 };
 
 } // namespace urdl
