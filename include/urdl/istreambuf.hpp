@@ -1,6 +1,6 @@
 //
-// streambuf.hpp
-// ~~~~~~~~~~~~~
+// istreambuf.hpp
+// ~~~~~~~~~~~~~~
 //
 // Copyright (c) 2009 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
@@ -14,6 +14,7 @@
 #include <streambuf>
 #include <boost/system/error_code.hpp>
 #include "urdl/detail/config.hpp"
+#include "urdl/option_set.hpp"
 #include "urdl/url.hpp"
 
 #include "urdl/detail/abi_prefix.hpp"
@@ -36,6 +37,48 @@ public:
 
   /// Destroys an object of class @c istreambuf.
   ~istreambuf();
+
+  /// Sets an option to control the behaviour of the stream buffer.
+  /**
+   * @param option The option to be set on the stream buffer.
+   *
+   * @par Remarks
+   * Options are uniquely identified by type.
+   */
+  template <typename Option>
+  void set_option(const Option& option)
+  {
+    option_set options;
+    options.set_option(option);
+    set_options(options);
+  }
+
+  /// Sets options to control the behaviour of the stream buffer.
+  /**
+   * @param options The options to be set on the stream buffer.
+   */
+  void set_options(const option_set& options);
+
+  /// Gets the current value of an option that controls the behaviour of the
+  /// stream buffer.
+  /**
+   * @returns The current value of the option.
+   *
+   * @par Remarks
+   * Options are uniquely identified by type.
+   */
+  template <typename Option>
+  Option get_option() const
+  {
+    option_set options(get_options());
+    return options.get_option<Option>();
+  }
+
+  /// Gets the values of all options set on the stream.
+  /**
+   * @returns An option set containing all options from the stream buffer.
+   */
+  option_set get_options() const;
 
   /// Determines whether the stream buffer is open.
   /**

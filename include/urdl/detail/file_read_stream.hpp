@@ -15,6 +15,7 @@
 #include <boost/asio/buffer.hpp>
 #include <boost/asio/detail/bind_handler.hpp>
 #include <fstream>
+#include "urdl/option_set.hpp"
 #include "urdl/url.hpp"
 
 #include "urdl/detail/abi_prefix.hpp"
@@ -25,8 +26,10 @@ namespace detail {
 class file_read_stream
 {
 public:
-  explicit file_read_stream(boost::asio::io_service& io_service)
-    : io_service_(io_service)
+  explicit file_read_stream(boost::asio::io_service& io_service,
+      option_set& options)
+    : io_service_(io_service),
+      options_(options)
   {
   }
 
@@ -105,6 +108,7 @@ public:
 
 private:
   boost::asio::io_service& io_service_;
+  option_set& options_;
   std::ifstream file_;
 };
 

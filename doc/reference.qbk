@@ -47,6 +47,16 @@ The class `istream` supports reading content from a specified URL.
   ]
   
   [
+    [[link urdl.reference.core.istream.get_option [*get_option]]]
+    [Gets the current value of an option that controls the behaviour of the stream. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istream.get_options [*get_options]]]
+    [Gets the values of all options set on the stream. ]
+  ]
+  
+  [
     [[link urdl.reference.core.istream.headers [*headers]]]
     [Gets the protocol-specific headers obtained from the URL. ]
   ]
@@ -76,6 +86,16 @@ The class `istream` supports reading content from a specified URL.
     [Gets the read timeout of the stream. 
 
      Sets the read timeout of the stream. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istream.set_option [*set_option]]]
+    [Sets an option to control the behaviour of the stream. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istream.set_options [*set_options]]]
+    [Sets options to control the behaviour of the stream. ]
   ]
   
 ]
@@ -212,6 +232,82 @@ To take action given a specific error:
        std::cout << "Computer says no" << std::endl;
      }
    }
+
+
+
+
+
+
+[endsect]
+
+
+
+[section:get_option istream::get_option]
+
+[indexterm2 get_option..istream] 
+Gets the current value of an option that controls the behaviour of the stream. 
+
+
+  template<
+      typename Option>
+  Option get_option() const;
+
+
+
+['[*Return Value]]
+      
+The current value of the option.
+
+['[*Remarks]]
+  
+Returns `rdbuf()->get_option<Option>()`. Options are uniquely identified by type.
+
+['[*Example]]
+  
+
+
+   urdl::istream is(io_service);
+   urdl::http::max_redirects option
+     = is.get_option<urdl::http::max_redirects>();
+   std::size_t value = option.value();
+
+
+
+
+
+
+[endsect]
+
+
+
+[section:get_options istream::get_options]
+
+[indexterm2 get_options..istream] 
+Gets the values of all options set on the stream. 
+
+
+  option_set get_options() const;
+
+
+
+['[*Return Value]]
+      
+An option set containing all options from the stream.
+
+['[*Remarks]]
+  
+Returns `rdbuf()->get_options()`.
+
+['[*Example]]
+  
+To get the options that have been set on the stream: 
+
+   urdl::istream is;
+   ...
+   urdl::option_set options(is.get_options());
+   urdl::http::max_redirects option
+     = options.get_option<urdl::http::max_redirects>();
+   std::size_t value = option.value();
 
 
 
@@ -458,6 +554,91 @@ Performs `rdbuf()->read_timeout(milliseconds)`.
 [endsect]
 
 
+[section:set_option istream::set_option]
+
+[indexterm2 set_option..istream] 
+Sets an option to control the behaviour of the stream. 
+
+
+  template<
+      typename Option>
+  void set_option(
+      const Option & option);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[option][The option to be set on the stream.]]
+
+]
+
+['[*Remarks]]
+  
+Performs `rdbuf()->set_option(option)`. Options are uniquely identified by type.
+
+['[*Example]]
+  
+
+
+   urdl::istream is;
+   is.set_option(urdl::http::max_redirects(1));
+
+
+
+
+
+
+[endsect]
+
+
+
+[section:set_options istream::set_options]
+
+[indexterm2 set_options..istream] 
+Sets options to control the behaviour of the stream. 
+
+
+  void set_options(
+      const option_set & options);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[options][The options to be set on the stream. The options in the set are added on top of any options already set on the stream.]]
+
+]
+
+['[*Remarks]]
+  
+Performs `rdbuf()->set_options(options)`.
+
+['[*Example]]
+  
+
+
+   urdl::istream is(io_service);
+   urdl::option_set options;
+   options.set_option(urdl::http::max_redirects(1));
+   options.set_option(urdl::ssl::verify_peer(false));
+   stream.set_options(options);
+
+
+
+
+
+
+[endsect]
+
+
+
 [endsect]
 
 [section:istreambuf istreambuf]
@@ -490,6 +671,16 @@ The class `istreambuf` associates the input sequence with the content from a spe
   ]
   
   [
+    [[link urdl.reference.core.istreambuf.get_option [*get_option]]]
+    [Gets the current value of an option that controls the behaviour of the stream buffer. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf.get_options [*get_options]]]
+    [Gets the values of all options set on the stream. ]
+  ]
+  
+  [
     [[link urdl.reference.core.istreambuf.headers [*headers]]]
     [Gets the protocol-specific headers obtained from the URL. ]
   ]
@@ -519,6 +710,16 @@ The class `istreambuf` associates the input sequence with the content from a spe
     [Gets the read timeout of the stream buffer. 
 
      Sets the read timeout of the stream buffer. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf.set_option [*set_option]]]
+    [Sets an option to control the behaviour of the stream buffer. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf.set_options [*set_options]]]
+    [Sets options to control the behaviour of the stream buffer. ]
   ]
   
   [
@@ -638,6 +839,52 @@ An `error_code` corresponding to the last error from the stream.
 ['[*Remarks]]
   
 Returns a reference to an `error_code` object representing the last failure reported by an `istreambuf` function. The set of possible `error_code` values and categories depends on the protocol of the URL used to open the stream buffer. 
+
+
+
+[endsect]
+
+
+
+[section:get_option istreambuf::get_option]
+
+[indexterm2 get_option..istreambuf] 
+Gets the current value of an option that controls the behaviour of the stream buffer. 
+
+
+  template<
+      typename Option>
+  Option get_option() const;
+
+
+
+['[*Return Value]]
+      
+The current value of the option.
+
+['[*Remarks]]
+  
+Options are uniquely identified by type. 
+
+
+
+[endsect]
+
+
+
+[section:get_options istreambuf::get_options]
+
+[indexterm2 get_options..istreambuf] 
+Gets the values of all options set on the stream. 
+
+
+  option_set get_options() const;
+
+
+
+['[*Return Value]]
+      
+An option set containing all options from the stream buffer. 
 
 
 
@@ -826,6 +1073,64 @@ Sets the read timeout of the stream buffer.
 [endsect]
 
 
+[section:set_option istreambuf::set_option]
+
+[indexterm2 set_option..istreambuf] 
+Sets an option to control the behaviour of the stream buffer. 
+
+
+  template<
+      typename Option>
+  void set_option(
+      const Option & option);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[option][The option to be set on the stream buffer.]]
+
+]
+
+['[*Remarks]]
+  
+Options are uniquely identified by type. 
+
+
+
+[endsect]
+
+
+
+[section:set_options istreambuf::set_options]
+
+[indexterm2 set_options..istreambuf] 
+Sets options to control the behaviour of the stream buffer. 
+
+
+  void set_options(
+      const option_set & options);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[options][The options to be set on the stream buffer. ]]
+
+]
+
+
+
+[endsect]
+
+
+
 [section:underflow istreambuf::underflow]
 
 [indexterm2 underflow..istreambuf] 
@@ -849,6 +1154,159 @@ Destroys an object of class `istreambuf`.
 
 
   ~istreambuf();
+
+
+
+[endsect]
+
+
+
+[endsect]
+
+[section:option_set option_set]
+
+
+
+  class option_set
+
+
+['[*Member Functions]]
+[table
+  [[Name][Description]]
+
+  [
+    [[link urdl.reference.core.option_set.clear_option [*clear_option]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.option_set.get_option [*get_option]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.option_set.operator_eq_ [*operator=]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.option_set.option_set [*option_set]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.option_set.set_option [*set_option]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.option_set.set_options [*set_options]]]
+    []
+  ]
+  
+]
+
+
+[section:clear_option option_set::clear_option]
+
+[indexterm2 clear_option..option_set] 
+
+  template<
+      typename Option>
+  void clear_option();
+
+
+
+[endsect]
+
+
+
+[section:get_option option_set::get_option]
+
+[indexterm2 get_option..option_set] 
+
+  template<
+      typename Option>
+  Option get_option() const;
+
+
+
+[endsect]
+
+
+
+[section:operator_eq_ option_set::operator=]
+
+[indexterm2 operator=..option_set] 
+
+  option_set & operator=(
+      const option_set & other);
+
+
+
+[endsect]
+
+
+[section:option_set option_set::option_set]
+
+[indexterm2 option_set..option_set] 
+
+  ``[link urdl.reference.core.option_set.option_set.overload1 option_set]``();
+  ``  [''''&raquo;''' [link urdl.reference.core.option_set.option_set.overload1 more...]]``
+
+  ``[link urdl.reference.core.option_set.option_set.overload2 option_set]``(
+      const option_set & other);
+  ``  [''''&raquo;''' [link urdl.reference.core.option_set.option_set.overload2 more...]]``
+
+
+[section:overload1 option_set::option_set (1 of 2 overloads)]
+
+
+
+  option_set();
+
+
+
+[endsect]
+
+
+
+[section:overload2 option_set::option_set (2 of 2 overloads)]
+
+
+
+  option_set(
+      const option_set & other);
+
+
+
+[endsect]
+
+
+[endsect]
+
+
+[section:set_option option_set::set_option]
+
+[indexterm2 set_option..option_set] 
+
+  template<
+      typename Option>
+  void set_option(
+      const Option & o);
+
+
+
+[endsect]
+
+
+
+[section:set_options option_set::set_options]
+
+[indexterm2 set_options..option_set] 
+
+  void set_options(
+      const option_set & other);
 
 
 
@@ -902,6 +1360,16 @@ The class `read_stream` supports reading content from a specified URL using sync
   ]
   
   [
+    [[link urdl.reference.core.read_stream.get_option [*get_option]]]
+    [Gets the current value of an option that controls the behaviour of the stream. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.read_stream.get_options [*get_options]]]
+    [Gets the values of all options set on the stream. ]
+  ]
+  
+  [
     [[link urdl.reference.core.read_stream.headers [*headers]]]
     [Gets the protocol-specific headers obtained from the URL. ]
   ]
@@ -924,6 +1392,16 @@ The class `read_stream` supports reading content from a specified URL using sync
   [
     [[link urdl.reference.core.read_stream.read_stream [*read_stream]]]
     [Constructs an object of class read_stream. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.read_stream.set_option [*set_option]]]
+    [Sets an option to control the behaviour of the stream. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.read_stream.set_options [*set_options]]]
+    [Sets options to control the behaviour of the stream. ]
   ]
   
 ]
@@ -1254,6 +1732,78 @@ A reference to the `io_service` object that the stream will use to dispatch hand
 
 
 
+[section:get_option read_stream::get_option]
+
+[indexterm2 get_option..read_stream] 
+Gets the current value of an option that controls the behaviour of the stream. 
+
+
+  template<
+      typename Option>
+  Option get_option() const;
+
+
+
+['[*Return Value]]
+      
+The current value of the option.
+
+['[*Remarks]]
+  
+Options are uniquely identified by type.
+
+['[*Example]]
+  
+
+
+   urdl::read_stream stream(io_service);
+   urdl::http::max_redirects option
+     = stream.get_option<urdl::http::max_redirects>();
+   std::size_t value = option.value();
+
+
+
+
+
+
+[endsect]
+
+
+
+[section:get_options read_stream::get_options]
+
+[indexterm2 get_options..read_stream] 
+Gets the values of all options set on the stream. 
+
+
+  option_set get_options() const;
+
+
+
+['[*Return Value]]
+      
+An option set containing all options from the stream.
+
+['[*Example]]
+  
+
+
+   urdl::read_stream stream(io_service);
+   ...
+   urdl::option_set options(stream.get_options());
+   urdl::http::max_redirects option
+     = options.get_option<urdl::http::max_redirects>();
+   std::size_t value = option.value();
+
+
+
+
+
+
+[endsect]
+
+
+
 [section:headers read_stream::headers]
 
 [indexterm2 headers..read_stream] 
@@ -1568,6 +2118,87 @@ Constructs an object of class `read_stream`.
 
 
 
+[section:set_option read_stream::set_option]
+
+[indexterm2 set_option..read_stream] 
+Sets an option to control the behaviour of the stream. 
+
+
+  template<
+      typename Option>
+  void set_option(
+      const Option & option);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[option][The option to be set on the stream.]]
+
+]
+
+['[*Remarks]]
+  
+Options are uniquely identified by type.
+
+['[*Example]]
+  
+
+
+   urdl::read_stream stream(io_service);
+   stream.set_option(urdl::http::max_redirects(1));
+
+
+
+
+
+
+[endsect]
+
+
+
+[section:set_options read_stream::set_options]
+
+[indexterm2 set_options..read_stream] 
+Sets options to control the behaviour of the stream. 
+
+
+  void set_options(
+      const option_set & options);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[options][The options to be set on the stream. The options in the set are added on top of any options already set on the stream.]]
+
+]
+
+['[*Example]]
+  
+
+
+   urdl::read_stream stream(io_service);
+   urdl::option_set options;
+   options.set_option(urdl::http::max_redirects(1));
+   options.set_option(urdl::ssl::verify_peer(false));
+   stream.set_options(options);
+
+
+
+
+
+
+[endsect]
+
+
+
 [endsect]
 
 [section:url url]
@@ -1577,17 +2208,40 @@ Constructs an object of class `read_stream`.
   class url
 
 
+['[*Types]]
+[table
+  [[Name][Description]]
+
+  [
+
+    [[link urdl.reference.core.url.parts_type [*parts_type]]]
+    []
+  
+  ]
+
+]
+
 ['[*Member Functions]]
 [table
   [[Name][Description]]
 
   [
-    [[link urdl.reference.core.url.file [*file]]]
+    [[link urdl.reference.core.url.fragment [*fragment]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.url.from_string [*from_string]]]
     []
   ]
   
   [
     [[link urdl.reference.core.url.host [*host]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.url.path [*path]]]
     []
   ]
   
@@ -1602,18 +2256,89 @@ Constructs an object of class `read_stream`.
   ]
   
   [
+    [[link urdl.reference.core.url.query [*query]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.url.to_string [*to_string]]]
+    []
+  ]
+  
+  [
     [[link urdl.reference.core.url.url [*url]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.url.user_info [*user_info]]]
+    []
+  ]
+  
+]
+
+['[*Friends]]
+[table
+  [[Name][Description]]
+
+  [
+    [[link urdl.reference.core.url.operator_not__eq_ [*operator!=]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.url.operator_lt_ [*operator<]]]
+    []
+  ]
+  
+  [
+    [[link urdl.reference.core.url.operator_eq__eq_ [*operator==]]]
     []
   ]
   
 ]
 
 
-[section:file url::file]
+[section:fragment url::fragment]
 
-[indexterm2 file..url] 
+[indexterm2 fragment..url] 
 
-  std::string file() const;
+  std::string fragment() const;
+
+
+
+[endsect]
+
+
+[section:from_string url::from_string]
+
+[indexterm2 from_string..url] 
+
+  static url ``[link urdl.reference.core.url.from_string.overload1 from_string]``(
+      const char * s);
+  ``  [''''&raquo;''' [link urdl.reference.core.url.from_string.overload1 more...]]``
+
+  static url ``[link urdl.reference.core.url.from_string.overload2 from_string]``(
+      const char * s,
+      boost::system::error_code & ec);
+  ``  [''''&raquo;''' [link urdl.reference.core.url.from_string.overload2 more...]]``
+
+  static url ``[link urdl.reference.core.url.from_string.overload3 from_string]``(
+      const std::string & s);
+  ``  [''''&raquo;''' [link urdl.reference.core.url.from_string.overload3 more...]]``
+
+  static url ``[link urdl.reference.core.url.from_string.overload4 from_string]``(
+      const std::string & s,
+      boost::system::error_code & ec);
+  ``  [''''&raquo;''' [link urdl.reference.core.url.from_string.overload4 more...]]``
+
+
+[section:overload1 url::from_string (1 of 4 overloads)]
+
+
+
+  static url from_string(
+      const char * s);
 
 
 
@@ -1621,11 +2346,165 @@ Constructs an object of class `read_stream`.
 
 
 
+[section:overload2 url::from_string (2 of 4 overloads)]
+
+
+
+  static url from_string(
+      const char * s,
+      boost::system::error_code & ec);
+
+
+
+[endsect]
+
+
+
+[section:overload3 url::from_string (3 of 4 overloads)]
+
+
+
+  static url from_string(
+      const std::string & s);
+
+
+
+[endsect]
+
+
+
+[section:overload4 url::from_string (4 of 4 overloads)]
+
+
+
+  static url from_string(
+      const std::string & s,
+      boost::system::error_code & ec);
+
+
+
+[endsect]
+
+
+[endsect]
+
+
 [section:host url::host]
 
 [indexterm2 host..url] 
 
   std::string host() const;
+
+
+
+[endsect]
+
+
+
+[section:operator_not__eq_ url::operator!=]
+
+[indexterm2 operator!=..url] 
+
+  friend bool operator!=(
+      const url & a,
+      const url & b);
+
+
+
+[endsect]
+
+
+
+[section:operator_lt_ url::operator<]
+
+[indexterm2 operator<..url] 
+
+  friend bool operator<(
+      const url & a,
+      const url & b);
+
+
+
+[endsect]
+
+
+
+[section:operator_eq__eq_ url::operator==]
+
+[indexterm2 operator==..url] 
+
+  friend bool operator==(
+      const url & a,
+      const url & b);
+
+
+
+[endsect]
+
+
+
+[section:parts_type url::parts_type]
+
+[indexterm2 parts_type..url] 
+
+  enum parts_type
+
+['[*Values]]
+[variablelist
+
+  [
+    [protocol_part]
+    []
+  ]
+
+  [
+    [user_info_part]
+    []
+  ]
+
+  [
+    [host_part]
+    []
+  ]
+
+  [
+    [port_part]
+    []
+  ]
+
+  [
+    [path_part]
+    []
+  ]
+
+  [
+    [query_part]
+    []
+  ]
+
+  [
+    [fragment_part]
+    []
+  ]
+
+  [
+    [all_parts]
+    []
+  ]
+
+]
+
+
+
+[endsect]
+
+
+
+[section:path url::path]
+
+[indexterm2 path..url] 
+
+  std::string path() const;
 
 
 
@@ -1656,23 +2535,44 @@ Constructs an object of class `read_stream`.
 [endsect]
 
 
+
+[section:query url::query]
+
+[indexterm2 query..url] 
+
+  std::string query() const;
+
+
+
+[endsect]
+
+
+
+[section:to_string url::to_string]
+
+[indexterm2 to_string..url] 
+
+  std::string to_string(
+      int parts = all_parts) const;
+
+
+
+[endsect]
+
+
 [section:url url::url]
 
 [indexterm2 url..url] 
 
-  ``[link urdl.reference.core.url.url.overload1 url]``(
-      const char * url_string);
+  ``[link urdl.reference.core.url.url.overload1 url]``();
   ``  [''''&raquo;''' [link urdl.reference.core.url.url.overload1 more...]]``
 
   ``[link urdl.reference.core.url.url.overload2 url]``(
-      const std::string & url_string);
+      const char * s);
   ``  [''''&raquo;''' [link urdl.reference.core.url.url.overload2 more...]]``
 
   ``[link urdl.reference.core.url.url.overload3 url]``(
-      const std::string & protocol,
-      const std::string & host,
-      unsigned short port,
-      const std::string & file);
+      const std::string & s);
   ``  [''''&raquo;''' [link urdl.reference.core.url.url.overload3 more...]]``
 
 
@@ -1680,8 +2580,7 @@ Constructs an object of class `read_stream`.
 
 
 
-  url(
-      const char * url_string);
+  url();
 
 
 
@@ -1694,7 +2593,7 @@ Constructs an object of class `read_stream`.
 
 
   url(
-      const std::string & url_string);
+      const char * s);
 
 
 
@@ -1707,10 +2606,222 @@ Constructs an object of class `read_stream`.
 
 
   url(
-      const std::string & protocol,
-      const std::string & host,
-      unsigned short port,
-      const std::string & file);
+      const std::string & s);
+
+
+
+[endsect]
+
+
+[endsect]
+
+
+[section:user_info url::user_info]
+
+[indexterm2 user_info..url] 
+
+  std::string user_info() const;
+
+
+
+[endsect]
+
+
+
+[endsect]
+
+
+[endsect]
+
+[section:opt Options]
+
+  
+[section:http__max_redirects http::max_redirects]
+
+
+Option to specify the maximum number of allowed HTTP redirects. 
+
+
+  class max_redirects
+
+
+['[*Member Functions]]
+[table
+  [[Name][Description]]
+
+  [
+    [[link urdl.reference.opt.http__max_redirects.max_redirects [*max_redirects]]]
+    [Constructs an object of class max_redirects. ]
+  ]
+  
+  [
+    [[link urdl.reference.opt.http__max_redirects.value [*value]]]
+    [Gets the value of the option. 
+
+     Sets the value of the option. ]
+  ]
+  
+]
+
+
+['[*Remarks]]
+  
+The default value is for there to be no limit on the number of allowed redirects. Set the option to 0 to disable HTTP redirects.
+
+['[*Example]]
+  
+To set maximum number of redirects for an object of class `urdl::istream:`
+
+   urdl::istream is;
+   is.set_option(urdl::http::max_redirects(1));
+   is.open("http://www.boost.org");
+
+
+
+
+To set maximum number of redirects for an object of class `urdl::read_stream:`
+
+   urdl::read_stream stream;
+   stream.set_option(urdl::http::max_redirects(1));
+   stream.open("http://www.boost.org");
+
+
+
+
+
+['[*Requirements]]
+  
+[*Header:] `<urdl/http.hpp>`
+
+[*Namespace:] `urdl::http`
+
+
+[section:max_redirects http::max_redirects::max_redirects]
+
+[indexterm2 max_redirects..http::max_redirects] 
+Constructs an object of class `max_redirects`. 
+
+
+  ``[link urdl.reference.opt.http__max_redirects.max_redirects.overload1 max_redirects]``();
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__max_redirects.max_redirects.overload1 more...]]``
+
+  explicit ``[link urdl.reference.opt.http__max_redirects.max_redirects.overload2 max_redirects]``(
+      std::size_t v);
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__max_redirects.max_redirects.overload2 more...]]``
+
+
+[section:overload1 http::max_redirects::max_redirects (1 of 2 overloads)]
+
+
+Constructs an object of class `max_redirects`. 
+
+
+  max_redirects();
+
+
+
+['[*Remarks]]
+  
+Postcondition: `value() == std::numeric_limits<std::size_t>::max()`. 
+
+
+
+[endsect]
+
+
+
+[section:overload2 http::max_redirects::max_redirects (2 of 2 overloads)]
+
+
+Constructs an object of class `max_redirects`. 
+
+
+  explicit max_redirects(
+      std::size_t v);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[v][The desired value for the option.]]
+
+]
+
+['[*Remarks]]
+  
+Postcondition: `value() == v`
+
+
+
+[endsect]
+
+
+[endsect]
+
+[section:value http::max_redirects::value]
+
+[indexterm2 value..http::max_redirects] 
+Gets the value of the option. 
+
+
+  std::size_t ``[link urdl.reference.opt.http__max_redirects.value.overload1 value]``() const;
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__max_redirects.value.overload1 more...]]``
+
+
+Sets the value of the option. 
+
+
+  void ``[link urdl.reference.opt.http__max_redirects.value.overload2 value]``(
+      std::size_t v);
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__max_redirects.value.overload2 more...]]``
+
+
+[section:overload1 http::max_redirects::value (1 of 2 overloads)]
+
+
+Gets the value of the option. 
+
+
+  std::size_t value() const;
+
+
+
+['[*Return Value]]
+      
+The value of the option. 
+
+
+
+[endsect]
+
+
+
+[section:overload2 http::max_redirects::value (2 of 2 overloads)]
+
+
+Sets the value of the option. 
+
+
+  void value(
+      std::size_t v);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[v][The desired value for the option.]]
+
+]
+
+['[*Remarks]]
+  
+Postcondition: `value() == v`
 
 
 

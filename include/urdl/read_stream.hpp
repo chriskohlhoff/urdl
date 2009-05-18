@@ -16,6 +16,7 @@
 #include <boost/asio/detail/bind_handler.hpp>
 #include <boost/throw_exception.hpp>
 #include "urdl/http.hpp"
+#include "urdl/option_set.hpp"
 #include "urdl/url.hpp"
 #include "urdl/detail/coroutine.hpp"
 #include "urdl/detail/file_read_stream.hpp"
@@ -109,11 +110,11 @@ public:
    */
   explicit read_stream(boost::asio::io_service& io_service)
     : io_service_(io_service),
-      file_(io_service),
-      http_(io_service),
+      file_(io_service, options_),
+      http_(io_service, options_),
 #if !defined(URDL_DISABLE_SSL)
       ssl_context_(io_service, boost::asio::ssl::context::sslv23),
-      https_(io_service, ssl_context_),
+      https_(io_service, options_, ssl_context_),
 #endif // !defined(URDL_DISABLE_SSL)
       protocol_(unknown)
   {
@@ -130,6 +131,85 @@ public:
   boost::asio::io_service& get_io_service()
   {
     return io_service_;
+  }
+
+  /// Sets an option to control the behaviour of the stream.
+  /**
+   * @param option The option to be set on the stream.
+   *
+   * @par Remarks
+   * Options are uniquely identified by type.
+   *
+   * @par Example
+   * @code
+   * urdl::read_stream stream(io_service);
+   * stream.set_option(urdl::http::max_redirects(1));
+   * @endcode
+   */
+  template <typename Option>
+  void set_option(const Option& option)
+  {
+    options_.set_option(option);
+  }
+
+  /// Sets options to control the behaviour of the stream.
+  /**
+   * @param options The options to be set on the stream. The options in the set
+   * are added on top of any options already set on the stream.
+   *
+   * @par Example
+   * @code
+   * urdl::read_stream stream(io_service);
+   * urdl::option_set options;
+   * options.set_option(urdl::http::max_redirects(1));
+   * options.set_option(urdl::ssl::verify_peer(false));
+   * stream.set_options(options);
+   * @endcode
+   */
+  void set_options(const option_set& options)
+  {
+    options_.set_options(options);
+  }
+
+  /// Gets the current value of an option that controls the behaviour of the
+  /// stream.
+  /**
+   * @returns The current value of the option.
+   *
+   * @par Remarks
+   * Options are uniquely identified by type.
+   *
+   * @par Example
+   * @code
+   * urdl::read_stream stream(io_service);
+   * urdl::http::max_redirects option
+   *   = stream.get_option<urdl::http::max_redirects>();
+   * std::size_t value = option.value();
+   * @endcode
+   */
+  template <typename Option>
+  Option get_option() const
+  {
+    return options_.get_option<Option>();
+  }
+
+  /// Gets the values of all options set on the stream.
+  /**
+   * @returns An option set containing all options from the stream.
+   *
+   * @par Example
+   * @code
+   * urdl::read_stream stream(io_service);
+   * ...
+   * urdl::option_set options(stream.get_options());
+   * urdl::http::max_redirects option
+   *   = options.get_option<urdl::http::max_redirects>();
+   * std::size_t value = option.value();
+   * @endcode
+   */
+  option_set get_options() const
+  {
+    return options_;
   }
 
   /// Determines whether the stream is open.
@@ -206,6 +286,7 @@ public:
   boost::system::error_code open(const url& u, boost::system::error_code& ec)
   {
     url tmp_url = u;
+    std::size_t redirects = 0;
     for (;;)
     {
       if (tmp_url.protocol() == "file")
@@ -219,9 +300,15 @@ public:
         http_.open(tmp_url, ec);
         if (ec == http::errc::moved_permanently || ec == http::errc::found)
         {
-          tmp_url = http_.location();
-          http_.close(ec);
-          continue;
+          std::size_t max_redirects = options_.get_option<
+              urdl::http::max_redirects>().value();
+          if (redirects < max_redirects)
+          {
+            ++redirects;
+            tmp_url = http_.location();
+            http_.close(ec);
+            continue;
+          }
         }
         return ec;
       }
@@ -232,9 +319,15 @@ public:
         https_.open(tmp_url, ec);
         if (ec == http::errc::moved_permanently || ec == http::errc::found)
         {
-          tmp_url = https_.location();
-          https_.close(ec);
-          continue;
+          std::size_t max_redirects = options_.get_option<
+              urdl::http::max_redirects>().value();
+          if (redirects < max_redirects)
+          {
+            ++redirects;
+            tmp_url = https_.location();
+            https_.close(ec);
+            continue;
+          }
         }
         return ec;
       }
@@ -662,6 +755,7 @@ private:
   template <typename Handler> friend class open_coro;
 
   boost::asio::io_service& io_service_;
+  option_set options_;
   detail::file_read_stream file_;
   detail::http_read_stream<boost::asio::ip::tcp::socket> http_;
 #if !defined(URDL_DISABLE_SSL)

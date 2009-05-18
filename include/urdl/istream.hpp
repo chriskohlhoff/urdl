@@ -80,6 +80,94 @@ public:
       setstate(std::ios_base::failbit);
   }
 
+  /// Sets an option to control the behaviour of the stream.
+  /**
+   * @param option The option to be set on the stream.
+   *
+   * @par Remarks
+   * Performs @c rdbuf()->set_option(option). Options are uniquely identified by
+   * type.
+   *
+   * @par Example
+   * @code
+   * urdl::istream is;
+   * is.set_option(urdl::http::max_redirects(1));
+   * @endcode
+   */
+  template <typename Option>
+  void set_option(const Option& option)
+  {
+    rdbuf()->set_option(option);
+  }
+
+  /// Sets options to control the behaviour of the stream.
+  /**
+   * @param options The options to be set on the stream. The options in the set
+   * are added on top of any options already set on the stream.
+   *
+   * @par Remarks
+   * Performs @c rdbuf()->set_options(options).
+   *
+   * @par Example
+   * @code
+   * urdl::istream is(io_service);
+   * urdl::option_set options;
+   * options.set_option(urdl::http::max_redirects(1));
+   * options.set_option(urdl::ssl::verify_peer(false));
+   * stream.set_options(options);
+   * @endcode
+   */
+  void set_options(const option_set& options)
+  {
+    rdbuf()->set_options(options);
+  }
+
+  /// Gets the current value of an option that controls the behaviour of the
+  /// stream.
+  /**
+   * @returns The current value of the option.
+   *
+   * @par Remarks
+   * Returns @c rdbuf()->get_option<Option>(). Options are uniquely identified
+   * by type.
+   *
+   * @par Example
+   * @code
+   * urdl::istream is(io_service);
+   * urdl::http::max_redirects option
+   *   = is.get_option<urdl::http::max_redirects>();
+   * std::size_t value = option.value();
+   * @endcode
+   */
+  template <typename Option>
+  Option get_option() const
+  {
+    return rdbuf()->get_option<Option>();
+  }
+
+  /// Gets the values of all options set on the stream.
+  /**
+   * @returns An option set containing all options from the stream.
+   *
+   * @par Remarks
+   * Returns @c rdbuf()->get_options().
+   *
+   * @par Example
+   * To get the options that have been set on the stream:
+   * @code
+   * urdl::istream is;
+   * ...
+   * urdl::option_set options(is.get_options());
+   * urdl::http::max_redirects option
+   *   = options.get_option<urdl::http::max_redirects>();
+   * std::size_t value = option.value();
+   * @endcode
+   */
+  option_set get_options() const
+  {
+    return rdbuf()->get_options();
+  }
+
   /// Determines whether the stream is open.
   /**
    * @returns @c true if the stream is open, @c false otherwise.

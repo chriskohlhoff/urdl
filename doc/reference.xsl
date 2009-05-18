@@ -50,7 +50,9 @@
             contains($fullname, 'urdl::') and
             not(contains($fullname, '::detail')) and
             not(contains($fullname, '_handler')) and
+            not(contains($fullname, '_wrapper')) and
             not(contains($fullname, '_coro')) and
+            not(contains($fullname, 'http::')) and
             not(contains($fullname, 'err'))">
           <xsl:call-template name="class"/>
         </xsl:if>
@@ -59,7 +61,43 @@
         <xsl:if test="
             not(contains($fullname, '::detail')) and
             not(contains($fullname, '_helper')) and
+            not(contains($fullname, 'http::')) and
             not(contains($fullname, 'err'))">
+          <xsl:call-template name="namespace-memberdef"/>
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:for-each>
+
+[endsect]
+
+[section:opt Options]
+
+  <xsl:for-each select="
+      compounddef[@kind = 'class' or @kind = 'struct'] |
+      compounddef[@kind = 'namespace']/sectiondef[1]/memberdef">
+    <xsl:sort select="concat((. | ancestor::*)/compoundname, '::', name, ':x')"/>
+    <xsl:sort select="name"/>
+    <xsl:variable name="fullname" select="concat((. | ancestor::*)/compoundname, '::', name, ':x')"/>
+    <xsl:choose>
+      <xsl:when test="@kind='class' or @kind='struct'">
+        <xsl:if test="
+            contains($fullname, 'urdl::') and
+            not(contains($fullname, '::detail')) and
+            not(contains($fullname, '_handler')) and
+            not(contains($fullname, '_wrapper')) and
+            not(contains($fullname, '_coro')) and
+            not(contains(compoundname, 'err')) and
+            contains($fullname, 'http::')">
+          <xsl:call-template name="class"/>
+        </xsl:if>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:if test="
+            not(contains($fullname, '::detail')) and
+            not(contains($fullname, '_helper')) and
+            not(contains($fullname, 'err')) and
+            contains($fullname, 'http::')">
           <xsl:call-template name="namespace-memberdef"/>
         </xsl:if>
       </xsl:otherwise>
@@ -82,6 +120,7 @@
             contains($fullname, 'urdl::') and
             not(contains($fullname, '::detail')) and
             not(contains($fullname, '_handler')) and
+            not(contains($fullname, '_wrapper')) and
             not(contains($fullname, '_coro')) and
             not(contains($fullname, 'is_error_code_enum')) and
             contains(compoundname, 'err')">
@@ -236,6 +275,9 @@
   <xsl:choose>
     <xsl:when test="contains($name, 'err')">
       <xsl:text>err.</xsl:text>
+    </xsl:when>
+    <xsl:when test="contains($name, 'http::')">
+      <xsl:text>opt.</xsl:text>
     </xsl:when>
     <xsl:otherwise>
       <xsl:text>core.</xsl:text>

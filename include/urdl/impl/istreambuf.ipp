@@ -68,6 +68,18 @@ istreambuf::~istreambuf()
 }
 
 URDL_INLINE
+void istreambuf::set_options(const option_set& options)
+{
+  body_->read_stream_.set_options(options);
+}
+
+URDL_INLINE
+option_set istreambuf::get_options() const
+{
+  return body_->read_stream_.get_options();
+}
+
+URDL_INLINE
 istreambuf* istreambuf::open(const url& u)
 {
   if (is_open())
@@ -80,6 +92,12 @@ istreambuf* istreambuf::open(const url& u)
 }
 
 URDL_INLINE
+bool istreambuf::is_open() const
+{
+  return body_->read_stream_.is_open();
+}
+
+URDL_INLINE
 istreambuf* istreambuf::close()
 {
   if (!is_open())
@@ -89,12 +107,6 @@ istreambuf* istreambuf::close()
   if (!body_->error_)
     init_buffers();
   return !body_->error_ ? this : 0;
-}
-
-URDL_INLINE
-bool istreambuf::is_open() const
-{
-  return body_->read_stream_.is_open();
 }
 
 URDL_INLINE

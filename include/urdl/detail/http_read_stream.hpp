@@ -24,6 +24,7 @@
 #include <ostream>
 #include <iterator>
 #include "urdl/http.hpp"
+#include "urdl/option_set.hpp"
 #include "urdl/url.hpp"
 #include "urdl/detail/connect.hpp"
 #include "urdl/detail/coroutine.hpp"
@@ -39,17 +40,21 @@ template <typename Stream>
 class http_read_stream
 {
 public:
-  explicit http_read_stream(boost::asio::io_service& io_service)
+  explicit http_read_stream(boost::asio::io_service& io_service,
+      option_set& options)
     : resolver_(io_service),
       socket_(io_service),
+      options_(options),
       content_length_(0)
   {
   }
 
   template <typename Arg>
-  http_read_stream(boost::asio::io_service& io_service, Arg& arg)
+  http_read_stream(boost::asio::io_service& io_service,
+      option_set& options, Arg& arg)
     : resolver_(io_service),
       socket_(io_service, arg),
+      options_(options),
       content_length_(0)
   {
   }
@@ -459,6 +464,7 @@ public:
 private:
   boost::asio::ip::tcp::resolver resolver_;
   Stream socket_;
+  option_set& options_;
   boost::asio::streambuf request_buffer_;
   boost::asio::streambuf reply_buffer_;
   std::string headers_;

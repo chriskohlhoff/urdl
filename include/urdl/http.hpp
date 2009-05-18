@@ -29,6 +29,82 @@ namespace http {
  */
 URDL_DECL const boost::system::error_category& error_category();
 
+/// Option to specify the maximum number of allowed HTTP redirects.
+/**
+ * @par Remarks
+ * The default value is for there to be no limit on the number of allowed
+ * redirects. Set the option to 0 to disable HTTP redirects.
+ *
+ * @par Example
+ * To set maximum number of redirects for an object of class @c urdl::istream:
+ * @code
+ * urdl::istream is;
+ * is.set_option(urdl::http::max_redirects(1));
+ * is.open("http://www.boost.org");
+ * @endcode
+ *
+ * To set maximum number of redirects for an object of class
+ * @c urdl::read_stream:
+ * @code
+ * urdl::read_stream stream;
+ * stream.set_option(urdl::http::max_redirects(1));
+ * stream.open("http://www.boost.org");
+ * @endcode
+ *
+ * @par Requirements
+ * @e Header: @c <urdl/http.hpp> @n
+ * @e Namespace: @c urdl::http
+ */
+class max_redirects
+{
+public:
+  /// Constructs an object of class @c max_redirects.
+  /**
+   * @par Remarks
+   * Postcondition: <tt>value() == std::numeric_limits<std::size_t>::max()</tt>.
+   */
+  max_redirects()
+    : value_(~std::size_t(0))
+  {
+  }
+
+  /// Constructs an object of class @c max_redirects.
+  /**
+   * @param v The desired value for the option.
+   *
+   * @par Remarks
+   * Postcondition: <tt>value() == v</tt>
+   */
+  explicit max_redirects(std::size_t v)
+    : value_(v)
+  {
+  }
+
+  /// Gets the value of the option.
+  /**
+   * @returns The value of the option.
+   */
+  std::size_t value() const
+  {
+    return value_;
+  }
+
+  /// Sets the value of the option.
+  /**
+   * @param v The desired value for the option.
+   *
+   * @par Remarks
+   * Postcondition: <tt>value() == v</tt>
+   */
+  void value(std::size_t v)
+  {
+    value_ = v;
+  }
+
+private:
+  std::size_t value_;
+};
+
 namespace errc {
 
 /// HTTP error codes.

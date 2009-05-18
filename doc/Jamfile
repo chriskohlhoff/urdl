@@ -7,6 +7,15 @@
 
 using quickbook ;
 
+project
+  :
+    default-build
+    debug
+    <threading>multi
+    <link>shared
+    <runtime-link>shared
+  ;
+
 xml standalone_doc
   :
     urdl.qbk
