@@ -74,7 +74,7 @@ public:
       return ec;
 
     // Perform SSL handshake if required.
-    handshake(socket_, ec);
+    handshake(socket_, u.host(), ec);
     if (ec)
       return ec;
 
