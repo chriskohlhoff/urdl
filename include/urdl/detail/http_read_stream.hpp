@@ -219,6 +219,14 @@ public:
         return;
       }
 
+      // Perform SSL handshake if required.
+      URDL_CORO_YIELD(async_handshake(socket_, url_.host(), *this));
+      if (ec)
+      {
+        handler_(ec);
+        return;
+      }
+
       {
         // Get the HTTP options used to build the request.
         std::string request_method
