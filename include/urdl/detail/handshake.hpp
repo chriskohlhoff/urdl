@@ -54,7 +54,8 @@ inline bool certificate_matches_host(X509* cert, const std::string& host)
     = boost::asio::ip::address::from_string(host, ec);
   bool is_address = !ec;
 
-  // Go through the names in the certificate looking for DNS or IPADD entries.
+  // Go through the alternate names in the certificate looking for DNS or IPADD
+  // entries.
   GENERAL_NAMES* gens = static_cast<GENERAL_NAMES*>(
       X509_get_ext_d2i(cert, NID_subject_alt_name, 0, 0));
   for (int i = 0; i < sk_GENERAL_NAME_num(gens); ++i)
@@ -97,6 +98,26 @@ inline bool certificate_matches_host(X509* cert, const std::string& host)
       }
     }
   }
+
+  // No match in the alternate names, so try the common names.
+  X509_NAME* name = X509_get_subject_name(cert);
+  int i = -1;
+  while ((i = X509_NAME_get_index_by_NID(name, NID_commonName, i)) >= 0)
+  {
+    X509_NAME_ENTRY* name_entry = X509_NAME_get_entry(name, i);
+    ASN1_STRING* domain = X509_NAME_ENTRY_get_data(name_entry);
+    if (domain->data && domain->length)
+    {
+      const char* cert_host = reinterpret_cast<const char*>(domain->data);
+      int j;
+      for (j = 0; host[j] && cert_host[j]; ++j)
+        if (std::tolower(host[j]) != std::tolower(cert_host[j]))
+          break;
+      if (host[j] == 0 && cert_host[j] == 0)
+        return true;
+    }
+  }
+
   return false;
 }
 
