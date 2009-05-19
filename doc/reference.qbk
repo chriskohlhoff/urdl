@@ -2882,6 +2882,408 @@ Postcondition: `value() == v`
 
 [endsect]
 
+[section:http__request_content http::request_content]
+
+
+Option to specify content to accompany an HTTP request. 
+
+
+  class request_content
+
+
+['[*Member Functions]]
+[table
+  [[Name][Description]]
+
+  [
+    [[link urdl.reference.opt.http__request_content.request_content [*request_content]]]
+    [Constructs an object of class request_content. ]
+  ]
+  
+  [
+    [[link urdl.reference.opt.http__request_content.value [*value]]]
+    [Gets the value of the option. 
+
+     Sets the value of the option. ]
+  ]
+  
+]
+
+
+['[*Remarks]]
+  
+The default is for no content to be sent.
+
+['[*Example]]
+  
+To add content to the HTTP request using an object of class `urdl::istream:`
+
+   urdl::istream is;
+   is.set_option(urdl::http::request_method("POST"));
+   is.set_option(urdl::http::request_content("Hello, world!"));
+   is.set_option(urdl::http::request_content_type("text/plain"));
+   is.open("http://host/path");
+
+
+
+
+To add content to the HTTP request using an object of class `urdl::read_stream:`
+
+   urdl::read_stream stream;
+   stream.set_option(urdl::http::request_method("POST"));
+   stream.set_option(urdl::http::request_content("Hello, world!"));
+   stream.set_option(urdl::http::request_content_type("text/plain"));
+   stream.open("http://host/path");
+
+
+
+
+
+['[*Requirements]]
+  
+[*Header:] `<urdl/http.hpp>`
+
+[*Namespace:] `urdl::http`
+
+
+[section:request_content http::request_content::request_content]
+
+[indexterm2 request_content..http::request_content] 
+Constructs an object of class `request_content`. 
+
+
+  ``[link urdl.reference.opt.http__request_content.request_content.overload1 request_content]``();
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__request_content.request_content.overload1 more...]]``
+
+  explicit ``[link urdl.reference.opt.http__request_content.request_content.overload2 request_content]``(
+      const std::string & v);
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__request_content.request_content.overload2 more...]]``
+
+
+[section:overload1 http::request_content::request_content (1 of 2 overloads)]
+
+
+Constructs an object of class `request_content`. 
+
+
+  request_content();
+
+
+
+['[*Remarks]]
+  
+Postcondition: `value() == ""`. 
+
+
+
+[endsect]
+
+
+
+[section:overload2 http::request_content::request_content (2 of 2 overloads)]
+
+
+Constructs an object of class `request_content`. 
+
+
+  explicit request_content(
+      const std::string & v);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[v][The desired value for the option.]]
+
+]
+
+['[*Remarks]]
+  
+Postcondition: `value() == v`
+
+
+
+[endsect]
+
+
+[endsect]
+
+[section:value http::request_content::value]
+
+[indexterm2 value..http::request_content] 
+Gets the value of the option. 
+
+
+  std::string ``[link urdl.reference.opt.http__request_content.value.overload1 value]``() const;
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__request_content.value.overload1 more...]]``
+
+
+Sets the value of the option. 
+
+
+  void ``[link urdl.reference.opt.http__request_content.value.overload2 value]``(
+      const std::string & v);
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__request_content.value.overload2 more...]]``
+
+
+[section:overload1 http::request_content::value (1 of 2 overloads)]
+
+
+Gets the value of the option. 
+
+
+  std::string value() const;
+
+
+
+['[*Return Value]]
+      
+The value of the option. 
+
+
+
+[endsect]
+
+
+
+[section:overload2 http::request_content::value (2 of 2 overloads)]
+
+
+Sets the value of the option. 
+
+
+  void value(
+      const std::string & v);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[v][The desired value for the option.]]
+
+]
+
+['[*Remarks]]
+  
+Postcondition: `value() == v`
+
+
+
+[endsect]
+
+
+[endsect]
+
+
+[endsect]
+
+[section:http__request_content_type http::request_content_type]
+
+
+Option to specify the type of the content that accompanies an HTTP request. 
+
+
+  class request_content_type
+
+
+['[*Member Functions]]
+[table
+  [[Name][Description]]
+
+  [
+    [[link urdl.reference.opt.http__request_content_type.request_content_type [*request_content_type]]]
+    [Constructs an object of class request_content_type. ]
+  ]
+  
+  [
+    [[link urdl.reference.opt.http__request_content_type.value [*value]]]
+    [Gets the value of the option. 
+
+     Sets the value of the option. ]
+  ]
+  
+]
+
+
+['[*Remarks]]
+  
+The default is for no content type to be specified in the request.
+
+['[*Example]]
+  
+To add content to the HTTP request using an object of class `urdl::istream:`
+
+   urdl::istream is;
+   is.set_option(urdl::http::request_method("POST"));
+   is.set_option(urdl::http::request_content("Hello, world!"));
+   is.set_option(urdl::http::request_content_type("text/plain"));
+   is.open("http://host/path");
+
+
+
+
+To add content to the HTTP request using an object of class `urdl::read_stream:`
+
+   urdl::read_stream stream;
+   stream.set_option(urdl::http::request_method("POST"));
+   stream.set_option(urdl::http::request_content("Hello, world!"));
+   stream.set_option(urdl::http::request_content_type("text/plain"));
+   stream.open("http://host/path");
+
+
+
+
+
+['[*Requirements]]
+  
+[*Header:] `<urdl/http.hpp>`
+
+[*Namespace:] `urdl::http`
+
+
+[section:request_content_type http::request_content_type::request_content_type]
+
+[indexterm2 request_content_type..http::request_content_type] 
+Constructs an object of class `request_content_type`. 
+
+
+  ``[link urdl.reference.opt.http__request_content_type.request_content_type.overload1 request_content_type]``();
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__request_content_type.request_content_type.overload1 more...]]``
+
+  explicit ``[link urdl.reference.opt.http__request_content_type.request_content_type.overload2 request_content_type]``(
+      const std::string & v);
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__request_content_type.request_content_type.overload2 more...]]``
+
+
+[section:overload1 http::request_content_type::request_content_type (1 of 2 overloads)]
+
+
+Constructs an object of class `request_content_type`. 
+
+
+  request_content_type();
+
+
+
+['[*Remarks]]
+  
+Postcondition: `value() == ""`. 
+
+
+
+[endsect]
+
+
+
+[section:overload2 http::request_content_type::request_content_type (2 of 2 overloads)]
+
+
+Constructs an object of class `request_content_type`. 
+
+
+  explicit request_content_type(
+      const std::string & v);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[v][The desired value for the option.]]
+
+]
+
+['[*Remarks]]
+  
+Postcondition: `value() == v`
+
+
+
+[endsect]
+
+
+[endsect]
+
+[section:value http::request_content_type::value]
+
+[indexterm2 value..http::request_content_type] 
+Gets the value of the option. 
+
+
+  std::string ``[link urdl.reference.opt.http__request_content_type.value.overload1 value]``() const;
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__request_content_type.value.overload1 more...]]``
+
+
+Sets the value of the option. 
+
+
+  void ``[link urdl.reference.opt.http__request_content_type.value.overload2 value]``(
+      const std::string & v);
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__request_content_type.value.overload2 more...]]``
+
+
+[section:overload1 http::request_content_type::value (1 of 2 overloads)]
+
+
+Gets the value of the option. 
+
+
+  std::string value() const;
+
+
+
+['[*Return Value]]
+      
+The value of the option. 
+
+
+
+[endsect]
+
+
+
+[section:overload2 http::request_content_type::value (2 of 2 overloads)]
+
+
+Sets the value of the option. 
+
+
+  void value(
+      const std::string & v);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[v][The desired value for the option.]]
+
+]
+
+['[*Remarks]]
+  
+Postcondition: `value() == v`
+
+
+
+[endsect]
+
+
+[endsect]
+
+
+[endsect]
+
 [section:http__request_method http::request_method]
 
 

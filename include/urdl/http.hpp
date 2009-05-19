@@ -104,6 +104,164 @@ private:
   std::string value_;
 };
 
+/// Option to specify content to accompany an HTTP request.
+/**
+ * @par Remarks
+ * The default is for no content to be sent.
+ *
+ * @par Example
+ * To add content to the HTTP request using an object of class @c urdl::istream:
+ * @code
+ * urdl::istream is;
+ * is.set_option(urdl::http::request_method("POST"));
+ * is.set_option(urdl::http::request_content("Hello, world!"));
+ * is.set_option(urdl::http::request_content_type("text/plain"));
+ * is.open("http://host/path");
+ * @endcode
+ *
+ * To add content to the HTTP request using an object of class
+ * @c urdl::read_stream:
+ * @code
+ * urdl::read_stream stream;
+ * stream.set_option(urdl::http::request_method("POST"));
+ * stream.set_option(urdl::http::request_content("Hello, world!"));
+ * stream.set_option(urdl::http::request_content_type("text/plain"));
+ * stream.open("http://host/path");
+ * @endcode
+ *
+ * @par Requirements
+ * @e Header: @c <urdl/http.hpp> @n
+ * @e Namespace: @c urdl::http
+ */
+class request_content
+{
+public:
+  /// Constructs an object of class @c request_content.
+  /**
+   * @par Remarks
+   * Postcondition: <tt>value() == ""</tt>.
+   */
+  request_content()
+    : value_("")
+  {
+  }
+
+  /// Constructs an object of class @c request_content.
+  /**
+   * @param v The desired value for the option.
+   *
+   * @par Remarks
+   * Postcondition: <tt>value() == v</tt>
+   */
+  explicit request_content(const std::string& v)
+    : value_(v)
+  {
+  }
+
+  /// Gets the value of the option.
+  /**
+   * @returns The value of the option.
+   */
+  std::string value() const
+  {
+    return value_;
+  }
+
+  /// Sets the value of the option.
+  /**
+   * @param v The desired value for the option.
+   *
+   * @par Remarks
+   * Postcondition: <tt>value() == v</tt>
+   */
+  void value(const std::string& v)
+  {
+    value_ = v;
+  }
+
+private:
+  std::string value_;
+};
+
+/// Option to specify the type of the content that accompanies an HTTP request.
+/**
+ * @par Remarks
+ * The default is for no content type to be specified in the request.
+ *
+ * @par Example
+ * To add content to the HTTP request using an object of class @c urdl::istream:
+ * @code
+ * urdl::istream is;
+ * is.set_option(urdl::http::request_method("POST"));
+ * is.set_option(urdl::http::request_content("Hello, world!"));
+ * is.set_option(urdl::http::request_content_type("text/plain"));
+ * is.open("http://host/path");
+ * @endcode
+ *
+ * To add content to the HTTP request using an object of class
+ * @c urdl::read_stream:
+ * @code
+ * urdl::read_stream stream;
+ * stream.set_option(urdl::http::request_method("POST"));
+ * stream.set_option(urdl::http::request_content("Hello, world!"));
+ * stream.set_option(urdl::http::request_content_type("text/plain"));
+ * stream.open("http://host/path");
+ * @endcode
+ *
+ * @par Requirements
+ * @e Header: @c <urdl/http.hpp> @n
+ * @e Namespace: @c urdl::http
+ */
+class request_content_type
+{
+public:
+  /// Constructs an object of class @c request_content_type.
+  /**
+   * @par Remarks
+   * Postcondition: <tt>value() == ""</tt>.
+   */
+  request_content_type()
+    : value_("")
+  {
+  }
+
+  /// Constructs an object of class @c request_content_type.
+  /**
+   * @param v The desired value for the option.
+   *
+   * @par Remarks
+   * Postcondition: <tt>value() == v</tt>
+   */
+  explicit request_content_type(const std::string& v)
+    : value_(v)
+  {
+  }
+
+  /// Gets the value of the option.
+  /**
+   * @returns The value of the option.
+   */
+  std::string value() const
+  {
+    return value_;
+  }
+
+  /// Sets the value of the option.
+  /**
+   * @param v The desired value for the option.
+   *
+   * @par Remarks
+   * Postcondition: <tt>value() == v</tt>
+   */
+  void value(const std::string& v)
+  {
+    value_ = v;
+  }
+
+private:
+  std::string value_;
+};
+
 /// Option to specify the maximum number of allowed HTTP redirects.
 /**
  * @par Remarks
