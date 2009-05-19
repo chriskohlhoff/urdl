@@ -82,7 +82,8 @@ public:
     // server will close the socket after transmitting the response. This will
     // allow us to treat all data up until the EOF as the content.
     std::ostream request_stream(&request_buffer_);
-    request_stream << "GET ";
+    request_stream << options_.get_option<urdl::http::request_method>().value();
+    request_stream << " ";
     request_stream << u.to_string(url::path_part | url::query_part);
     request_stream << " HTTP/1.0\r\n";
     request_stream << "Host: ";
@@ -152,13 +153,15 @@ public:
   {
   public:
     open_coro(Handler handler, boost::asio::ip::tcp::resolver& resolver,
-        Stream& socket, boost::asio::streambuf& request_buffer,
+        Stream& socket, const option_set& options,
+        boost::asio::streambuf& request_buffer,
         boost::asio::streambuf& reply_buffer, const url& u,
         std::string& headers, std::string& content_type,
         std::size_t& content_length, std::string& location)
       : handler_(handler),
         resolver_(resolver),
         socket_(socket),
+        options_(options),
         request_buffer_(request_buffer),
         reply_buffer_(reply_buffer),
         url_(u),
@@ -199,7 +202,9 @@ public:
       // allow us to treat all data up until the EOF as the content.
       {
         std::ostream request_stream(&request_buffer_);
-        request_stream << "GET ";
+        request_stream << options_.get_option<
+            urdl::http::request_method>().value();
+        request_stream << " ";
         request_stream << url_.to_string(url::path_part | url::query_part);
         request_stream << " HTTP/1.0\r\n";
         request_stream << "Host: ";
@@ -306,6 +311,7 @@ public:
     Handler handler_;
     boost::asio::ip::tcp::resolver& resolver_;
     Stream& socket_;
+    const option_set& options_;
     boost::asio::streambuf& request_buffer_;
     boost::asio::streambuf& reply_buffer_;
     url url_;
@@ -319,7 +325,7 @@ public:
   template <typename Handler>
   void async_open(const url& u, Handler handler)
   {
-    open_coro<Handler>(handler, resolver_, socket_, request_buffer_,
+    open_coro<Handler>(handler, resolver_, socket_, options_, request_buffer_,
         reply_buffer_, u, headers_, content_type_, content_length_, location_)(
           boost::system::error_code(), 0);
   }

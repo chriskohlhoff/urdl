@@ -2882,6 +2882,203 @@ Postcondition: `value() == v`
 
 [endsect]
 
+[section:http__request_method http::request_method]
+
+
+Option to specify the HTTP request method. 
+
+
+  class request_method
+
+
+['[*Member Functions]]
+[table
+  [[Name][Description]]
+
+  [
+    [[link urdl.reference.opt.http__request_method.request_method [*request_method]]]
+    [Constructs an object of class request_method. ]
+  ]
+  
+  [
+    [[link urdl.reference.opt.http__request_method.value [*value]]]
+    [Gets the value of the option. 
+
+     Sets the value of the option. ]
+  ]
+  
+]
+
+
+['[*Remarks]]
+  
+The default request method is "GET".
+
+['[*Example]]
+  
+To set the request method for an object of class `urdl::istream:`
+
+   urdl::istream is;
+   is.set_option(urdl::http::request_method("HEAD"));
+   is.open("http://www.boost.org");
+
+
+
+
+To set the request method for an object of class `urdl::read_stream:`
+
+   urdl::read_stream stream;
+   stream.set_option(urdl::http::request_method("HEAD"));
+   stream.open("http://www.boost.org");
+
+
+
+
+
+['[*Requirements]]
+  
+[*Header:] `<urdl/http.hpp>`
+
+[*Namespace:] `urdl::http`
+
+
+[section:request_method http::request_method::request_method]
+
+[indexterm2 request_method..http::request_method] 
+Constructs an object of class `request_method`. 
+
+
+  ``[link urdl.reference.opt.http__request_method.request_method.overload1 request_method]``();
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__request_method.request_method.overload1 more...]]``
+
+  explicit ``[link urdl.reference.opt.http__request_method.request_method.overload2 request_method]``(
+      const std::string & v);
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__request_method.request_method.overload2 more...]]``
+
+
+[section:overload1 http::request_method::request_method (1 of 2 overloads)]
+
+
+Constructs an object of class `request_method`. 
+
+
+  request_method();
+
+
+
+['[*Remarks]]
+  
+Postcondition: `value() == "GET"`. 
+
+
+
+[endsect]
+
+
+
+[section:overload2 http::request_method::request_method (2 of 2 overloads)]
+
+
+Constructs an object of class `request_method`. 
+
+
+  explicit request_method(
+      const std::string & v);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[v][The desired value for the option.]]
+
+]
+
+['[*Remarks]]
+  
+Postcondition: `value() == v`
+
+
+
+[endsect]
+
+
+[endsect]
+
+[section:value http::request_method::value]
+
+[indexterm2 value..http::request_method] 
+Gets the value of the option. 
+
+
+  std::string ``[link urdl.reference.opt.http__request_method.value.overload1 value]``() const;
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__request_method.value.overload1 more...]]``
+
+
+Sets the value of the option. 
+
+
+  void ``[link urdl.reference.opt.http__request_method.value.overload2 value]``(
+      const std::string & v);
+  ``  [''''&raquo;''' [link urdl.reference.opt.http__request_method.value.overload2 more...]]``
+
+
+[section:overload1 http::request_method::value (1 of 2 overloads)]
+
+
+Gets the value of the option. 
+
+
+  std::string value() const;
+
+
+
+['[*Return Value]]
+      
+The value of the option. 
+
+
+
+[endsect]
+
+
+
+[section:overload2 http::request_method::value (2 of 2 overloads)]
+
+
+Sets the value of the option. 
+
+
+  void value(
+      const std::string & v);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[v][The desired value for the option.]]
+
+]
+
+['[*Remarks]]
+  
+Postcondition: `value() == v`
+
+
+
+[endsect]
+
+
+[endsect]
+
+
+[endsect]
+
 
 [endsect]
 

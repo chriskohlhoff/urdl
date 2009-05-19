@@ -11,6 +11,7 @@
 #ifndef URDL_HTTP_HPP
 #define URDL_HTTP_HPP
 
+#include <string>
 #include <boost/system/error_code.hpp>
 #include "urdl/detail/config.hpp"
 
@@ -28,6 +29,80 @@ namespace http {
  * @e Namespace: @c urdl::http
  */
 URDL_DECL const boost::system::error_category& error_category();
+
+/// Option to specify the HTTP request method.
+/**
+ * @par Remarks
+ * The default request method is "GET".
+ *
+ * @par Example
+ * To set the request method for an object of class @c urdl::istream:
+ * @code
+ * urdl::istream is;
+ * is.set_option(urdl::http::request_method("HEAD"));
+ * is.open("http://www.boost.org");
+ * @endcode
+ *
+ * To set the request method for an object of class @c urdl::read_stream:
+ * @code
+ * urdl::read_stream stream;
+ * stream.set_option(urdl::http::request_method("HEAD"));
+ * stream.open("http://www.boost.org");
+ * @endcode
+ *
+ * @par Requirements
+ * @e Header: @c <urdl/http.hpp> @n
+ * @e Namespace: @c urdl::http
+ */
+class request_method
+{
+public:
+  /// Constructs an object of class @c request_method.
+  /**
+   * @par Remarks
+   * Postcondition: <tt>value() == "GET"</tt>.
+   */
+  request_method()
+    : value_("GET")
+  {
+  }
+
+  /// Constructs an object of class @c request_method.
+  /**
+   * @param v The desired value for the option.
+   *
+   * @par Remarks
+   * Postcondition: <tt>value() == v</tt>
+   */
+  explicit request_method(const std::string& v)
+    : value_(v)
+  {
+  }
+
+  /// Gets the value of the option.
+  /**
+   * @returns The value of the option.
+   */
+  std::string value() const
+  {
+    return value_;
+  }
+
+  /// Sets the value of the option.
+  /**
+   * @param v The desired value for the option.
+   *
+   * @par Remarks
+   * Postcondition: <tt>value() == v</tt>
+   */
+  void value(const std::string& v)
+  {
+    value_ = v;
+  }
+
+private:
+  std::string value_;
+};
 
 /// Option to specify the maximum number of allowed HTTP redirects.
 /**
