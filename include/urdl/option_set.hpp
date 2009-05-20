@@ -30,6 +30,7 @@ namespace urdl {
  *
  * @par Requirements
  * @e Header: @c <urdl/option_set.hpp> @n
+ * @e Namespace: @c urdl
  */
 class URDL_DECL option_set
 {
