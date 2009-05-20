@@ -1215,6 +1215,8 @@ Destroys an object of class `istreambuf`.
 [section:option_set option_set]
 
 
+The class `option_set` maintains a collection of options. 
+
 
   class option_set
 
@@ -1225,44 +1227,67 @@ Destroys an object of class `istreambuf`.
 
   [
     [[link urdl.reference.core.option_set.clear_option [*clear_option]]]
-    []
+    [Removes all options from the set. ]
   ]
   
   [
     [[link urdl.reference.core.option_set.get_option [*get_option]]]
-    []
+    [Gets an option from the set. ]
   ]
   
   [
     [[link urdl.reference.core.option_set.operator_eq_ [*operator=]]]
-    []
+    [Assignment operator. ]
   ]
   
   [
     [[link urdl.reference.core.option_set.option_set [*option_set]]]
-    []
+    [Constructs an object of class option_set. ]
   ]
   
   [
     [[link urdl.reference.core.option_set.set_option [*set_option]]]
-    []
+    [Sets the value of an option in the set. ]
   ]
   
   [
     [[link urdl.reference.core.option_set.set_options [*set_options]]]
-    []
+    [Sets multiple options in a set from another set. ]
   ]
   
 ]
 
 
+['[*Remarks]]
+  
+Options are uniquely identified by type, so the `option_set` class is a collection of objects of differing types, indexed by type.
+
+The option types stored in the set must meet the type requirements for CopyConstructible.
+
+
+['[*Requirements]]
+  
+[*Header:] `<urdl/option_set.hpp>`
+
+
+
+
+
 [section:clear_option option_set::clear_option]
 
 [indexterm2 clear_option..option_set] 
+Removes all options from the set. 
+
 
   template<
       typename Option>
   void clear_option();
+
+
+
+['[*Remarks]]
+  
+The object becomes an empty set. Any option queried using the `get_option` member function will return the default value of the option. 
 
 
 
@@ -1273,10 +1298,18 @@ Destroys an object of class `istreambuf`.
 [section:get_option option_set::get_option]
 
 [indexterm2 get_option..option_set] 
+Gets an option from the set. 
+
 
   template<
       typename Option>
   Option get_option() const;
+
+
+
+['[*Return Value]]
+      
+If the option is present in the set, an object containing the value of the option. Otherwise, returns a default-constructed option. 
 
 
 
@@ -1287,9 +1320,17 @@ Destroys an object of class `istreambuf`.
 [section:operator_eq_ option_set::operator=]
 
 [indexterm2 operator=..option_set] 
+Assignment operator. 
+
 
   option_set & operator=(
       const option_set & other);
+
+
+
+['[*Remarks]]
+  
+Creates an identical copy of another set. Any option queried using the `get_option` member function will return the same value for both sets. 
 
 
 
@@ -1299,6 +1340,8 @@ Destroys an object of class `istreambuf`.
 [section:option_set option_set::option_set]
 
 [indexterm2 option_set..option_set] 
+Constructs an object of class `option_set`. 
+
 
   ``[link urdl.reference.core.option_set.option_set.overload1 option_set]``();
   ``  [''''&raquo;''' [link urdl.reference.core.option_set.option_set.overload1 more...]]``
@@ -1311,8 +1354,16 @@ Destroys an object of class `istreambuf`.
 [section:overload1 option_set::option_set (1 of 2 overloads)]
 
 
+Constructs an object of class `option_set`. 
+
 
   option_set();
+
+
+
+['[*Remarks]]
+  
+Creates an empty set. Any option queried using the `get_option` member function will return the default value of the option. 
 
 
 
@@ -1323,9 +1374,17 @@ Destroys an object of class `istreambuf`.
 [section:overload2 option_set::option_set (2 of 2 overloads)]
 
 
+Constructs an object of class `option_set`. 
+
 
   option_set(
       const option_set & other);
+
+
+
+['[*Remarks]]
+  
+Creates an identical copy of another set. Any option queried using the `get_option` member function will return the same value for both sets. 
 
 
 
@@ -1338,11 +1397,28 @@ Destroys an object of class `istreambuf`.
 [section:set_option option_set::set_option]
 
 [indexterm2 set_option..option_set] 
+Sets the value of an option in the set. 
+
 
   template<
       typename Option>
   void set_option(
       const Option & o);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[o][The option to be set.]]
+
+]
+
+['[*Remarks]]
+  
+If the type `Option` is already present in the set, first removes that element. Adds the option to the set. 
 
 
 
@@ -1353,9 +1429,26 @@ Destroys an object of class `istreambuf`.
 [section:set_options option_set::set_options]
 
 [indexterm2 set_options..option_set] 
+Sets multiple options in a set from another set. 
+
 
   void set_options(
       const option_set & other);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[other][An option set containing all options to be set in the target.]]
+
+]
+
+['[*Remarks]]
+  
+Performs a deep copy of all option values from the object `other` into the target set. 
 
 
 

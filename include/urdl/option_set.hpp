@@ -19,25 +19,76 @@
 
 namespace urdl {
 
+/// The class @c option_set maintains a collection of options.
+/**
+ * @par Remarks
+ * Options are uniquely identified by type, so the @c option_set class is a
+ * collection of objects of differing types, indexed by type.
+ *
+ * The option types stored in the set must meet the type requirements for
+ * CopyConstructible.
+ *
+ * @par Requirements
+ * @e Header: @c <urdl/option_set.hpp> @n
+ */
 class URDL_DECL option_set
 {
 public:
+  /// Constructs an object of class @c option_set.
+  /**
+   * @par Remarks
+   * Creates an empty set. Any option queried using the @c get_option member
+   * function will return the default value of the option.
+   */
   option_set()
   {
   }
 
+  /// Constructs an object of class @c option_set.
+  /**
+   * @par Remarks
+   * Creates an identical copy of another set. Any option queried using the
+   * @c get_option member function will return the same value for both sets.
+   */
   option_set(const option_set& other);
 
+  /// Assignment operator.
+  /**
+   * @par Remarks
+   * Creates an identical copy of another set. Any option queried using the
+   * @c get_option member function will return the same value for both sets.
+   */
   option_set& operator=(const option_set& other);
 
+  /// Sets the value of an option in the set.
+  /**
+   * @param o The option to be set.
+   *
+   * @par Remarks
+   * If the type @c Option is already present in the set, first removes that
+   * element. Adds the option to the set.
+   */
   template <typename Option>
   void set_option(const Option& o)
   {
     set_option_wrapper_base(new option_wrapper<Option>(o));
   }
 
+  /// Sets multiple options in a set from another set.
+  /**
+   * @param other An option set containing all options to be set in the target.
+   *
+   * @par Remarks
+   * Performs a deep copy of all option values from the object @c other into
+   * the target set.
+   */
   void set_options(const option_set& other);
 
+  /// Gets an option from the set.
+  /**
+   * @returns If the option is present in the set, an object containing the
+   * value of the option. Otherwise, returns a default-constructed option.
+   */
   template <typename Option>
   Option get_option() const
   {
@@ -47,6 +98,12 @@ public:
     return Option();
   }
 
+  /// Removes all options from the set.
+  /**
+   * @par Remarks
+   * The object becomes an empty set. Any option queried using the @c
+   * get_option member function will return the default value of the option.
+   */
   template <typename Option>
   void clear_option()
   {
