@@ -2253,6 +2253,8 @@ Sets options to control the behaviour of the stream.
 [section:url url]
 
 
+The class `url` enables parsing and accessing the components of URLs. 
+
 
   class url
 
@@ -2263,8 +2265,8 @@ Sets options to control the behaviour of the stream.
 
   [
 
-    [[link urdl.reference.core.url.parts_type [*parts_type]]]
-    []
+    [[link urdl.reference.core.url.components_type [*components_type]]]
+    [Components of the URL, used with from_string. ]
   
   ]
 
@@ -2276,52 +2278,52 @@ Sets options to control the behaviour of the stream.
 
   [
     [[link urdl.reference.core.url.fragment [*fragment]]]
-    []
+    [Gets the fragment component of the URL. ]
   ]
   
   [
     [[link urdl.reference.core.url.from_string [*from_string]]]
-    []
+    [Converts a string representation of a URL into an object of class url. ]
   ]
   
   [
     [[link urdl.reference.core.url.host [*host]]]
-    []
+    [Gets the host component of the URL. ]
   ]
   
   [
     [[link urdl.reference.core.url.path [*path]]]
-    []
+    [Gets the path component of the URL. ]
   ]
   
   [
     [[link urdl.reference.core.url.port [*port]]]
-    []
+    [Gets the port component of the URL. ]
   ]
   
   [
     [[link urdl.reference.core.url.protocol [*protocol]]]
-    []
+    [Gets the protocol component of the URL. ]
   ]
   
   [
     [[link urdl.reference.core.url.query [*query]]]
-    []
+    [Gets the query component of the URL. ]
   ]
   
   [
     [[link urdl.reference.core.url.to_string [*to_string]]]
-    []
+    [Converts an object of class url to a string representation. ]
   ]
   
   [
     [[link urdl.reference.core.url.url [*url]]]
-    []
+    [Constructs an object of class url. ]
   ]
   
   [
     [[link urdl.reference.core.url.user_info [*user_info]]]
-    []
+    [Gets the user info component of the URL. ]
   ]
   
 ]
@@ -2332,27 +2334,129 @@ Sets options to control the behaviour of the stream.
 
   [
     [[link urdl.reference.core.url.operator_not__eq_ [*operator!=]]]
-    []
+    [Inequality operator. ]
   ]
   
   [
     [[link urdl.reference.core.url.operator_lt_ [*operator<]]]
-    []
+    [Comparison operator. ]
   ]
   
   [
     [[link urdl.reference.core.url.operator_eq__eq_ [*operator==]]]
-    []
+    [Equality operator. ]
   ]
   
 ]
 
 
+['[*Example]]
+  
+To extract the components of a URL: 
+
+   urdl::url url("http://user:pass@host:1234/dir/page?param=0#anchor");
+   std::cout << "Protocol: " << url.protocol() << std::endl;
+   std::cout << "User Info: " << url.user_info() << std::endl;
+   std::cout << "Host: " << url.host() << std::endl;
+   std::cout << "Port: " << url.port() << std::endl;
+   std::cout << "Path: " << url.path() << std::endl;
+   std::cout << "Query: " << url.query() << std::endl;
+   std::cout << "Fragment: " << url.fragment() << std::endl;
+
+
+The above code will print: 
+
+   Protocol: http
+   User Info: user:pass
+   Host: host
+   Port: 1234
+   Path: /dir/page
+   Query: param=0
+   Fragment: anchor
+
+
+
+
+['[*Requirements]]
+  
+[*Header:] `<urdl/url.hpp>`
+
+[*Namespace:] `urdl`
+
+
+
+[section:components_type url::components_type]
+
+[indexterm2 components_type..url] 
+Components of the URL, used with `from_string`. 
+
+
+  enum components_type
+
+['[*Values]]
+[variablelist
+
+  [
+    [protocol_component]
+    []
+  ]
+
+  [
+    [user_info_component]
+    []
+  ]
+
+  [
+    [host_component]
+    []
+  ]
+
+  [
+    [port_component]
+    []
+  ]
+
+  [
+    [path_component]
+    []
+  ]
+
+  [
+    [query_component]
+    []
+  ]
+
+  [
+    [fragment_component]
+    []
+  ]
+
+  [
+    [all_components]
+    []
+  ]
+
+]
+
+
+
+[endsect]
+
+
+
 [section:fragment url::fragment]
 
 [indexterm2 fragment..url] 
+Gets the fragment component of the URL. 
+
 
   std::string fragment() const;
+
+
+
+['[*Return Value]]
+      
+A string containing the fragment of the URL. 
 
 
 
@@ -2362,6 +2466,8 @@ Sets options to control the behaviour of the stream.
 [section:from_string url::from_string]
 
 [indexterm2 from_string..url] 
+Converts a string representation of a URL into an object of class `url`. 
+
 
   static url ``[link urdl.reference.core.url.from_string.overload1 from_string]``(
       const char * s);
@@ -2385,9 +2491,35 @@ Sets options to control the behaviour of the stream.
 [section:overload1 url::from_string (1 of 4 overloads)]
 
 
+Converts a string representation of a URL into an object of class `url`. 
+
 
   static url from_string(
       const char * s);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[s][URL string to be parsed into its components.]]
+
+]
+
+['[*Return Value]]
+      
+A `url` object corresponding to the specified string.
+
+['[*Exceptions]]
+    
+
+[variablelist
+  
+[[boost::system::system_error][Thrown when the URL string is invalid. ]]
+
+]
 
 
 
@@ -2398,10 +2530,29 @@ Sets options to control the behaviour of the stream.
 [section:overload2 url::from_string (2 of 4 overloads)]
 
 
+Converts a string representation of a URL into an object of class `url`. 
+
 
   static url from_string(
       const char * s,
       boost::system::error_code & ec);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[s][URL string to be parsed into its components.]]
+
+[[ec][Error code set to indicate the reason for failure, if any.]]
+
+]
+
+['[*Return Value]]
+      
+A `url` object corresponding to the specified string. 
 
 
 
@@ -2412,9 +2563,35 @@ Sets options to control the behaviour of the stream.
 [section:overload3 url::from_string (3 of 4 overloads)]
 
 
+Converts a string representation of a URL into an object of class `url`. 
+
 
   static url from_string(
       const std::string & s);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[s][URL string to be parsed into its components.]]
+
+]
+
+['[*Return Value]]
+      
+A `url` object corresponding to the specified string.
+
+['[*Exceptions]]
+    
+
+[variablelist
+  
+[[boost::system::system_error][Thrown when the URL string is invalid. ]]
+
+]
 
 
 
@@ -2425,10 +2602,29 @@ Sets options to control the behaviour of the stream.
 [section:overload4 url::from_string (4 of 4 overloads)]
 
 
+Converts a string representation of a URL into an object of class `url`. 
+
 
   static url from_string(
       const std::string & s,
       boost::system::error_code & ec);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[s][URL string to be parsed into its components.]]
+
+[[ec][Error code set to indicate the reason for failure, if any.]]
+
+]
+
+['[*Return Value]]
+      
+A `url` object corresponding to the specified string. 
 
 
 
@@ -2441,8 +2637,16 @@ Sets options to control the behaviour of the stream.
 [section:host url::host]
 
 [indexterm2 host..url] 
+Gets the host component of the URL. 
+
 
   std::string host() const;
+
+
+
+['[*Return Value]]
+      
+A string containing the host name of the URL. 
 
 
 
@@ -2453,6 +2657,8 @@ Sets options to control the behaviour of the stream.
 [section:operator_not__eq_ url::operator!=]
 
 [indexterm2 operator!=..url] 
+Inequality operator. 
+
 
   friend bool operator!=(
       const url & a,
@@ -2467,6 +2673,8 @@ Sets options to control the behaviour of the stream.
 [section:operator_lt_ url::operator<]
 
 [indexterm2 operator<..url] 
+Comparison operator. 
+
 
   friend bool operator<(
       const url & a,
@@ -2481,6 +2689,8 @@ Sets options to control the behaviour of the stream.
 [section:operator_eq__eq_ url::operator==]
 
 [indexterm2 operator==..url] 
+Equality operator. 
+
 
   friend bool operator==(
       const url & a,
@@ -2492,68 +2702,23 @@ Sets options to control the behaviour of the stream.
 
 
 
-[section:parts_type url::parts_type]
-
-[indexterm2 parts_type..url] 
-
-  enum parts_type
-
-['[*Values]]
-[variablelist
-
-  [
-    [protocol_part]
-    []
-  ]
-
-  [
-    [user_info_part]
-    []
-  ]
-
-  [
-    [host_part]
-    []
-  ]
-
-  [
-    [port_part]
-    []
-  ]
-
-  [
-    [path_part]
-    []
-  ]
-
-  [
-    [query_part]
-    []
-  ]
-
-  [
-    [fragment_part]
-    []
-  ]
-
-  [
-    [all_parts]
-    []
-  ]
-
-]
-
-
-
-[endsect]
-
-
-
 [section:path url::path]
 
 [indexterm2 path..url] 
+Gets the path component of the URL. 
+
 
   std::string path() const;
+
+
+
+['[*Return Value]]
+      
+A string containing the path of the URL.
+
+['[*Remarks]]
+  
+The path string is unescaped. To obtain the path in escaped form, use `to_string(url::path_component)`. 
 
 
 
@@ -2564,8 +2729,20 @@ Sets options to control the behaviour of the stream.
 [section:port url::port]
 
 [indexterm2 port..url] 
+Gets the port component of the URL. 
+
 
   unsigned short port() const;
+
+
+
+['[*Return Value]]
+      
+The port number of the URL.
+
+['[*Remarks]]
+  
+If the URL string did not specify a port, and the protocol is one of `http`, `https` or `ftp`, an appropriate default port number is returned. 
 
 
 
@@ -2576,8 +2753,16 @@ Sets options to control the behaviour of the stream.
 [section:protocol url::protocol]
 
 [indexterm2 protocol..url] 
+Gets the protocol component of the URL. 
+
 
   std::string protocol() const;
+
+
+
+['[*Return Value]]
+      
+A string specifying the protocol of the URL. Examples include `http`, `https` or `file`. 
 
 
 
@@ -2588,8 +2773,20 @@ Sets options to control the behaviour of the stream.
 [section:query url::query]
 
 [indexterm2 query..url] 
+Gets the query component of the URL. 
+
 
   std::string query() const;
+
+
+
+['[*Return Value]]
+      
+A string containing the query string of the URL.
+
+['[*Remarks]]
+  
+The query string is not unescaped, but is returned in whatever form it takes in the original URL string. 
 
 
 
@@ -2600,9 +2797,42 @@ Sets options to control the behaviour of the stream.
 [section:to_string url::to_string]
 
 [indexterm2 to_string..url] 
+Converts an object of class `url` to a string representation. 
+
 
   std::string to_string(
-      int parts = all_parts) const;
+      int components = all_components) const;
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[components][A bitmask specifying which components of the URL should be included in the string. See the `url::components_type` enumeration for possible values.]]
+
+]
+
+['[*Return Value]]
+      
+A string representation of the URL.
+
+['[*Examples]]
+  
+To convert the entire URL to a string: 
+
+   std::string s = url.to_string();
+
+
+To convert only the host and port number into a string: 
+
+   std::string s = url.to_string(
+       urdl::url::host_component
+       | urdl::url::port_component);
+
+
+
 
 
 
@@ -2612,6 +2842,8 @@ Sets options to control the behaviour of the stream.
 [section:url url::url]
 
 [indexterm2 url..url] 
+Constructs an object of class `url`. 
+
 
   ``[link urdl.reference.core.url.url.overload1 url]``();
   ``  [''''&raquo;''' [link urdl.reference.core.url.url.overload1 more...]]``
@@ -2628,8 +2860,16 @@ Sets options to control the behaviour of the stream.
 [section:overload1 url::url (1 of 3 overloads)]
 
 
+Constructs an object of class `url`. 
+
 
   url();
+
+
+
+['[*Remarks]]
+  
+Postconditions: `protocol()`, `user_info()`, `host()`, `path()`, `query()`, `fragment()` all return an empty string, and `port()` returns 0. 
 
 
 
@@ -2640,9 +2880,31 @@ Sets options to control the behaviour of the stream.
 [section:overload2 url::url (2 of 3 overloads)]
 
 
+Constructs an object of class `url`. 
+
 
   url(
       const char * s);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[s][URL string to be parsed into its components.]]
+
+]
+
+['[*Exceptions]]
+    
+
+[variablelist
+  
+[[boost::system::system_error][Thrown when the URL string is invalid. ]]
+
+]
 
 
 
@@ -2653,9 +2915,31 @@ Sets options to control the behaviour of the stream.
 [section:overload3 url::url (3 of 3 overloads)]
 
 
+Constructs an object of class `url`. 
+
 
   url(
       const std::string & s);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[s][URL string to be parsed into its components.]]
+
+]
+
+['[*Exceptions]]
+    
+
+[variablelist
+  
+[[boost::system::system_error][Thrown when the URL string is invalid. ]]
+
+]
 
 
 
@@ -2668,8 +2952,16 @@ Sets options to control the behaviour of the stream.
 [section:user_info url::user_info]
 
 [indexterm2 user_info..url] 
+Gets the user info component of the URL. 
+
 
   std::string user_info() const;
+
+
+
+['[*Return Value]]
+      
+A string containing the user info of the URL. Typically in the format `user:password`, but depends on the protocol. 
 
 
 

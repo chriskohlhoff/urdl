@@ -93,10 +93,10 @@ public:
     // allow us to treat all data up until the EOF as the content.
     std::ostream request_stream(&request_buffer_);
     request_stream << request_method << " ";
-    request_stream << u.to_string(url::path_part | url::query_part);
+    request_stream << u.to_string(url::path_component | url::query_component);
     request_stream << " HTTP/1.0\r\n";
     request_stream << "Host: ";
-    request_stream << u.to_string(url::host_part | url::port_part);
+    request_stream << u.to_string(url::host_component | url::port_component);
     request_stream << "\r\n";
     request_stream << "Accept: */*\r\n";
     if (request_content.length())
@@ -245,10 +245,12 @@ public:
         std::ostream request_stream(&request_buffer_);
         request_stream << request_method << " ";
         request_stream << " ";
-        request_stream << url_.to_string(url::path_part | url::query_part);
+        request_stream << url_.to_string(
+            url::path_component | url::query_component);
         request_stream << " HTTP/1.0\r\n";
         request_stream << "Host: ";
-        request_stream << url_.to_string(url::host_part | url::port_part);
+        request_stream << url_.to_string(
+            url::host_component | url::port_component);
         request_stream << "\r\n";
         request_stream << "Accept: */*\r\n";
         if (request_content.length())

@@ -50,23 +50,23 @@ std::string url::path() const
 }
 
 URDL_INLINE
-std::string url::to_string(int parts) const
+std::string url::to_string(int components) const
 {
   std::string s;
 
-  if ((parts & protocol_part) != 0 && !protocol_.empty())
+  if ((components & protocol_component) != 0 && !protocol_.empty())
   {
     s = protocol_;
     s += "://";
   }
 
-  if ((parts & user_info_part) != 0 && !user_info_.empty())
+  if ((components & user_info_component) != 0 && !user_info_.empty())
   {
     s += user_info_;
     s += "@";
   }
 
-  if ((parts & host_part) != 0)
+  if ((components & host_component) != 0)
   {
     if (ipv6_host_)
       s += "[";
@@ -75,24 +75,24 @@ std::string url::to_string(int parts) const
       s += "]";
   }
 
-  if ((parts & port_part) != 0 && !port_.empty())
+  if ((components & port_component) != 0 && !port_.empty())
   {
     s += ":";
     s += port_;
   }
 
-  if ((parts & path_part) != 0 && !path_.empty())
+  if ((components & path_component) != 0 && !path_.empty())
   {
     s += path_;
   }
 
-  if ((parts & query_part) != 0 && !query_.empty())
+  if ((components & query_component) != 0 && !query_.empty())
   {
     s += "?";
     s += query_;
   }
 
-  if ((parts & fragment_part) != 0 && !fragment_.empty())
+  if ((components & fragment_component) != 0 && !fragment_.empty())
   {
     s += "#";
     s += fragment_;
