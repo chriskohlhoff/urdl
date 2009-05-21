@@ -22,5 +22,6 @@ test-suite "urdl" :
   [ run istream.cpp ]
   [ run istreambuf.cpp ]
   [ run option_set.cpp ]
+  [ run read_stream.cpp ]
   [ run url.cpp ]
   ;
