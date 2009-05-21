@@ -7,7 +7,9 @@
 
 project
   :
-    requirements <library>../build//urdl
+    requirements
+    <library>../build//urdl
+    <library>/boost/thread//boost_thread
   :
     default-build
     debug
@@ -17,6 +19,8 @@ project
   ;
 
 test-suite "urdl" :
+  [ run istream.cpp ]
+  [ run istreambuf.cpp ]
   [ run option_set.cpp ]
   [ run url.cpp ]
   ;

@@ -30,12 +30,12 @@ void option_set_compile_test()
 
   set1 = set2;
 
-  // set_option
+  // set_option()
 
   set1.set_option(0);
   set1.set_option<char>(0);
 
-  // set_options
+  // set_options()
 
   const urdl::option_set& const_set1 = set1;
   set2.set_options(const_set1);
