@@ -17,5 +17,6 @@ project
   ;
 
 test-suite "urdl" :
+  [ run option_set.cpp ]
   [ run url.cpp ]
   ;
