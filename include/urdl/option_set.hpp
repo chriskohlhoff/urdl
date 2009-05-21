@@ -99,11 +99,11 @@ public:
     return Option();
   }
 
-  /// Removes all options from the set.
+  /// Removes an option from the set.
   /**
    * @par Remarks
-   * The object becomes an empty set. Any option queried using the @c
-   * get_option member function will return the default value of the option.
+   * If the option is queried using the @c get_option member function, it will
+   * return the default value of the option.
    */
   template <typename Option>
   void clear_option()

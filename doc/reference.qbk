@@ -1227,7 +1227,7 @@ The class `option_set` maintains a collection of options.
 
   [
     [[link urdl.reference.core.option_set.clear_option [*clear_option]]]
-    [Removes all options from the set. ]
+    [Removes an option from the set. ]
   ]
   
   [
@@ -1269,14 +1269,14 @@ The option types stored in the set must meet the type requirements for CopyConst
   
 [*Header:] `<urdl/option_set.hpp>`
 
-
+[*Namespace:] `urdl`
 
 
 
 [section:clear_option option_set::clear_option]
 
 [indexterm2 clear_option..option_set] 
-Removes all options from the set. 
+Removes an option from the set. 
 
 
   template<
@@ -1287,7 +1287,7 @@ Removes all options from the set.
 
 ['[*Remarks]]
   
-The object becomes an empty set. Any option queried using the `get_option` member function will return the default value of the option. 
+If the option is queried using the `get_option` member function, it will return the default value of the option. 
 
 
 
