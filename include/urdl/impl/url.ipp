@@ -135,7 +135,7 @@ url url::from_string(const char* s, boost::system::error_code& ec)
   if (s[length] == '@')
   {
     new_url.user_info_.assign(s, s + length);
-    s += length;
+    s += length + 1;
   }
   else if (s[length] == ':')
   {
@@ -143,7 +143,7 @@ url url::from_string(const char* s, boost::system::error_code& ec)
     if (s[length + length2] == '@')
     {
       new_url.user_info_.assign(s, s + length + length2);
-      s += length + length2;
+      s += length + length2 + 1;
     }
   }
 
@@ -181,6 +181,7 @@ url url::from_string(const char* s, boost::system::error_code& ec)
       ec = make_error_code(boost::system::errc::invalid_argument);
       return url();
     }
+    new_url.port_.assign(s, s + length);
     for (std::size_t i = 0; i < new_url.port_.length(); ++i)
     {
       if (!std::isdigit(new_url.port_[i]))
