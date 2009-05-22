@@ -196,7 +196,10 @@ std::streambuf::int_type istreambuf::underflow()
     if (body_->error_)
     {
       if (body_->error_ == boost::asio::error::eof)
+      {
+        body_->error_ = boost::system::error_code();
         return traits_type::eof();
+      }
       boost::throw_exception(boost::system::system_error(body_->error_));
     }
 
