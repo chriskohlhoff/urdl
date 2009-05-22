@@ -234,13 +234,13 @@ public:
    */
   static url from_string(const std::string& s, boost::system::error_code& ec);
 
-  /// Equality operator.
+  /// Compares two @c url objects for equality.
   friend URDL_DECL bool operator==(const url& a, const url& b);
 
-  /// Inequality operator.
+  /// Compares two @c url objects for inequality.
   friend URDL_DECL bool operator!=(const url& a, const url& b);
 
-  /// Comparison operator.
+  /// Compares two @c url objects for ordering.
   friend URDL_DECL bool operator<(const url& a, const url& b);
 
 private:

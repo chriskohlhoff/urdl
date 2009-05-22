@@ -2427,17 +2427,17 @@ The class `url` enables parsing and accessing the components of URLs.
 
   [
     [[link urdl.reference.core.url.operator_not__eq_ [*operator!=]]]
-    [Inequality operator. ]
+    [Compares two url objects for inequality. ]
   ]
   
   [
     [[link urdl.reference.core.url.operator_lt_ [*operator<]]]
-    [Comparison operator. ]
+    [Compares two url objects for ordering. ]
   ]
   
   [
     [[link urdl.reference.core.url.operator_eq__eq_ [*operator==]]]
-    [Equality operator. ]
+    [Compares two url objects for equality. ]
   ]
   
 ]
@@ -2750,7 +2750,7 @@ A string containing the host name of the URL.
 [section:operator_not__eq_ url::operator!=]
 
 [indexterm2 operator!=..url] 
-Inequality operator. 
+Compares two `url` objects for inequality. 
 
 
   friend bool operator!=(
@@ -2766,7 +2766,7 @@ Inequality operator.
 [section:operator_lt_ url::operator<]
 
 [indexterm2 operator<..url] 
-Comparison operator. 
+Compares two `url` objects for ordering. 
 
 
   friend bool operator<(
@@ -2782,7 +2782,7 @@ Comparison operator.
 [section:operator_eq__eq_ url::operator==]
 
 [indexterm2 operator==..url] 
-Equality operator. 
+Compares two `url` objects for equality. 
 
 
   friend bool operator==(
