@@ -109,7 +109,7 @@ void read_stream_compile_test()
   }
 }
 
-// Test Synchronous HTTP.
+// Test synchronous HTTP.
 void read_stream_synchronous_http_test()
 {
   http_server server;
@@ -145,6 +145,37 @@ void read_stream_synchronous_http_test()
   BOOST_CHECK(returned_content == content);
 }
 
+// Test synchronous HTTP with an error status returned by the server.
+void read_stream_synchronous_http_not_found_test()
+{
+  http_server server;
+  std::string port = boost::lexical_cast<std::string>(server.port());
+
+  std::string request =
+    "GET / HTTP/1.0\r\n"
+    "Host: localhost:" + port + "\r\n"
+    "Accept: */*\r\n"
+    "Connection: close\r\n\r\n";
+  std::string response =
+    "HTTP/1.0 404 Not Found\r\n"
+    "Content-Length: 9\r\n"
+    "Content-Type: text/plain\r\n\r\n";
+  std::string content = "Not Found";
+
+  server.start(request, response, 0, content);
+
+  boost::asio::io_service io_service;
+  urdl::read_stream stream1(io_service);
+
+  boost::system::error_code ec;
+  stream1.open("http://localhost:" + port + "/", ec);
+
+  bool request_matched = server.stop();
+
+  BOOST_CHECK(request_matched);
+  BOOST_CHECK(ec == urdl::http::errc::not_found);
+}
+
 struct handler
 {
   boost::system::error_code& ec_;
@@ -156,7 +187,7 @@ struct handler
   }
 };
 
-// Test Asynchronous HTTP.
+// Test asynchronous HTTP.
 void read_stream_asynchronous_http_test()
 {
   http_server server;
@@ -202,11 +233,48 @@ void read_stream_asynchronous_http_test()
   BOOST_CHECK(returned_content == content);
 }
 
+// Test asynchronous HTTP with an error status returned by the server.
+void read_stream_asynchronous_http_not_found_test()
+{
+  http_server server;
+  std::string port = boost::lexical_cast<std::string>(server.port());
+
+  std::string request =
+    "GET / HTTP/1.0\r\n"
+    "Host: localhost:" + port + "\r\n"
+    "Accept: */*\r\n"
+    "Connection: close\r\n\r\n";
+  std::string response =
+    "HTTP/1.0 404 Not Found\r\n"
+    "Content-Length: 9\r\n"
+    "Content-Type: text/plain\r\n\r\n";
+  std::string content = "Not Found";
+
+  server.start(request, response, 0, content);
+
+  boost::asio::io_service io_service;
+  urdl::read_stream stream1(io_service);
+
+  boost::system::error_code ec;
+  std::size_t bytes_transferred = 0;
+  handler h = { ec, bytes_transferred };
+
+  stream1.async_open("http://localhost:" + port + "/", h);
+  io_service.run();
+
+  bool request_matched = server.stop();
+
+  BOOST_CHECK(request_matched);
+  BOOST_CHECK(ec == urdl::http::errc::not_found);
+}
+
 test_suite* init_unit_test_suite(int, char*[])
 {
   test_suite* test = BOOST_TEST_SUITE("read_stream");
   test->add(BOOST_TEST_CASE(&read_stream_compile_test));
   test->add(BOOST_TEST_CASE(&read_stream_synchronous_http_test));
+  test->add(BOOST_TEST_CASE(&read_stream_synchronous_http_not_found_test));
   test->add(BOOST_TEST_CASE(&read_stream_asynchronous_http_test));
+  test->add(BOOST_TEST_CASE(&read_stream_asynchronous_http_not_found_test));
   return test;
 }
