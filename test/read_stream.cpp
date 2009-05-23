@@ -13,8 +13,6 @@
 #define BOOST_ALL_NO_LIB 1
 #endif // !defined(BOOST_ALL_NO_LIB)
 
-#include <boost/asio.hpp>
-
 // Test that header file is self-contained.
 #include "urdl/read_stream.hpp"
 
