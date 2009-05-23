@@ -15,7 +15,9 @@
 // Disable some pesky MSVC warnings.
 #if defined(_MSC_VER)
 # pragma warning (push)
+# pragma warning (disable:4251)
 # pragma warning (disable:4355)
+# pragma warning (disable:4996)
 #endif // defined(_MSC_VER)
 
 // Force external visibility of all types.

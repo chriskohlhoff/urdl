@@ -12,7 +12,6 @@
 #define URDL_DETAIL_HTTP_READ_STREAM_HPP
 
 #include <boost/asio/buffer.hpp>
-#include <boost/asio/buffers_iterator.hpp>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/streambuf.hpp>
 #include <boost/asio/read.hpp>
@@ -431,26 +430,19 @@ public:
     // If we have any data in the reply_buffer_, return that first.
     if (reply_buffer_.size() > 0)
     {
-      typedef boost::asio::streambuf::const_buffers_type in_buffers_type;
-      in_buffers_type in_buffers = reply_buffer_.data();
-      typedef boost::asio::buffers_iterator<in_buffers_type> in_iter_type;
-      in_iter_type in_begin(boost::asio::buffers_begin(in_buffers));
-      in_iter_type in_end(boost::asio::buffers_end(in_buffers));
-
-      typedef boost::asio::buffers_iterator<
-          MutableBufferSequence> out_iter_type;
-      out_iter_type out_begin(boost::asio::buffers_begin(buffers));
-      out_iter_type out_end(boost::asio::buffers_end(buffers));
-
-      std::size_t bytes_transferred = out_end - out_begin;
-      if (reply_buffer_.size() > bytes_transferred)
-        in_end = in_begin + bytes_transferred;
-      else
-        bytes_transferred = reply_buffer_.size();
-
-      std::copy(in_begin, in_end, out_begin);
-      reply_buffer_.consume(bytes_transferred);
-
+      std::size_t bytes_transferred = 0;
+      typename MutableBufferSequence::const_iterator iter = buffers.begin();
+      typename MutableBufferSequence::const_iterator end = buffers.end();
+      for (; iter != end && reply_buffer_.size() > 0; ++iter)
+      {
+        boost::asio::mutable_buffer buffer(*iter);
+        size_t length = boost::asio::buffer_size(buffer);
+        if (length > 0)
+        {
+          bytes_transferred += reply_buffer_.sgetn(
+              boost::asio::buffer_cast<char*>(buffer), length);
+        }
+      }
       ec = boost::system::error_code();
       return bytes_transferred;
     }
