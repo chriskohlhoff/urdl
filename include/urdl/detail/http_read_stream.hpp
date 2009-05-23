@@ -244,7 +244,6 @@ public:
         // content.
         std::ostream request_stream(&request_buffer_);
         request_stream << request_method << " ";
-        request_stream << " ";
         request_stream << url_.to_string(
             url::path_component | url::query_component);
         request_stream << " HTTP/1.0\r\n";
