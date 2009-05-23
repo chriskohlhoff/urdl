@@ -40,8 +40,9 @@ public:
     file_.clear();
     std::string path = u.path();
 #if defined(BOOST_WINDOWS)
-    if (path.length() >= 2 && std::isalpha(path[0]) && path[1] == '|')
-      path[1] = ':';
+    if (path.length() >= 3 && path[0] == '/'
+        && std::isalpha(path[1]) && path[2] == ':')
+      path = path.substr(1);
 #endif // defined(BOOST_WINDOWS)
     file_.open(path.c_str(), std::ios_base::in | std::ios_base::binary);
     if (!file_)
