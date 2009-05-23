@@ -11,9 +11,11 @@
 #ifndef URDL_DETAIL_FILE_READ_STREAM_HPP
 #define URDL_DETAIL_FILE_READ_STREAM_HPP
 
+#include <boost/config.hpp>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/buffer.hpp>
 #include <boost/asio/detail/bind_handler.hpp>
+#include <cctype>
 #include <fstream>
 #include "urdl/option_set.hpp"
 #include "urdl/url.hpp"
@@ -36,7 +38,12 @@ public:
   boost::system::error_code open(const url& u, boost::system::error_code& ec)
   {
     file_.clear();
-    file_.open(u.path().c_str(), std::ios_base::in | std::ios_base::binary);
+    std::string path = u.path();
+#if defined(BOOST_WINDOWS)
+    if (path.length() >= 2 && std::isalpha(path[0]) && path[1] == '|')
+      path[1] = ':';
+#endif // defined(BOOST_WINDOWS)
+    file_.open(path.c_str(), std::ios_base::in | std::ios_base::binary);
     if (!file_)
     {
       ec = make_error_code(boost::system::errc::no_such_file_or_directory);
