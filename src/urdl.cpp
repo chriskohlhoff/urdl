@@ -1,5 +1,5 @@
 #if defined(URDL_HEADER_ONLY)
-# error Don't compile Urdl library source with URDL_HEADER_ONLY defined
+# error Do not compile Urdl library source with URDL_HEADER_ONLY defined
 #endif
 
 #define URDL_SOURCE
