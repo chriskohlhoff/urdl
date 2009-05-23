@@ -18,7 +18,10 @@
 
 #include "unit_test.hpp"
 #include "urdl/option_set.hpp"
+#include "http_server.hpp"
+#include <boost/asio/buffer.hpp>
 #include <boost/asio/io_service.hpp>
+#include <boost/asio/read.hpp>
 
 void open_handler(const boost::system::error_code&) {}
 void read_handler(const boost::system::error_code&, std::size_t) {}
@@ -106,9 +109,104 @@ void read_stream_compile_test()
   }
 }
 
+// Test Synchronous HTTP.
+void read_stream_synchronous_http_test()
+{
+  http_server server;
+  std::string port = boost::lexical_cast<std::string>(server.port());
+
+  std::string request =
+    "GET / HTTP/1.0\r\n"
+    "Host: localhost:" + port + "\r\n"
+    "Accept: */*\r\n"
+    "Connection: close\r\n\r\n";
+  std::string response =
+    "HTTP/1.0 200 OK\r\n"
+    "Content-Length: 13\r\n"
+    "Content-Type: text/plain\r\n\r\n";
+  std::string content = "Hello, World!";
+
+  server.start(request, response, 0, content);
+
+  boost::asio::io_service io_service;
+  urdl::read_stream stream1(io_service);
+
+  stream1.open("http://localhost:" + port + "/");
+
+  std::string returned_content(stream1.content_length(), 0);
+  boost::asio::read(stream1, boost::asio::buffer(
+        &returned_content[0], returned_content.size()));
+
+  bool request_matched = server.stop();
+
+  BOOST_CHECK(request_matched);
+  BOOST_CHECK(stream1.content_type() == "text/plain");
+  BOOST_CHECK(stream1.content_length() == 13);
+  BOOST_CHECK(returned_content == content);
+}
+
+struct handler
+{
+  boost::system::error_code& ec_;
+  std::size_t& size_;
+  void operator()(const boost::system::error_code& ec, std::size_t size = 0)
+  {
+    ec_ = ec;
+    size_ = size;
+  }
+};
+
+// Test Asynchronous HTTP.
+void read_stream_asynchronous_http_test()
+{
+  http_server server;
+  std::string port = boost::lexical_cast<std::string>(server.port());
+
+  std::string request =
+    "GET / HTTP/1.0\r\n"
+    "Host: localhost:" + port + "\r\n"
+    "Accept: */*\r\n"
+    "Connection: close\r\n\r\n";
+  std::string response =
+    "HTTP/1.0 200 OK\r\n"
+    "Content-Length: 13\r\n"
+    "Content-Type: text/plain\r\n\r\n";
+  std::string content = "Hello, World!";
+
+  server.start(request, response, 0, content);
+
+  boost::asio::io_service io_service;
+  urdl::read_stream stream1(io_service);
+
+  boost::system::error_code ec;
+  std::size_t bytes_transferred = 0;
+  handler h = { ec, bytes_transferred };
+
+  stream1.async_open("http://localhost:" + port + "/", h);
+  io_service.run();
+  BOOST_CHECK(!ec);
+
+  std::string returned_content(stream1.content_length(), 0);
+  boost::asio::async_read(stream1, boost::asio::buffer(
+        &returned_content[0], returned_content.size()), h);
+  io_service.reset();
+  io_service.run();
+  BOOST_CHECK(!ec);
+  BOOST_CHECK(bytes_transferred == returned_content.size());
+
+  bool request_matched = server.stop();
+
+  BOOST_CHECK(request_matched);
+  BOOST_CHECK(stream1.content_type() == "text/plain");
+  BOOST_CHECK(stream1.content_length() == 13);
+  BOOST_CHECK(returned_content == content);
+}
+
 test_suite* init_unit_test_suite(int, char*[])
 {
   test_suite* test = BOOST_TEST_SUITE("read_stream");
   test->add(BOOST_TEST_CASE(&read_stream_compile_test));
+  test->add(BOOST_TEST_CASE(&read_stream_synchronous_http_test));
+  test->add(BOOST_TEST_CASE(&read_stream_asynchronous_http_test));
   return test;
 }
