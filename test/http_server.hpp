@@ -64,30 +64,36 @@ public:
 private:
   void worker()
   {
-    acceptor_.accept(socket_);
+    try
+    {
+      acceptor_.accept(socket_);
 
-    // Wait for request.
-    boost::asio::streambuf buffer;
-    std::size_t size = boost::asio::read_until(socket_, buffer, "\r\n\r\n");
-    std::string request(size, 0);
-    buffer.sgetn(&request[0], size);
-    success_ = (request == expected_request_);
+      // Wait for request.
+      boost::asio::streambuf buffer;
+      std::size_t size = boost::asio::read_until(socket_, buffer, "\r\n\r\n");
+      std::string request(size, 0);
+      buffer.sgetn(&request[0], size);
+      success_ = (request == expected_request_);
 
-    // Send response headers.
-    boost::asio::write(socket_, boost::asio::buffer(response_));
+      // Send response headers.
+      boost::system::error_code ec;
+      boost::asio::write(socket_, boost::asio::buffer(response_));
 
-    // Introduce a delay before sending the content.
-    boost::asio::deadline_timer timer(io_service_);
-    timer.expires_from_now(boost::posix_time::milliseconds(content_delay_));
-    timer.wait();
+      // Introduce a delay before sending the content.
+      boost::asio::deadline_timer timer(io_service_);
+      timer.expires_from_now(boost::posix_time::milliseconds(content_delay_));
+      timer.wait();
 
-    // Now we can write the content.
-    boost::asio::write(socket_, boost::asio::buffer(content_));
+      // Now we can write the content.
+      boost::asio::write(socket_, boost::asio::buffer(content_));
 
-    // We're done. Shut down the connection.
-    boost::system::error_code ec;
-    socket_.shutdown(tcp::socket::shutdown_both, ec);
-    socket_.close(ec);
+      // We're done. Shut down the connection.
+      socket_.shutdown(tcp::socket::shutdown_both, ec);
+      socket_.close(ec);
+    }
+    catch (std::exception&)
+    {
+    }
   }
 
   boost::asio::io_service io_service_;

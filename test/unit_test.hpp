@@ -27,6 +27,7 @@ using boost::unit_test::test_suite;
 
 #if defined(BOOST_MSVC)
 # pragma warning (pop)
+# pragma warning (disable:4996) // Leave this disabled for the unit tests.
 #endif // defined(BOOST_MSVC)
 
 // Helper function to check the return type of a function.
