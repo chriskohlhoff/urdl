@@ -64,7 +64,8 @@ public:
 
   bool is_open() const
   {
-    return file_.is_open();
+    // Some older versions of libstdc++ have a non-const is_open().
+    return const_cast<std::ifstream&>(file_).is_open();
   }
 
   template <typename MutableBufferSequence>
