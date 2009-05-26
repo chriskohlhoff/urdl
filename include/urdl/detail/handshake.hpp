@@ -29,7 +29,7 @@ namespace urdl {
 namespace detail {
 
 inline boost::system::error_code handshake(
-    boost::asio::ip::tcp::socket& socket,
+    boost::asio::ip::tcp::socket& /*socket*/,
     const std::string& /*host*/, boost::system::error_code& ec)
 {
   ec = boost::system::error_code();
