@@ -28,15 +28,21 @@ protected:
   { \
   case 0:
 
-#define URDL_CORO_YIELD(s) \
+#define URDL_CORO_YIELD_IMPL(s,n) \
   do \
   { \
-    this->coroutine::coro_value_ = __LINE__; \
+    this->coroutine::coro_value_ = n; \
     s; \
     return; \
-  case __LINE__: \
+  case n: \
     ; \
   } while (0)
+
+#if defined(_MSC_VER)
+# define URDL_CORO_YIELD(s) URDL_CORO_YIELD_IMPL(s, __COUNTER__ + 1)
+#else // defined(_MSC_VER)
+# define URDL_CORO_YIELD(s) URDL_CORO_YIELD_IMPL(s, __LINE__)
+#endif // defined(_MSC_VER)
 
 #define URDL_CORO_END \
   }
