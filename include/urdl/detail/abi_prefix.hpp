@@ -15,8 +15,10 @@
 // Disable some pesky MSVC warnings.
 #if defined(_MSC_VER)
 # pragma warning (push)
+# pragma warning (disable:4127)
 # pragma warning (disable:4251)
 # pragma warning (disable:4355)
+# pragma warning (disable:4512)
 # pragma warning (disable:4996)
 #endif // defined(_MSC_VER)
 
