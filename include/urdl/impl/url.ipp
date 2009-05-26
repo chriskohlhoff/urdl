@@ -17,17 +17,10 @@
 #include <boost/system/system_error.hpp>
 #include <boost/throw_exception.hpp>
 
-#if defined(URDL_HEADER_ONLY)
-# define URDL_INLINE inline
-#else
-# define URDL_INLINE
-#endif
-
 #include "urdl/detail/abi_prefix.hpp"
 
 namespace urdl {
 
-URDL_INLINE
 unsigned short url::port() const
 {
   if (!port_.empty())
@@ -41,7 +34,6 @@ unsigned short url::port() const
   return 0;
 }
 
-URDL_INLINE
 std::string url::path() const
 {
   std::string tmp_path;
@@ -49,7 +41,6 @@ std::string url::path() const
   return tmp_path;
 }
 
-URDL_INLINE
 std::string url::to_string(int components) const
 {
   std::string s;
@@ -101,7 +92,6 @@ std::string url::to_string(int components) const
   return s;
 }
 
-URDL_INLINE
 url url::from_string(const char* s, boost::system::error_code& ec)
 {
   url new_url;
@@ -225,7 +215,6 @@ url url::from_string(const char* s, boost::system::error_code& ec)
   return new_url;
 }
 
-URDL_INLINE
 url url::from_string(const char* s)
 {
   boost::system::error_code ec;
@@ -238,19 +227,16 @@ url url::from_string(const char* s)
   return new_url;
 }
 
-URDL_INLINE
 url url::from_string(const std::string& s, boost::system::error_code& ec)
 {
   return from_string(s.c_str(), ec);
 }
 
-URDL_INLINE
 url url::from_string(const std::string& s)
 {
   return from_string(s.c_str());
 }
 
-URDL_INLINE
 bool url::unescape_path(const std::string& in, std::string& out)
 {
   out.clear();
@@ -304,7 +290,6 @@ bool url::unescape_path(const std::string& in, std::string& out)
   return true;
 }
 
-URDL_INLINE
 bool operator==(const url& a, const url& b)
 {
   return a.protocol_ == b.protocol_
@@ -316,13 +301,11 @@ bool operator==(const url& a, const url& b)
     && a.fragment_ == b.fragment_;
 }
 
-URDL_INLINE
 bool operator!=(const url& a, const url& b)
 {
   return !(a == b);
 }
 
-URDL_INLINE
 bool operator<(const url& a, const url& b)
 {
   if (a.protocol_ < b.protocol_)
@@ -361,7 +344,5 @@ bool operator<(const url& a, const url& b)
 } // namespace urdl
 
 #include "urdl/detail/abi_suffix.hpp"
-
-#undef URDL_INLINE
 
 #endif // URDL_URL_IPP

@@ -48,7 +48,7 @@ namespace urdl {
  * @e Header: @c <urdl/url.hpp> @n
  * @e Namespace: @c urdl
  */
-class URDL_DECL url
+class url
 {
 public:
   /// Constructs an object of class @c url.
@@ -124,7 +124,7 @@ public:
    * If the URL string did not specify a port, and the protocol is one of @c
    * http, @c https or @c ftp, an appropriate default port number is returned.
    */
-  unsigned short port() const;
+  URDL_DECL unsigned short port() const;
 
   /// Gets the path component of the URL.
   /**
@@ -134,7 +134,7 @@ public:
    * The path string is unescaped. To obtain the path in escaped form, use
    * @c to_string(url::path_component).
    */
-  std::string path() const;
+  URDL_DECL std::string path() const;
 
   /// Gets the query component of the URL.
   /**
@@ -192,7 +192,7 @@ public:
    *     | urdl::url::port_component);
    * @endcode
    */
-  std::string to_string(int components = all_components) const;
+  URDL_DECL std::string to_string(int components = all_components) const;
 
   /// Converts a string representation of a URL into an object of class @c url.
   /**
@@ -202,7 +202,7 @@ public:
    *
    * @throws boost::system::system_error Thrown when the URL string is invalid.
    */
-  static url from_string(const char* s);
+  URDL_DECL static url from_string(const char* s);
 
   /// Converts a string representation of a URL into an object of class @c url.
   /**
@@ -212,7 +212,8 @@ public:
    *
    * @returns A @c url object corresponding to the specified string.
    */
-  static url from_string(const char* s, boost::system::error_code& ec);
+  URDL_DECL static url from_string(const char* s,
+      boost::system::error_code& ec);
 
   /// Converts a string representation of a URL into an object of class @c url.
   /**
@@ -222,7 +223,7 @@ public:
    *
    * @throws boost::system::system_error Thrown when the URL string is invalid.
    */
-  static url from_string(const std::string& s);
+  URDL_DECL static url from_string(const std::string& s);
 
   /// Converts a string representation of a URL into an object of class @c url.
   /**
@@ -232,7 +233,8 @@ public:
    *
    * @returns A @c url object corresponding to the specified string.
    */
-  static url from_string(const std::string& s, boost::system::error_code& ec);
+  URDL_DECL static url from_string(const std::string& s,
+      boost::system::error_code& ec);
 
   /// Compares two @c url objects for equality.
   friend URDL_DECL bool operator==(const url& a, const url& b);
@@ -244,7 +246,7 @@ public:
   friend URDL_DECL bool operator<(const url& a, const url& b);
 
 private:
-  static bool unescape_path(const std::string& in, std::string& out);
+  URDL_DECL static bool unescape_path(const std::string& in, std::string& out);
 
   std::string protocol_;
   std::string user_info_;

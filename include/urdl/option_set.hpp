@@ -32,7 +32,7 @@ namespace urdl {
  * @e Header: @c <urdl/option_set.hpp> @n
  * @e Namespace: @c urdl
  */
-class URDL_DECL option_set
+class option_set
 {
 public:
   /// Constructs an object of class @c option_set.
@@ -41,9 +41,7 @@ public:
    * Creates an empty set. Any option queried using the @c get_option member
    * function will return the default value of the option.
    */
-  option_set()
-  {
-  }
+  URDL_DECL option_set();
 
   /// Constructs an object of class @c option_set.
   /**
@@ -51,7 +49,10 @@ public:
    * Creates an identical copy of another set. Any option queried using the
    * @c get_option member function will return the same value for both sets.
    */
-  option_set(const option_set& other);
+  URDL_DECL option_set(const option_set& other);
+
+  /// Destroys an object of class @c option_set.
+  URDL_DECL ~option_set();
 
   /// Assignment operator.
   /**
@@ -59,7 +60,7 @@ public:
    * Creates an identical copy of another set. Any option queried using the
    * @c get_option member function will return the same value for both sets.
    */
-  option_set& operator=(const option_set& other);
+  URDL_DECL option_set& operator=(const option_set& other);
 
   /// Sets the value of an option in the set.
   /**
@@ -83,7 +84,7 @@ public:
    * Performs a deep copy of all option values from the object @c other into
    * the target set.
    */
-  void set_options(const option_set& other);
+  URDL_DECL void set_options(const option_set& other);
 
   /// Gets an option from the set.
   /**
@@ -131,9 +132,10 @@ private:
     Option value;
   };
 
-  void set_option_wrapper_base(option_wrapper_base* o);
-  option_wrapper_base* get_option_wrapper_base(const std::type_info& ti) const;
-  void clear_option_wrapper_base(const std::type_info& ti);
+  URDL_DECL void set_option_wrapper_base(option_wrapper_base* o);
+  URDL_DECL option_wrapper_base* get_option_wrapper_base(
+      const std::type_info& ti) const;
+  URDL_DECL void clear_option_wrapper_base(const std::type_info& ti);
 
   std::auto_ptr<option_wrapper_base> head_;
 };

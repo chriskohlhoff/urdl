@@ -17,12 +17,6 @@
 #include <boost/throw_exception.hpp>
 #include "urdl/read_stream.hpp"
 
-#if defined(URDL_HEADER_ONLY)
-# define URDL_INLINE inline
-#else
-# define URDL_INLINE
-#endif
-
 #include "urdl/detail/abi_prefix.hpp"
 
 namespace urdl {
@@ -47,14 +41,12 @@ struct istreambuf::body
   std::size_t read_timeout_;
 };
 
-URDL_INLINE
 istreambuf::istreambuf()
   : body_(new body)
 {
   init_buffers();
 }
 
-URDL_INLINE
 istreambuf::~istreambuf()
 {
   try
@@ -67,19 +59,16 @@ istreambuf::~istreambuf()
   }
 }
 
-URDL_INLINE
 void istreambuf::set_options(const option_set& options)
 {
   body_->read_stream_.set_options(options);
 }
 
-URDL_INLINE
 option_set istreambuf::get_options() const
 {
   return body_->read_stream_.get_options();
 }
 
-URDL_INLINE
 istreambuf* istreambuf::open(const url& u)
 {
   if (is_open())
@@ -91,13 +80,11 @@ istreambuf* istreambuf::open(const url& u)
   return !body_->error_ ? this : 0;
 }
 
-URDL_INLINE
 bool istreambuf::is_open() const
 {
   return body_->read_stream_.is_open();
 }
 
-URDL_INLINE
 istreambuf* istreambuf::close()
 {
   if (!is_open())
@@ -109,37 +96,31 @@ istreambuf* istreambuf::close()
   return !body_->error_ ? this : 0;
 }
 
-URDL_INLINE
 const boost::system::error_code& istreambuf::puberror() const
 {
   return error();
 }
 
-URDL_INLINE
 std::size_t istreambuf::read_timeout() const
 {
   return body_->read_timeout_;
 }
 
-URDL_INLINE
 void istreambuf::read_timeout(std::size_t milliseconds)
 {
   body_->read_timeout_ = milliseconds;
 }
 
-URDL_INLINE
 std::string istreambuf::content_type() const
 {
   return body_->read_stream_.content_type();
 }
 
-URDL_INLINE
 std::size_t istreambuf::content_length() const
 {
   return body_->read_stream_.content_length();
 }
 
-URDL_INLINE
 std::string istreambuf::headers() const
 {
   return body_->read_stream_.headers();
@@ -171,7 +152,6 @@ namespace detail
   };
 } // namespace detail
 
-URDL_INLINE
 std::streambuf::int_type istreambuf::underflow()
 {
   if (gptr() == egptr())
@@ -214,13 +194,11 @@ std::streambuf::int_type istreambuf::underflow()
   }
 }
 
-URDL_INLINE
 const boost::system::error_code& istreambuf::error() const
 {
   return body_->error_;
 }
 
-URDL_INLINE
 void istreambuf::init_buffers()
 {
   setg(body_->get_buffer_.begin(),
@@ -231,7 +209,5 @@ void istreambuf::init_buffers()
 } // namespace urdl
 
 #include "urdl/detail/abi_suffix.hpp"
-
-#undef URDL_INLINE
 
 #endif // URDL_IMPL_ISTREAMBUF_IPP

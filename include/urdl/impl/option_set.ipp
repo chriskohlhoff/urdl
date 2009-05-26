@@ -11,17 +11,14 @@
 #ifndef URDL_OPTION_SET_IPP
 #define URDL_OPTION_SET_IPP
 
-#if defined(URDL_HEADER_ONLY)
-# define URDL_INLINE inline
-#else
-# define URDL_INLINE
-#endif
-
 #include "urdl/detail/abi_prefix.hpp"
 
 namespace urdl {
 
-URDL_INLINE
+option_set::option_set()
+{
+}
+
 option_set::option_set(const option_set& other)
 {
   std::auto_ptr<option_wrapper_base>* prev_link = &head_;
@@ -34,7 +31,10 @@ option_set::option_set(const option_set& other)
   }
 }
 
-URDL_INLINE
+option_set::~option_set()
+{
+}
+
 option_set& option_set::operator=(const option_set& other)
 {
   option_set tmp(other);
@@ -42,7 +42,6 @@ option_set& option_set::operator=(const option_set& other)
   return *this;
 }
 
-URDL_INLINE
 void option_set::set_options(const option_set& other)
 {
   option_wrapper_base* node = other.head_.get();
@@ -53,7 +52,6 @@ void option_set::set_options(const option_set& other)
   }
 }
 
-URDL_INLINE
 void option_set::set_option_wrapper_base(option_set::option_wrapper_base* o)
 {
   std::auto_ptr<option_wrapper_base>* prev_link = &head_;
@@ -72,7 +70,6 @@ void option_set::set_option_wrapper_base(option_set::option_wrapper_base* o)
   prev_link->reset(o);
 }
 
-URDL_INLINE
 option_set::option_wrapper_base* option_set::get_option_wrapper_base(
     const std::type_info& ti) const
 {
@@ -86,7 +83,6 @@ option_set::option_wrapper_base* option_set::get_option_wrapper_base(
   return 0;
 }
 
-URDL_INLINE
 void option_set::clear_option_wrapper_base(const std::type_info& ti)
 {
   std::auto_ptr<option_wrapper_base>* prev_link = &head_;
@@ -106,7 +102,5 @@ void option_set::clear_option_wrapper_base(const std::type_info& ti)
 } // namespace urdl
 
 #include "urdl/detail/abi_suffix.hpp"
-
-#undef URDL_INLINE
 
 #endif // URDL_OPTION_SET_IPP

@@ -28,15 +28,15 @@ namespace urdl {
  * @e Header: @c <urdl/istreambuf.hpp> @n
  * @e Namespace: @c urdl
  */
-class URDL_DECL istreambuf
+class istreambuf
   : public std::streambuf
 {
 public:
   /// Constructs an object of class @c istreambuf.
-  istreambuf();
+  URDL_DECL istreambuf();
 
   /// Destroys an object of class @c istreambuf.
-  ~istreambuf();
+  URDL_DECL ~istreambuf();
 
   /// Sets an option to control the behaviour of the stream buffer.
   /**
@@ -57,7 +57,7 @@ public:
   /**
    * @param options The options to be set on the stream buffer.
    */
-  void set_options(const option_set& options);
+  URDL_DECL void set_options(const option_set& options);
 
   /// Gets the current value of an option that controls the behaviour of the
   /// stream buffer.
@@ -78,7 +78,7 @@ public:
   /**
    * @returns An option set containing all options from the stream buffer.
    */
-  option_set get_options() const;
+  URDL_DECL option_set get_options() const;
 
   /// Determines whether the stream buffer is open.
   /**
@@ -88,7 +88,7 @@ public:
    * Returns @c true if a previous call to @c open succeeded (returned a
    * non-null value) and there has been no intervening call to @c close.
    */
-  bool is_open() const;
+  URDL_DECL bool is_open() const;
 
   /// Opens the specified URL.
   /**
@@ -100,7 +100,7 @@ public:
    * If <tt>is_open() != false</tt>, returns a null pointer. Otherwise,
    * initializes the @c istreambuf as required.
    */
-  istreambuf* open(const url& u);
+  URDL_DECL istreambuf* open(const url& u);
 
   /// Closes the stream buffer.
   /**
@@ -111,7 +111,7 @@ public:
    * the underlying transport's resources as required. If any of those
    * operations fail, @c close fails by returning a null pointer.
    */
-  istreambuf* close();
+  URDL_DECL istreambuf* close();
 
   /// Gets the last error associated with the stream buffer.
   /**
@@ -121,21 +121,21 @@ public:
    * @par Remarks
    * Returns @c error().
    */
-  const boost::system::error_code& puberror() const;
+  URDL_DECL const boost::system::error_code& puberror() const;
 
   /// Gets the read timeout of the stream buffer.
   /**
    * @returns The timeout, in milliseconds, used for individual read operations
    * on the underlying transport.
    */
-  std::size_t read_timeout() const;
+  URDL_DECL std::size_t read_timeout() const;
 
   /// Sets the read timeout of the stream buffer.
   /**
    * @param milliseconds The timeout, in milliseconds, to be used for individual
    * read operations on the underlying transport.
    */
-  void read_timeout(std::size_t milliseconds);
+  URDL_DECL void read_timeout(std::size_t milliseconds);
 
   /// Gets the MIME type of the content obtained from the URL.
   /**
@@ -146,7 +146,7 @@ public:
    * Not all URL protocols support a content type. For these protocols, this
    * function returns an empty string.
    */
-  std::string content_type() const;
+  URDL_DECL std::string content_type() const;
 
   /// Gets the length of the content obtained from the URL.
   /**
@@ -154,7 +154,7 @@ public:
    * with the URL does not specify a length,
    * @c std::numeric_limits<std::size_t>::max().
    */
-  std::size_t content_length() const;
+  URDL_DECL std::size_t content_length() const;
 
   /// Gets the protocol-specific headers obtained from the URL.
   /**
@@ -162,7 +162,7 @@ public:
    * URL. The format and interpretation of these headers is specific to the
    * protocol associated with the URL.
    */
-  std::string headers() const;
+  URDL_DECL std::string headers() const;
 
 protected:
   /// Overrides @c std::streambuf behaviour.
@@ -170,7 +170,7 @@ protected:
    * par Remarks
    * Behaves according to the specification of @c std::streambuf::underflow().
    */
-  int_type underflow();
+  URDL_DECL int_type underflow();
 
   /// Gets the last error associated with the stream.
   /**
@@ -182,10 +182,10 @@ protected:
    * @c error_code values and categories depends on the protocol of the URL
    * used to open the stream buffer.
    */
-  virtual const boost::system::error_code& error() const;
+  URDL_DECL virtual const boost::system::error_code& error() const;
 
 private:
-  void init_buffers();
+  URDL_DECL void init_buffers();
 
   struct body;
   body* body_;
