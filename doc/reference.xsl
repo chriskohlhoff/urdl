@@ -593,6 +593,10 @@
   </xsl:variable>
 [section:<xsl:value-of select="$class-section-id"/><xsl:text> </xsl:text><xsl:value-of select="$class-name"/>]
 
+<xsl:text>[indexterm2 </xsl:text>
+<xsl:value-of select="$class-name"/>
+<xsl:text>..class] </xsl:text>
+
 <xsl:apply-templates select="briefdescription" mode="markup"/><xsl:text>
 
 </xsl:text>

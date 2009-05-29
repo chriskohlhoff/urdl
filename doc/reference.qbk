@@ -14,7 +14,7 @@
   
 [section:istream istream]
 
-
+[indexterm2 istream..class] 
 The class `istream` supports reading content from a specified URL. 
 
 
@@ -692,7 +692,7 @@ Performs `rdbuf()->set_options(options)`.
 
 [section:istreambuf istreambuf]
 
-
+[indexterm2 istreambuf..class] 
 The class `istreambuf` associates the input sequence with the content from a specified URL. 
 
 
@@ -1214,7 +1214,7 @@ Destroys an object of class `istreambuf`.
 
 [section:option_set option_set]
 
-
+[indexterm2 option_set..class] 
 The class `option_set` maintains a collection of options. 
 
 
@@ -1253,6 +1253,11 @@ The class `option_set` maintains a collection of options.
   [
     [[link urdl.reference.core.option_set.set_options [*set_options]]]
     [Sets multiple options in a set from another set. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.option_set._option_set [*~option_set]]]
+    [Destroys an object of class option_set. ]
   ]
   
 ]
@@ -1456,11 +1461,25 @@ Performs a deep copy of all option values from the object `other` into the targe
 
 
 
+[section:_option_set option_set::~option_set]
+
+[indexterm2 ~option_set..option_set] 
+Destroys an object of class `option_set`. 
+
+
+  ~option_set();
+
+
+
+[endsect]
+
+
+
 [endsect]
 
 [section:read_stream read_stream]
 
-
+[indexterm2 read_stream..class] 
 The class `read_stream` supports reading content from a specified URL using synchronous or asynchronous operations. 
 
 
@@ -2345,7 +2364,7 @@ Sets options to control the behaviour of the stream.
 
 [section:url url]
 
-
+[indexterm2 url..class] 
 The class `url` enables parsing and accessing the components of URLs. 
 
 
@@ -3072,7 +3091,7 @@ A string containing the user info of the URL. Typically in the format `user:pass
   
 [section:http__max_redirects http::max_redirects]
 
-
+[indexterm2 http::max_redirects..class] 
 Option to specify the maximum number of allowed HTTP redirects. 
 
 
@@ -3269,7 +3288,7 @@ Postcondition: `value() == v`
 
 [section:http__request_content http::request_content]
 
-
+[indexterm2 http::request_content..class] 
 Option to specify content to accompany an HTTP request. 
 
 
@@ -3470,7 +3489,7 @@ Postcondition: `value() == v`
 
 [section:http__request_content_type http::request_content_type]
 
-
+[indexterm2 http::request_content_type..class] 
 Option to specify the type of the content that accompanies an HTTP request. 
 
 
@@ -3671,7 +3690,7 @@ Postcondition: `value() == v`
 
 [section:http__request_method http::request_method]
 
-
+[indexterm2 http::request_method..class] 
 Option to specify the HTTP request method. 
 
 
@@ -3868,7 +3887,7 @@ Postcondition: `value() == v`
 
 [section:http__user_agent http::user_agent]
 
-
+[indexterm2 http::user_agent..class] 
 Option to specify the user agent identifier. 
 
 

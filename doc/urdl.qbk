@@ -24,9 +24,206 @@
 
 [/=============================================================================]
 
+[heading What is Urdl?]
+
 Urdl is a cross-platform C++ library for downloading web content using a URL.
 It provides an easy-to-use extension to standard C++ iostreams and an
 asynchronous interface for use with Boost.Asio.
+
+[heading What can Urdl be used for?]
+
+Possible uses for Urdl include:
+
+* Downloading application configuration or data files.
+
+* Downloading software updates.
+
+* Accessing RSS feeds.
+
+* Web service clients (e.g. SOAP, XML-RPC or REST).
+
+* Web scraping.
+
+[/=============================================================================]
+
+[section:features Features]
+
+* [*Support for HTTP, HTTPS and local files.]
+
+[:Resources may be downloaded using HTTP 1.0 (using URLs of the form
+  `"http://..."`), HTTPS (`"https://..."`). Local files are also supported
+  (`"file://..."`). See [link urdl.planned_features Planned Features] for
+  limitations in the current protocol implementations.]
+
+* [*Extension to C++ IOStreams.]
+
+* [*Asynchronous interface.]
+
+[endsect]
+
+[/=============================================================================]
+
+[section:planned_features Planned features]
+
+The following features are planned for a future release of Urdl:
+
+* [*Support for HTTP chunking.]
+
+[:Add the ability to handle HTTP responses where the [^Transfer-Encoding] is
+  [^chunked].]
+
+* [*Support for HTTP proxies.]
+
+[:Add support for making HTTP and HTTPS requests through a proxy.]
+
+* [*Support for FTP:]
+
+[:Add support for downloading files using FTP.]
+
+* [*SSL options to control peer verification.]
+
+[:Add new options for controlling the way Urdl uses SSL to implement HTTPS, e.g.
+  the ability to specify a certificate authority file or directory, whether
+  peers are verified, etc. The current implementation always verifies the
+  peer using OpenSSL's default certificate chains.]
+
+* [*Support for wildcard SSL certificates.]
+
+[:The current implementation of SSL peer verification supports only certificates
+  issued to a single hostname.]
+
+* [*Status function callback.]
+
+[:Allow the user to register a `boost::function<>` object using `set_option()`.
+  This will be called by the implementation to provide progress updates (e.g.
+  resolving, connection, reading, etc).]
+
+* [*Runtime polymorphism and user-supplied backends.]
+
+[:Change the underlying implementation to use runtime polymorphism (abstract
+  base classes) to invoke the appropriate protocol implementation. The user
+  will be able to register a factory object to provide custom support for
+  additional protocols.]
+
+[endsect]
+
+[/=============================================================================]
+
+[section:getting_started Getting started]
+
+[section Building and using Urdl]
+
+There are three options for using Urdl in an applications:
+
+* as a separately compiled library;
+
+* by compiling the source directly into the application; or
+
+* as a header-file-only library.
+
+[heading Using Urdl as a separately compiled library]
+
+Urdl uses [^bjam] and Boost.Build to build shared and static libraries. To
+build the libraries, perform the following steps:
+
+# Set a [^BOOST_ROOT] environment variable pointing to the location of Boost.
+
+# If building on Windows, set an [^OPENSSL_ROOT] environment variable pointing
+  to the location of OpenSSL. When building on UNIX, the build scripts assume
+  that the OpenSSL headers and libraries may be found in the system's include
+  and library paths, respectively. To disable Urdl's SSL support, define
+  [^URDL_DISABLE_SSL=1] as an environment variable.
+
+# Run [^bjam] in the top-level directory of the Urdl distribution. Libraries
+  should be built into the [^lib] subdirectory.
+
+# Add the [^include] subdirectory to your compiler's include path.
+
+# Add the [^lib] subdirectory to your linker's library path.
+
+# Add the Boost directory to your compiler's include path.
+
+# Add the Boost library directory (e.g. [^stage/lib]) to your linker's library
+  path. Urdl needs the application to link against the Boost.System and
+  Boost.Date_Time libraries.
+
+# If disabling Urdl's SSL support, add [^URDL_DISABLE_SSL=1] to your compiler's
+  preprocessor definitions.
+
+# If using the DLL version of Urdl on Windows, add [^URDL_DYN_LINK=1] to your
+  compiler's preprocessor definitions.
+
+[heading Compiling Urdl directly into an application]
+
+To compile Urdl directly into an application, perform the following steps:
+
+# Add the [^include] subdirectory to your compiler's include path.
+
+# Add the file [^src/urdl.cpp] to your project or makefile.
+
+# Add the Boost directory to your compiler's include path.
+
+# Add the Boost library directory (e.g. [^stage/lib]) to your linker's library
+  path. Urdl needs the application to link against the Boost.System and
+  Boost.Date_Time libraries.
+
+# If disabling Urdl's SSL support, add [^URDL_DISABLE_SSL=1] to your compiler's
+  preprocessor definitions.
+
+# If building on Windows, add [^URDL_NO_LIB=1] to your compiler's preprocessor
+  definitions to disable autolinking.
+
+[heading Using Urdl as a header-file-only library]
+
+To use Urdl as a header-only library, perform the following steps:
+
+# Add the [^include] subdirectory to your compiler's include path.
+
+# Add the Boost directory to your compiler's include path.
+
+# Add the Boost library directory (e.g. [^stage/lib]) to your linker's library
+  path. Urdl needs the application to link against the Boost.System library and
+  possibly the Boost.Date_Time library.
+
+# If disabling Urdl's SSL support, add [^URDL_DISABLE_SSL=1] to your compiler's
+  preprocessor definitions.
+
+# Add [^URDL_HEADER_ONLY=1] to your compiler's preprocessor definitions.
+
+[endsect]
+
+[section Using an istream]
+
+[endsect]
+
+[section Using a read_stream]
+
+[endsect]
+
+[section Setting options]
+
+[endsect]
+
+[endsect]
+
+[/=============================================================================]
+
+[section:rationale Rationale]
+
+The primary goal of Urdl is:
+
+* To provide a simple abstraction for accessing and downloading internet
+  resources.
+
+Some secondary goals include:
+
+* To act as an example of using Boost.Asio to create client-side abstractions.
+
+* To act as an example of how to extend the Boost.System `error_code` facility.
+
+* To explore the use of coroutine for implementing protocols using Boost.Asio.
+
+[endsect]
 
 [/=============================================================================]
 

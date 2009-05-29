@@ -9,5 +9,8 @@
 -->
 
 <section id="urdl.index">
-  <index/>
+  <title>Index</title>
+  <index>
+    <title></title>
+  </index>
 </section>
