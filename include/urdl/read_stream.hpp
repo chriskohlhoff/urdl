@@ -82,7 +82,7 @@ namespace urdl {
  * {
  *   if (!ec)
  *   {
- *     read_stream.async_read(boost::asio::buffer(data), read_handler);
+ *     read_stream.async_read_some(boost::asio::buffer(data), read_handler);
  *   }
  * }
  * ...
@@ -91,7 +91,7 @@ namespace urdl {
  *   if (!ec)
  *   {
  *     std::cout.write(data, length);
- *     read_stream.async_read(boost::asio::buffer(data), read_handler);
+ *     read_stream.async_read_some(boost::asio::buffer(data), read_handler);
  *   }
  * }
  * @endcode
