@@ -33,6 +33,7 @@ public:
     : acceptor_(io_service_, tcp::endpoint(
           boost::asio::ip::address_v4::loopback(), 0)),
       socket_(io_service_),
+      response_delay_(0),
       content_delay_(0),
       success_(false)
   {
@@ -43,11 +44,13 @@ public:
     return acceptor_.local_endpoint().port();
   }
 
-  void start(const std::string& expected_request, const std::string& response,
+  void start(const std::string& expected_request,
+      std::size_t response_delay, const std::string& response,
       std::size_t content_delay, const std::string& content)
   {
     success_ = false;
     expected_request_ = expected_request;
+    response_delay_ = response_delay;
     response_ = response;
     content_delay_ = content_delay;
     content_ = content;
@@ -75,12 +78,16 @@ private:
       buffer.sgetn(&request[0], size);
       success_ = (request == expected_request_);
 
+      // Introduce a delay before sending the response.
+      boost::asio::deadline_timer timer(io_service_);
+      timer.expires_from_now(boost::posix_time::milliseconds(response_delay_));
+      timer.wait();
+
       // Send response headers.
       boost::system::error_code ec;
       boost::asio::write(socket_, boost::asio::buffer(response_));
 
       // Introduce a delay before sending the content.
-      boost::asio::deadline_timer timer(io_service_);
       timer.expires_from_now(boost::posix_time::milliseconds(content_delay_));
       timer.wait();
 
@@ -100,6 +107,7 @@ private:
   tcp::acceptor acceptor_;
   tcp::socket socket_;
   std::string expected_request_;
+  std::size_t response_delay_;
   std::string response_;
   std::size_t content_delay_;
   std::string content_;

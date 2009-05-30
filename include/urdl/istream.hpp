@@ -276,6 +276,31 @@ public:
     return rdbuf()->puberror();
   }
 
+  /// Gets the open timeout of the stream.
+  /**
+   * @returns The timeout, in milliseconds, used when opening a URL.
+   *
+   * @par Remarks
+   * Returns @c rdbuf()->open_timeout().
+   */
+  std::size_t open_timeout() const
+  {
+    return rdbuf()->open_timeout();
+  }
+
+  /// Sets the open timeout of the stream.
+  /**
+   * @param milliseconds The timeout, in milliseconds, to be used when opening
+   * a URL.
+   *
+   * @par Remarks
+   * Performs @c rdbuf()->open_timeout(milliseconds).
+   */
+  void open_timeout(std::size_t milliseconds)
+  {
+    rdbuf()->open_timeout(milliseconds);
+  }
+
   /// Gets the read timeout of the stream.
   /**
    * @returns The timeout, in milliseconds, used for individual read operations

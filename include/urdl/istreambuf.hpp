@@ -123,17 +123,31 @@ public:
    */
   URDL_DECL const boost::system::error_code& puberror() const;
 
+  /// Gets the open timeout of the stream buffer.
+  /**
+   * @returns The timeout, in milliseconds, used when opening a URL.
+   */
+  URDL_DECL std::size_t open_timeout() const;
+
+  /// Sets the open timeout of the stream buffer.
+  /**
+   * @param milliseconds The timeout, in milliseconds, to be used when opening
+   * a URL.
+   */
+  URDL_DECL void open_timeout(std::size_t milliseconds);
+
   /// Gets the read timeout of the stream buffer.
   /**
    * @returns The timeout, in milliseconds, used for individual read operations
-   * on the underlying transport.
+   * on the underlying transport, when downloading the URL's content.
    */
   URDL_DECL std::size_t read_timeout() const;
 
   /// Sets the read timeout of the stream buffer.
   /**
    * @param milliseconds The timeout, in milliseconds, to be used for individual
-   * read operations on the underlying transport.
+   * read operations on the underlying transport, when downloading the URL's
+   * content.
    */
   URDL_DECL void read_timeout(std::size_t milliseconds);
 

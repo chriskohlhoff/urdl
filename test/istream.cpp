@@ -109,7 +109,7 @@ void istream_http_test()
     "Content-Type: text/plain\r\n\r\n";
   std::string content = "Hello, World!";
 
-  server.start(request, response, 0, content);
+  server.start(request, 0, response, 0, content);
   urdl::istream istream1("http://localhost:" + port + "/");
   std::string returned_content;
   std::getline(istream1, returned_content);
@@ -138,7 +138,7 @@ void istream_http_not_found_test()
     "Content-Type: text/plain\r\n\r\n";
   std::string content = "Not Found";
 
-  server.start(request, response, 0, content);
+  server.start(request, 0, response, 0, content);
   urdl::istream istream1("http://localhost:" + port + "/");
   std::string returned_content;
   std::getline(istream1, returned_content);
@@ -148,8 +148,8 @@ void istream_http_not_found_test()
   BOOST_CHECK(istream1.error() == urdl::http::errc::not_found);
 }
 
-// Test HTTP with a read timeout.
-void istream_http_timeout_test()
+// Test HTTP with an open timeout.
+void istream_http_open_timeout_test()
 {
   http_server server;
   std::string port = boost::lexical_cast<std::string>(server.port());
@@ -165,7 +165,33 @@ void istream_http_timeout_test()
     "Content-Type: text/plain\r\n\r\n";
   std::string content = "Hello, World!";
 
-  server.start(request, response, 1500, content);
+  server.start(request, 1500, response, 0, content);
+  urdl::istream istream1;
+  istream1.open_timeout(1000);
+  istream1.open("http://localhost:" + port + "/");
+  server.stop();
+
+  BOOST_CHECK(istream1.error() == boost::asio::error::timed_out);
+}
+
+// Test HTTP with a read timeout.
+void istream_http_read_timeout_test()
+{
+  http_server server;
+  std::string port = boost::lexical_cast<std::string>(server.port());
+
+  std::string request =
+    "GET / HTTP/1.0\r\n"
+    "Host: localhost:" + port + "\r\n"
+    "Accept: */*\r\n"
+    "Connection: close\r\n\r\n";
+  std::string response =
+    "HTTP/1.0 200 OK\r\n"
+    "Content-Length: 13\r\n"
+    "Content-Type: text/plain\r\n\r\n";
+  std::string content = "Hello, World!";
+
+  server.start(request, 0, response, 1500, content);
   urdl::istream istream1;
   istream1.open("http://localhost:" + port + "/");
   istream1.read_timeout(1000);
@@ -183,6 +209,7 @@ test_suite* init_unit_test_suite(int, char*[])
   test->add(BOOST_TEST_CASE(&istream_compile_test));
   test->add(BOOST_TEST_CASE(&istream_http_test));
   test->add(BOOST_TEST_CASE(&istream_http_not_found_test));
-  test->add(BOOST_TEST_CASE(&istream_http_timeout_test));
+  test->add(BOOST_TEST_CASE(&istream_http_open_timeout_test));
+  test->add(BOOST_TEST_CASE(&istream_http_read_timeout_test));
   return test;
 }

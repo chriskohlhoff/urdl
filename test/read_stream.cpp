@@ -126,7 +126,7 @@ void read_stream_synchronous_http_test()
     "Content-Type: text/plain\r\n\r\n";
   std::string content = "Hello, World!";
 
-  server.start(request, response, 0, content);
+  server.start(request, 0, response, 0, content);
 
   boost::asio::io_service io_service;
   urdl::read_stream stream1(io_service);
@@ -162,7 +162,7 @@ void read_stream_synchronous_http_not_found_test()
     "Content-Type: text/plain\r\n\r\n";
   std::string content = "Not Found";
 
-  server.start(request, response, 0, content);
+  server.start(request, 0, response, 0, content);
 
   boost::asio::io_service io_service;
   urdl::read_stream stream1(io_service);
@@ -204,7 +204,7 @@ void read_stream_asynchronous_http_test()
     "Content-Type: text/plain\r\n\r\n";
   std::string content = "Hello, World!";
 
-  server.start(request, response, 0, content);
+  server.start(request, 0, response, 0, content);
 
   boost::asio::io_service io_service;
   urdl::read_stream stream1(io_service);
@@ -250,7 +250,7 @@ void read_stream_asynchronous_http_not_found_test()
     "Content-Type: text/plain\r\n\r\n";
   std::string content = "Not Found";
 
-  server.start(request, response, 0, content);
+  server.start(request, 0, response, 0, content);
 
   boost::asio::io_service io_service;
   urdl::read_stream stream1(io_service);

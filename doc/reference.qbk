@@ -77,6 +77,13 @@ The class `istream` supports reading content from a specified URL.
   ]
   
   [
+    [[link urdl.reference.core.istream.open_timeout [*open_timeout]]]
+    [Gets the open timeout of the stream. 
+
+     Sets the open timeout of the stream. ]
+  ]
+  
+  [
     [[link urdl.reference.core.istream.rdbuf [*rdbuf]]]
     [Gets the underlying stream buffer. ]
   ]
@@ -509,6 +516,79 @@ Calls `rdbuf()->open(u)`. If that function does not return a null pointer, calls
 [endsect]
 
 
+[section:open_timeout istream::open_timeout]
+
+[indexterm2 open_timeout..istream] 
+Gets the open timeout of the stream. 
+
+
+  std::size_t ``[link urdl.reference.core.istream.open_timeout.overload1 open_timeout]``() const;
+  ``  [''''&raquo;''' [link urdl.reference.core.istream.open_timeout.overload1 more...]]``
+
+
+Sets the open timeout of the stream. 
+
+
+  void ``[link urdl.reference.core.istream.open_timeout.overload2 open_timeout]``(
+      std::size_t milliseconds);
+  ``  [''''&raquo;''' [link urdl.reference.core.istream.open_timeout.overload2 more...]]``
+
+
+[section:overload1 istream::open_timeout (1 of 2 overloads)]
+
+
+Gets the open timeout of the stream. 
+
+
+  std::size_t open_timeout() const;
+
+
+
+['[*Return Value]]
+      
+The timeout, in milliseconds, used when opening a URL.
+
+['[*Remarks]]
+  
+Returns `rdbuf()->open_timeout()`. 
+
+
+
+[endsect]
+
+
+
+[section:overload2 istream::open_timeout (2 of 2 overloads)]
+
+
+Sets the open timeout of the stream. 
+
+
+  void open_timeout(
+      std::size_t milliseconds);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[milliseconds][The timeout, in milliseconds, to be used when opening a URL.]]
+
+]
+
+['[*Remarks]]
+  
+Performs `rdbuf()->open_timeout(milliseconds)`. 
+
+
+
+[endsect]
+
+
+[endsect]
+
 
 [section:rdbuf istream::rdbuf]
 
@@ -747,6 +827,13 @@ The class `istreambuf` associates the input sequence with the content from a spe
   [
     [[link urdl.reference.core.istreambuf.open [*open]]]
     [Opens the specified URL. ]
+  ]
+  
+  [
+    [[link urdl.reference.core.istreambuf.open_timeout [*open_timeout]]]
+    [Gets the open timeout of the stream buffer. 
+
+     Sets the open timeout of the stream buffer. ]
   ]
   
   [
@@ -1032,6 +1119,71 @@ If `is_open() != false`, returns a null pointer. Otherwise, initializes the `ist
 [endsect]
 
 
+[section:open_timeout istreambuf::open_timeout]
+
+[indexterm2 open_timeout..istreambuf] 
+Gets the open timeout of the stream buffer. 
+
+
+  std::size_t ``[link urdl.reference.core.istreambuf.open_timeout.overload1 open_timeout]``() const;
+  ``  [''''&raquo;''' [link urdl.reference.core.istreambuf.open_timeout.overload1 more...]]``
+
+
+Sets the open timeout of the stream buffer. 
+
+
+  void ``[link urdl.reference.core.istreambuf.open_timeout.overload2 open_timeout]``(
+      std::size_t milliseconds);
+  ``  [''''&raquo;''' [link urdl.reference.core.istreambuf.open_timeout.overload2 more...]]``
+
+
+[section:overload1 istreambuf::open_timeout (1 of 2 overloads)]
+
+
+Gets the open timeout of the stream buffer. 
+
+
+  std::size_t open_timeout() const;
+
+
+
+['[*Return Value]]
+      
+The timeout, in milliseconds, used when opening a URL. 
+
+
+
+[endsect]
+
+
+
+[section:overload2 istreambuf::open_timeout (2 of 2 overloads)]
+
+
+Sets the open timeout of the stream buffer. 
+
+
+  void open_timeout(
+      std::size_t milliseconds);
+
+
+
+['[*Parameters]]
+    
+
+[variablelist
+  
+[[milliseconds][The timeout, in milliseconds, to be used when opening a URL. ]]
+
+]
+
+
+
+[endsect]
+
+
+[endsect]
+
 
 [section:puberror istreambuf::puberror]
 
@@ -1086,7 +1238,7 @@ Gets the read timeout of the stream buffer.
 
 ['[*Return Value]]
       
-The timeout, in milliseconds, used for individual read operations on the underlying transport. 
+The timeout, in milliseconds, used for individual read operations on the underlying transport, when downloading the URL's content. 
 
 
 
@@ -1110,7 +1262,7 @@ Sets the read timeout of the stream buffer.
 
 [variablelist
   
-[[milliseconds][The timeout, in milliseconds, to be used for individual read operations on the underlying transport. ]]
+[[milliseconds][The timeout, in milliseconds, to be used for individual read operations on the underlying transport, when downloading the URL's content. ]]
 
 ]
 
