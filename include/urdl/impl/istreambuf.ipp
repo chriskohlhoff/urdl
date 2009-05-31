@@ -128,7 +128,7 @@ istreambuf* istreambuf::open(const url& u)
   body_->io_service_.run();
 
   if (!body_->read_stream_.is_open())
-    body_->error_ = boost::asio::error::timed_out;
+    body_->error_ = make_error_code(boost::system::errc::timed_out);
 
   return !body_->error_ ? this : 0;
 }
@@ -208,7 +208,7 @@ std::streambuf::int_type istreambuf::underflow()
     body_->io_service_.run();
 
     if (!body_->read_stream_.is_open())
-      body_->error_ = boost::asio::error::timed_out;
+      body_->error_ = make_error_code(boost::system::errc::timed_out);
 
     if (body_->error_)
     {

@@ -171,7 +171,7 @@ void istream_http_open_timeout_test()
   istream1.open("http://localhost:" + port + "/");
   server.stop();
 
-  BOOST_CHECK(istream1.error() == boost::asio::error::timed_out);
+  BOOST_CHECK(istream1.error() == boost::system::errc::timed_out);
 }
 
 // Test HTTP with a read timeout.
@@ -200,7 +200,7 @@ void istream_http_read_timeout_test()
   bool request_matched = server.stop();
 
   BOOST_CHECK(request_matched);
-  BOOST_CHECK(istream1.error() == boost::asio::error::timed_out);
+  BOOST_CHECK(istream1.error() == boost::system::errc::timed_out);
 }
 
 test_suite* init_unit_test_suite(int, char*[])
