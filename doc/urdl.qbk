@@ -145,6 +145,18 @@ The following features are planned for a future release of Urdl:
 
 [/=============================================================================]
 
+[section:prerequisites Prerequisites]
+
+Urdl depends on the following libraries:
+
+* [@http://www.boost.org/ Boost] 1.38 or later.
+
+* [@http://www.openssl.org/ OpenSSL] (optional) for HTTPS support.
+
+[endsect]
+
+[/=============================================================================]
+
 [section:platforms Supported platforms]
 
 Urdl has been tested on the following platforms and compilers:
