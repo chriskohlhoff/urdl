@@ -45,6 +45,36 @@ void async_handshake(boost::asio::ip::tcp::socket& socket,
 }
 
 #if !defined(URDL_DISABLE_SSL)
+inline bool match_pattern(const char* pattern,
+    std::size_t pattern_length, const char* host)
+{
+  const char* p = pattern;
+  const char* p_end = p + pattern_length;
+  const char* h = host;
+
+  while (p != p_end && *h)
+  {
+    if (*p == '*')
+    {
+      ++p;
+      while (*h && *h != '.')
+        if (match_pattern(p, p_end - p, h++))
+          return true;
+    }
+    else if (std::tolower(*p) == std::tolower(*h))
+    {
+      ++p;
+      ++h;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  return p == p_end && !*h;
+}
+
 inline bool certificate_matches_host(X509* cert, const std::string& host)
 {
   // Try converting host name to an address. If it is an address then we need
@@ -54,8 +84,8 @@ inline bool certificate_matches_host(X509* cert, const std::string& host)
     = boost::asio::ip::address::from_string(host, ec);
   bool is_address = !ec;
 
-  // Go through the alternate names in the certificate looking for DNS or IPADD
-  // entries.
+  // Go through the alternate names in the certificate looking for matching DNS
+  // or IP address entries.
   GENERAL_NAMES* gens = static_cast<GENERAL_NAMES*>(
       X509_get_ext_d2i(cert, NID_subject_alt_name, 0, 0));
   for (int i = 0; i < sk_GENERAL_NAME_num(gens); ++i)
@@ -67,13 +97,13 @@ inline bool certificate_matches_host(X509* cert, const std::string& host)
       if (domain->type == V_ASN1_IA5STRING
           && domain->data && domain->length)
       {
-        const char* cert_host = reinterpret_cast<const char*>(domain->data);
-        int j;
-        for (j = 0; host[j] && cert_host[j]; ++j)
-          if (std::tolower(host[j]) != std::tolower(cert_host[j]))
-            break;
-        if (host[j] == 0 && cert_host[j] == 0)
+        const char* pattern = reinterpret_cast<const char*>(domain->data);
+        std::size_t pattern_length = domain->length;
+        if (match_pattern(pattern, pattern_length, host.c_str()))
+        {
+          GENERAL_NAMES_free(gens);
           return true;
+        }
       }
     }
     else if (gen->type == GEN_IPADD && is_address)
@@ -86,36 +116,42 @@ inline bool certificate_matches_host(X509* cert, const std::string& host)
           boost::asio::ip::address_v4::bytes_type address_bytes
             = address.to_v4().to_bytes();
           if (std::memcmp(address_bytes.data(), ip_address->data, 4) == 0)
+          {
+            GENERAL_NAMES_free(gens);
             return true;
+          }
         }
         else if (address.is_v6() && ip_address->length == 16)
         {
           boost::asio::ip::address_v6::bytes_type address_bytes
             = address.to_v6().to_bytes();
           if (std::memcmp(address_bytes.data(), ip_address->data, 16) == 0)
+          {
+            GENERAL_NAMES_free(gens);
             return true;
+          }
         }
       }
     }
   }
+  GENERAL_NAMES_free(gens);
 
-  // No match in the alternate names, so try the common names.
+  // No match in the alternate names, so try the common names. We should only
+  // use the "most specific" common name, which is the last one in the list.
   X509_NAME* name = X509_get_subject_name(cert);
   int i = -1;
+  ASN1_STRING* common_name = 0;
   while ((i = X509_NAME_get_index_by_NID(name, NID_commonName, i)) >= 0)
   {
     X509_NAME_ENTRY* name_entry = X509_NAME_get_entry(name, i);
-    ASN1_STRING* domain = X509_NAME_ENTRY_get_data(name_entry);
-    if (domain->data && domain->length)
-    {
-      const char* cert_host = reinterpret_cast<const char*>(domain->data);
-      int j;
-      for (j = 0; host[j] && cert_host[j]; ++j)
-        if (std::tolower(host[j]) != std::tolower(cert_host[j]))
-          break;
-      if (host[j] == 0 && cert_host[j] == 0)
-        return true;
-    }
+    common_name = X509_NAME_ENTRY_get_data(name_entry);
+  }
+  if (common_name && common_name->data && common_name->length)
+  {
+    const char* pattern = reinterpret_cast<const char*>(common_name->data);
+    std::size_t pattern_length = common_name->length;
+    if (match_pattern(pattern, pattern_length, host.c_str()))
+      return true;
   }
 
   return false;
