@@ -21,7 +21,7 @@ option_set::option_set()
 
 option_set::option_set(const option_set& other)
 {
-  std::auto_ptr<option_wrapper_base>* prev_link = &head_;
+  detail::scoped_ptr<option_wrapper_base>* prev_link = &head_;
   option_wrapper_base* node = other.head_.get();
   while (node)
   {
@@ -54,7 +54,7 @@ void option_set::set_options(const option_set& other)
 
 void option_set::set_option_wrapper_base(option_set::option_wrapper_base* o)
 {
-  std::auto_ptr<option_wrapper_base>* prev_link = &head_;
+  detail::scoped_ptr<option_wrapper_base>* prev_link = &head_;
   option_wrapper_base* node = head_.get();
   while (node)
   {
@@ -85,7 +85,7 @@ option_set::option_wrapper_base* option_set::get_option_wrapper_base(
 
 void option_set::clear_option_wrapper_base(const std::type_info& ti)
 {
-  std::auto_ptr<option_wrapper_base>* prev_link = &head_;
+  detail::scoped_ptr<option_wrapper_base>* prev_link = &head_;
   option_wrapper_base* node = head_.get();
   while (node)
   {

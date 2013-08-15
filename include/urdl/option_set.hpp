@@ -11,9 +11,9 @@
 #ifndef URDL_OPTION_SET_HPP
 #define URDL_OPTION_SET_HPP
 
-#include <memory>
 #include <typeinfo>
 #include "urdl/detail/config.hpp"
+#include "urdl/detail/scoped_ptr.hpp"
 
 #include "urdl/detail/abi_prefix.hpp"
 
@@ -118,7 +118,7 @@ private:
     virtual ~option_wrapper_base() {}
     virtual const std::type_info& type_info() const = 0;
     virtual option_wrapper_base* clone() const = 0;
-    std::auto_ptr<option_wrapper_base> next;
+    detail::scoped_ptr<option_wrapper_base> next;
   };
 
   template <typename Option>
@@ -137,7 +137,7 @@ private:
       const std::type_info& ti) const;
   URDL_DECL void clear_option_wrapper_base(const std::type_info& ti);
 
-  std::auto_ptr<option_wrapper_base> head_;
+  detail::scoped_ptr<option_wrapper_base> head_;
 };
 
 } // namespace urdl
