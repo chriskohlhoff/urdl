@@ -18,4 +18,10 @@ project
 
 exe get1 : get1.cpp ;
 exe get2 : get2.cpp ;
-exe multiget : multiget.cpp ;
+exe multiget1 : multiget1.cpp ;
+
+explicit multiget2 ;
+exe multiget2 : multiget2.cpp
+    /boost/context//boost_context
+    /boost/coroutine//boost_coroutine
+  ;

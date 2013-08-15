@@ -49,6 +49,12 @@
 # endif // (BOOOST_VERSION >= 105300)
 #endif // !defined(URDL_ERROR_CATEGORY_NOEXCEPT)
 
+#if (BOOST_VERSION >= 105400)
+# define URDL_INITFN_RESULT_TYPE(h, sig) BOOST_ASIO_INITFN_RESULT_TYPE(h, sig)
+#else // (BOOST_VERSION >= 105400)
+# define URDL_INITFN_RESULT_TYPE(h, sig) void
+#endif // (BOOST_VERSION >= 105400)
+
 // Enable library autolinking for MSVC.
 
 #if !defined(BOOST_ALL_NO_LIB) && !defined(URDL_NO_LIB) \

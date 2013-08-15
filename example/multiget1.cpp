@@ -1,6 +1,6 @@
 //
-// multiget.cpp
-// ~~~~~~~~~~~~
+// multiget1.cpp
+// ~~~~~~~~~~~~~
 //
 // Copyright (c) 2009-2013 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
   {
     if (argc < 3 || argc % 2 == 0)
     {
-      std::cerr << "Usage: multiget <url> <outputfile> ";
+      std::cerr << "Usage: multiget1 <url> <outputfile> ";
       std::cerr << "[<url> <outputfile> ...]\n";
       return 1;
     }
