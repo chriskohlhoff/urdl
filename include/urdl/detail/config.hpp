@@ -11,6 +11,7 @@
 // No include guard.
 
 #include <boost/config.hpp>
+#include <boost/version.hpp>
 
 #if defined(URDL_HEADER_ONLY)
 # define URDL_DECL inline
@@ -39,6 +40,14 @@
 #if !defined(URDL_DECL)
 # define URDL_DECL
 #endif // !defined(URDL_DECL)
+
+#if !defined(URDL_ERROR_CATEGORY_NOEXCEPT)
+# if (BOOST_VERSION >= 105300)
+#  define URDL_ERROR_CATEGORY_NOEXCEPT BOOST_NOEXCEPT
+# else // (BOOOST_VERSION >= 105300)
+#  define URDL_ERROR_CATEGORY_NOEXCEPT
+# endif // (BOOOST_VERSION >= 105300)
+#endif // !defined(URDL_ERROR_CATEGORY_NOEXCEPT)
 
 // Enable library autolinking for MSVC.
 

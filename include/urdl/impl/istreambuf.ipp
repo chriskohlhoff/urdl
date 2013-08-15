@@ -11,6 +11,7 @@
 #ifndef URDL_IMPL_ISTREAMBUF_IPP
 #define URDL_IMPL_ISTREAMBUF_IPP
 
+#include <boost/array.hpp>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/system/system_error.hpp>

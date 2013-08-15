@@ -22,7 +22,7 @@ namespace detail {
 class error_category_impl
   : public boost::system::error_category
 {
-  virtual const char* name() const
+  virtual const char* name() const URDL_ERROR_CATEGORY_NOEXCEPT
   {
     return "HTTP";
   }
@@ -120,7 +120,8 @@ class error_category_impl
     }
   }
 
-  virtual boost::system::error_condition default_error_condition(int e) const
+  virtual boost::system::error_condition default_error_condition(
+      int e) const URDL_ERROR_CATEGORY_NOEXCEPT
   {
     switch (e)
     {
