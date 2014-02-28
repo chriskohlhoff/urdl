@@ -147,6 +147,14 @@ public:
   }
 
   template <typename Function>
+  friend void asio_handler_invoke(Function& function,
+      connect_coro<Handler>* this_handler)
+  {
+    using boost::asio::asio_handler_invoke;
+    asio_handler_invoke(function, &this_handler->handler_);
+  }
+
+  template <typename Function>
   friend void asio_handler_invoke(const Function& function,
       connect_coro<Handler>* this_handler)
   {

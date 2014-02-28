@@ -353,6 +353,14 @@ public:
     }
 
     template <typename Function>
+    friend void asio_handler_invoke(Function& function,
+        open_coro<Handler>* this_handler)
+    {
+      using boost::asio::asio_handler_invoke;
+      asio_handler_invoke(function, &this_handler->handler_);
+    }
+
+    template <typename Function>
     friend void asio_handler_invoke(const Function& function,
         open_coro<Handler>* this_handler)
     {
@@ -482,6 +490,14 @@ public:
     {
       using boost::asio::asio_handler_deallocate;
       asio_handler_deallocate(pointer, size, &this_handler->handler_);
+    }
+
+    template <typename Function>
+    friend void asio_handler_invoke(Function& function,
+        read_handler<Handler>* this_handler)
+    {
+      using boost::asio::asio_handler_invoke;
+      asio_handler_invoke(function, &this_handler->handler_);
     }
 
     template <typename Function>
