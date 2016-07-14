@@ -12,6 +12,7 @@
 #define URDL_HTTP_HPP
 
 #include <string>
+#include <map>
 #include <boost/system/error_code.hpp>
 #include "urdl/detail/config.hpp"
 
@@ -102,6 +103,74 @@ public:
 
 private:
   std::string value_;
+};
+
+/// Option to send arbitrary HTTP headers.
+/**
+ * @par Remarks
+ * The default is no additional headers.
+ *
+ * @par Example
+ * To add a header to the HTTP request using an object of class @c std::map:
+ * @code
+ * std::map<std::string, std::string> headers = {
+ *   {"X-Foo", "bar"}
+ * };
+ * urdl::istream is;
+ * is.set_option(urdl::http::request_heders(headers));
+ * is.open("http://host/path");
+ * @endcode
+ *
+ * @par Requirements
+ * @e Header: @c <urdl/http.hpp> @n
+ * @e Namespace: @c urdl::http
+ */
+class request_headers {
+public:
+  /// Constructs an object of class @c request_headers.
+  /**
+   * @par Remarks
+   * Postcondition: <tt>value() == Empty map</tt>.
+   */
+  request_headers()
+  {
+  }
+
+  /// Constructs an object of class @c request_headers.
+  /**
+   * @param v The desired header names and values for the option.
+   *
+   * @par Remarks
+   * Postcondition: <tt>value() == v</tt>
+   */
+  explicit request_headers(const std::map<std::string, std::string>& v)
+    : value_(v)
+  {
+  }
+
+  /// Gets the value of the option.
+  /**
+   * @returns The value of the option.
+   */
+  std::map<std::string, std::string> value() const
+  {
+    return value_;
+  }
+
+  /// Sets the value of the option.
+  /**
+   * @param v The desired header names and values for the option.
+   *
+   * @par Remarks
+   * Postcondition: <tt>value() == v</tt>
+   */
+  void value(const std::map<std::string, std::string>& v)
+  {
+    value_ = v;
+  }
+
+private:
+  std::map<std::string, std::string> value_;
 };
 
 /// Option to specify content to accompany an HTTP request.

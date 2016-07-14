@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <ostream>
 #include <iterator>
+#include <map>
 #include "urdl/http.hpp"
 #include "urdl/option_set.hpp"
 #include "urdl/url.hpp"
@@ -86,6 +87,8 @@ public:
       = options_.get_option<urdl::http::request_content_type>().value();
     std::string user_agent
       = options_.get_option<urdl::http::user_agent>().value();
+    std::map<std::string, std::string> headers
+      = options_.get_option<urdl::http::request_headers>().value();
 
     // Form the request. We specify the "Connection: close" header so that the
     // server will close the socket after transmitting the response. This will
@@ -94,23 +97,37 @@ public:
     request_stream << request_method << " ";
     request_stream << u.to_string(url::path_component | url::query_component);
     request_stream << " HTTP/1.0\r\n";
-    request_stream << "Host: ";
-    request_stream << u.to_string(url::host_component | url::port_component);
-    request_stream << "\r\n";
-    request_stream << "Accept: */*\r\n";
+    if (headers.find("Host") == headers.end()) {
+      request_stream << "Host: ";
+      request_stream << u.to_string(url::host_component | url::port_component);
+      request_stream << "\r\n";
+    }
+    if (headers.find("Accept") == headers.end()) {
+      request_stream << "Accept: */*\r\n";
+    }
+
     if (request_content.length())
     {
-      request_stream << "Content-Length: ";
-      request_stream << request_content.length() << "\r\n";
-      if (request_content_type.length())
+      if (headers.find("Content-Length") == headers.end()) {
+        request_stream << "Content-Length: ";
+        request_stream << request_content.length() << "\r\n";
+      }
+      if (request_content_type.length() && headers.find("Content-Type") == headers.end())
       {
         request_stream << "Content-Type: ";
         request_stream << request_content_type << "\r\n";
       }
     }
-    if (user_agent.length())
+    if (user_agent.length() && headers.find("User-Agent") == headers.end())
       request_stream << "User-Agent: " << user_agent << "\r\n";
-    request_stream << "Connection: close\r\n\r\n";
+    if (headers.find("Connection") == headers.end())
+      request_stream << "Connection: close\r\n";
+
+    for (std::map<std::string, std::string>::const_iterator itr = headers.begin(); itr != headers.end(); ++itr) {
+      request_stream << itr->first << ": " << itr->second << "\r\n";
+    }
+    request_stream << "\r\n";
+
     request_stream << request_content;
 
     // Send the request.
@@ -236,6 +253,8 @@ public:
           = options_.get_option<urdl::http::request_content_type>().value();
         std::string user_agent
           = options_.get_option<urdl::http::user_agent>().value();
+        std::map<std::string, std::string> headers
+          = options_.get_option<urdl::http::request_headers>().value();
 
         // Form the request. We specify the "Connection: close" header so that
         // the server will close the socket after transmitting the response.
@@ -246,24 +265,38 @@ public:
         request_stream << url_.to_string(
             url::path_component | url::query_component);
         request_stream << " HTTP/1.0\r\n";
-        request_stream << "Host: ";
-        request_stream << url_.to_string(
-            url::host_component | url::port_component);
-        request_stream << "\r\n";
-        request_stream << "Accept: */*\r\n";
+        if (headers.find("Host") == headers.end()) {
+          request_stream << "Host: ";
+          request_stream << url_.to_string(
+              url::host_component | url::port_component);
+          request_stream << "\r\n";
+        }
+        if (headers.find("Accept") == headers.end()) {
+          request_stream << "Accept: */*\r\n";
+        }
+
         if (request_content.length())
         {
-          request_stream << "Content-Length: ";
-          request_stream << request_content.length() << "\r\n";
-          if (request_content_type.length())
+          if (headers.find("Content-Length") == headers.end()) {
+            request_stream << "Content-Length: ";
+            request_stream << request_content.length() << "\r\n";
+          }
+          if (request_content_type.length() && headers.find("Content-Type") == headers.end())
           {
             request_stream << "Content-Type: ";
             request_stream << request_content_type << "\r\n";
           }
         }
-        if (user_agent.length())
+        if (user_agent.length() && headers.find("User-Agent") == headers.end())
           request_stream << "User-Agent: " << user_agent << "\r\n";
-        request_stream << "Connection: close\r\n\r\n";
+        if (headers.find("Connection") == headers.end())
+          request_stream << "Connection: close\r\n";
+
+        for (std::map<std::string, std::string>::const_iterator itr = headers.begin(); itr != headers.end(); ++itr) {
+          request_stream << itr->first << ": " << itr->second << "\r\n";
+        }
+        request_stream << "\r\n";
+
         request_stream << request_content;
       }
 
