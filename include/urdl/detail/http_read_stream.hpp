@@ -528,6 +528,9 @@ public:
     // Otherwise we forward the call to the underlying socket.
     socket_.async_read_some(buffers, read_handler<Handler>(handler));
   }
+  Stream& socket() {
+    return socket_;
+  }
 
 private:
   boost::asio::ip::tcp::resolver resolver_;
