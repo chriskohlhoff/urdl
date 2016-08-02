@@ -222,8 +222,6 @@ public:
         else
           ec = make_error_code(boost::system::errc::permission_denied);
       }
-      else
-        ec = make_error_code(boost::system::errc::permission_denied);
       X509_free(cert);
     }
     else

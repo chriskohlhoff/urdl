@@ -24,6 +24,7 @@
 
 #if !defined(URDL_DISABLE_SSL)
 # include <boost/asio/ssl.hpp>
+# include "urdl/ssl.hpp"
 #endif // !defined(URDL_DISABLE_SSL)
 
 #include "urdl/detail/abi_prefix.hpp"
@@ -119,7 +120,6 @@ public:
       protocol_(unknown)
   {
 #if !defined(URDL_DISABLE_SSL)
-    ssl_context_.set_verify_mode(boost::asio::ssl::context::verify_peer);
     SSL_CTX_set_default_verify_paths(ssl_context_.impl());
 #endif // !defined(URDL_DISABLE_SSL)
   }
@@ -316,6 +316,26 @@ public:
 #if !defined(URDL_DISABLE_SSL)
       else if (tmp_url.protocol() == "https")
       {
+        {
+          SSL* ssl = https_.socket().impl()->ssl;
+          SSL_CTX* ctx = SSL_get_SSL_CTX(ssl);
+          if (options_.get_option<urdl::ssl::verify_peer>().value()) {
+            SSL_set_verify(ssl, SSL_VERIFY_PEER, NULL);
+            std::string ca_cert = options_.get_option<urdl::ssl::ca_cert>().value();
+            if (ca_cert.length()) {
+              SSL_CTX_load_verify_locations(ctx, ca_cert.c_str(), NULL);
+            }
+          }
+          urdl::ssl::client_cert client_cert = options_.get_option<urdl::ssl::client_cert>();
+          std::string cert_path = client_cert.certificate_path();
+          if (cert_path.length()) {
+            SSL_CTX_use_certificate_chain_file(ctx, cert_path.c_str());
+          }
+          std::string priv_key_path = client_cert.private_key_path();
+          if (priv_key_path.length()) {
+            SSL_CTX_use_RSAPrivateKey_file(ctx, priv_key_path.c_str(), SSL_FILETYPE_PEM);
+          }
+        }
         protocol_ = https;
         https_.open(tmp_url, ec);
         if (ec == http::errc::moved_permanently || ec == http::errc::found)
@@ -733,6 +753,26 @@ private:
 #if !defined(URDL_DISABLE_SSL)
         else if (url_.protocol() == "https")
         {
+          {
+            SSL* ssl = this_->https_.socket().impl()->ssl;
+            SSL_CTX* ctx = SSL_get_SSL_CTX(ssl);
+            if (this_->options_.get_option<urdl::ssl::verify_peer>().value()) {
+              SSL_set_verify(ssl, SSL_VERIFY_PEER, NULL);
+              std::string ca_cert = this_->options_.get_option<urdl::ssl::ca_cert>().value();
+              if (ca_cert.length()) {
+                SSL_CTX_load_verify_locations(ctx, ca_cert.c_str(), NULL);
+              }
+            }
+            urdl::ssl::client_cert client_cert = this_->options_.get_option<urdl::ssl::client_cert>();
+            std::string cert_path = client_cert.certificate_path();
+            if (cert_path.length()) {
+              SSL_use_certificate_file(ssl, cert_path.c_str(), SSL_FILETYPE_PEM);
+            }
+            std::string priv_key_path = client_cert.private_key_path();
+            if (priv_key_path.length()) {
+              SSL_use_RSAPrivateKey_file(ssl, priv_key_path.c_str(), SSL_FILETYPE_PEM);
+            }
+          }
           this_->protocol_ = https;
           URDL_CORO_YIELD(this_->https_.async_open(url_, *this));
           if (ec == http::errc::moved_permanently || ec == http::errc::found)
