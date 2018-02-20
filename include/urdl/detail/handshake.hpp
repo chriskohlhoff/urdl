@@ -41,7 +41,7 @@ void async_handshake(boost::asio::ip::tcp::socket& socket,
     const std::string& /*host*/, Handler handler)
 {
   boost::system::error_code ec;
-  socket.get_io_service().post(boost::asio::detail::bind_handler(handler, ec));
+  boost::asio::post(socket.get_executor(), boost::asio::detail::bind_handler(handler, ec));
 }
 
 #if !defined(URDL_DISABLE_SSL)
@@ -81,7 +81,7 @@ inline bool certificate_matches_host(X509* cert, const std::string& host)
   // to look for an IP address in the certificate rather than a host name.
   boost::system::error_code ec;
   boost::asio::ip::address address
-    = boost::asio::ip::address::from_string(host, ec);
+    = boost::asio::ip::make_address(host, ec);
   bool is_address = !ec;
 
   // Go through the alternate names in the certificate looking for matching DNS
