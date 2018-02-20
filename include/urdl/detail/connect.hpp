@@ -12,6 +12,7 @@
 #define URDL_DETAIL_CONNECT_HPP
 
 #include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/detail/string_view.hpp>
 #include <sstream>
 #include "urdl/detail/coroutine.hpp"
 
@@ -67,8 +68,8 @@ public:
   }
 
   void operator()(boost::system::error_code ec,
-      std::string_view host = {},
-      std::string_view port = {})
+      boost::asio::string_view host = {},
+      boost::asio::string_view port = {})
   {
     URDL_CORO_BEGIN;
 
