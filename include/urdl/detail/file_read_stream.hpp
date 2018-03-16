@@ -12,7 +12,7 @@
 #define URDL_DETAIL_FILE_READ_STREAM_HPP
 
 #include <boost/config.hpp>
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/asio/buffer.hpp>
 #include <boost/asio/detail/bind_handler.hpp>
 #include <cctype>
@@ -28,9 +28,9 @@ namespace detail {
 class file_read_stream
 {
 public:
-  explicit file_read_stream(boost::asio::io_service& io_service,
+  explicit file_read_stream(boost::asio::io_context& io_context,
       option_set& options)
-    : io_service_(io_service),
+    : io_context_(io_context),
       options_(options)
   {
   }
@@ -59,7 +59,7 @@ public:
   {
     boost::system::error_code ec;
     open(u, ec);
-    io_service_.post(boost::asio::detail::bind_handler(handler, ec));
+    boost::asio::post(boost::asio::detail::bind_handler(handler, ec));
   }
 
   boost::system::error_code close(boost::system::error_code& ec)
@@ -77,7 +77,7 @@ public:
   }
 
   template <typename MutableBufferSequence>
-  std::size_t read_some(const MutableBufferSequence& buffers,
+  std::size_t read_some(const MutableBufferSequence& buffer,
       boost::system::error_code& ec)
   {
     if (!file_)
@@ -86,20 +86,14 @@ public:
       return 0;
     }
 
-    typename MutableBufferSequence::const_iterator iter = buffers.begin();
-    typename MutableBufferSequence::const_iterator end = buffers.end();
-    for (; iter != end; ++iter)
+    size_t length = boost::asio::buffer_size(buffer);
+    if (length > 0)
     {
-      boost::asio::mutable_buffer buffer(*iter);
-      size_t length = boost::asio::buffer_size(buffer);
-      if (length > 0)
-      {
-        file_.read(boost::asio::buffer_cast<char*>(buffer), length);
-        length = file_.gcount();
-        if (length == 0 && !file_)
-          ec = boost::asio::error::eof;
-        return length;
-      }
+      file_.read(static_cast<char*>(buffer.data()), length);
+      length = file_.gcount();
+      if (length == 0 && !file_)
+        ec = boost::asio::error::eof;
+      return length;
     }
 
     ec = boost::system::error_code();
@@ -111,12 +105,12 @@ public:
   {
     boost::system::error_code ec;
     std::size_t bytes_transferred = read_some(buffers, ec);
-    io_service_.post(boost::asio::detail::bind_handler(
+    boost::asio::post(boost::asio::detail::bind_handler(
           handler, ec, bytes_transferred));
   }
 
 private:
-  boost::asio::io_service& io_service_;
+  boost::asio::io_context& io_context_;
   option_set& options_;
   std::ifstream file_;
 };

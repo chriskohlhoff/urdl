@@ -12,7 +12,7 @@
 #define URDL_DETAIL_HTTP_READ_STREAM_HPP
 
 #include <boost/asio/buffer.hpp>
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/asio/streambuf.hpp>
 #include <boost/asio/read.hpp>
 #include <boost/asio/read_until.hpp>
@@ -39,20 +39,20 @@ template <typename Stream>
 class http_read_stream
 {
 public:
-  explicit http_read_stream(boost::asio::io_service& io_service,
+  explicit http_read_stream(boost::asio::io_context& io_context,
       option_set& options)
-    : resolver_(io_service),
-      socket_(io_service),
+    : resolver_(io_context),
+      socket_(io_context),
       options_(options),
       content_length_(0)
   {
   }
 
   template <typename Arg>
-  http_read_stream(boost::asio::io_service& io_service,
+  http_read_stream(boost::asio::io_context& io_context,
       option_set& options, Arg& arg)
-    : resolver_(io_service),
-      socket_(io_service, arg),
+    : resolver_(io_context),
+      socket_(io_context, arg),
       options_(options),
       content_length_(0)
   {
@@ -203,7 +203,7 @@ public:
       if (socket_.lowest_layer().is_open())
       {
         ec = boost::asio::error::already_open;
-        URDL_CORO_YIELD(socket_.get_io_service().post(
+        URDL_CORO_YIELD(boost::asio::post(
               boost::asio::detail::bind_handler(*this, ec)));
         handler_(ec);
         return;
@@ -394,7 +394,8 @@ public:
   boost::system::error_code close(boost::system::error_code& ec)
   {
     resolver_.cancel();
-    if (!socket_.lowest_layer().close(ec))
+    socket_.lowest_layer().close(ec);
+    if (!ec)
     {
       request_buffer_.consume(request_buffer_.size());
       reply_buffer_.consume(reply_buffer_.size());
@@ -432,31 +433,26 @@ public:
   }
 
   template <typename MutableBufferSequence>
-  std::size_t read_some(const MutableBufferSequence& buffers,
+  std::size_t read_some(const MutableBufferSequence& buffer,
       boost::system::error_code& ec)
   {
     // If we have any data in the reply_buffer_, return that first.
     if (reply_buffer_.size() > 0)
     {
       std::size_t bytes_transferred = 0;
-      typename MutableBufferSequence::const_iterator iter = buffers.begin();
-      typename MutableBufferSequence::const_iterator end = buffers.end();
-      for (; iter != end && reply_buffer_.size() > 0; ++iter)
+      size_t length = boost::asio::buffer_size(buffer);
+      if (length > 0)
       {
-        boost::asio::mutable_buffer buffer(*iter);
-        size_t length = boost::asio::buffer_size(buffer);
-        if (length > 0)
-        {
-          bytes_transferred += reply_buffer_.sgetn(
-              boost::asio::buffer_cast<char*>(buffer), length);
-        }
+        bytes_transferred += reply_buffer_.sgetn(
+            static_cast<char*>(buffer.data()), length);
       }
+
       ec = boost::system::error_code();
       return bytes_transferred;
     }
 
     // Otherwise we forward the call to the underlying socket.
-    std::size_t bytes_transferred = socket_.read_some(buffers, ec);
+    std::size_t bytes_transferred = socket_.read_some(buffer, ec);
     if (ec == boost::asio::error::shut_down)
       ec = boost::asio::error::eof;
     return bytes_transferred;
@@ -520,7 +516,7 @@ public:
     {
       boost::system::error_code ec;
       std::size_t bytes_transferred = read_some(buffers, ec);
-      socket_.get_io_service().post(boost::asio::detail::bind_handler(
+      boost::asio::post(boost::asio::detail::bind_handler(
             handler, ec, bytes_transferred));
       return;
     }
